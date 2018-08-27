@@ -1,3 +1,5 @@
-# Ionic 3 Start Theme
+# proMotion
 
-Ionic 3 Start Theme with 10 Pages, mock data, providers samples, Storage, Http and more...
+Projeto voltado para buscar grandes ofertas na sua região e ganhar muitos prêmios.
+
+O template será baseado no Ionic 3 Start Theme
