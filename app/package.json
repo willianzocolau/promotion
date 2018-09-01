@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.0.1",
+    "@ionic/lab": "1.0.8",
     "ionic": "3.19.0",
     "typescript": "2.3.4"
   },
