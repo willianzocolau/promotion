@@ -1,8 +1,0 @@
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\bin\dbConnection.dll
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\bin\dbConnection.pdb
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\obj\Debug\dbConnection.csprojResolveAssemblyReference.cache
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\obj\Debug\dbConnection.dll
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\obj\Debug\dbConnection.pdb
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\bin\Npgsql.dll
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\bin\Npgsql.xml
-C:\Users\Vó Maegima\Documents\SharpDevelop Projects\dbConnection\dbConnection\bin\Mono.Security.dll
