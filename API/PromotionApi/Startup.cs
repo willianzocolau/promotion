@@ -13,6 +13,7 @@ using PromotionApi.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionApi.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PromotionApi
 {
@@ -55,8 +56,12 @@ namespace PromotionApi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            //app.UseHttpsRedirection();
+            //app.UseStaticFiles();
 
             //app.UseIdentityServer();
 
