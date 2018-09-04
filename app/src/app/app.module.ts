@@ -25,6 +25,8 @@ import {TripDetailPage} from "../pages/trip-detail/trip-detail";
 import {TripsPage} from "../pages/trips/trips";
 import {LocalWeatherPage} from "../pages/local-weather/local-weather";
 
+import { BrMaskerModule } from 'brmasker-ionic-3';
+
 // import services
 // end import services
 // end import services
@@ -57,7 +59,8 @@ import {LocalWeatherPage} from "../pages/local-weather/local-weather";
     IonicStorageModule.forRoot({
       name: '__ionic3_start_theme',
         driverOrder: ['indexeddb', 'sqlite', 'websql']
-    })
+    }),
+    BrMaskerModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -83,5 +86,4 @@ import {LocalWeatherPage} from "../pages/local-weather/local-weather";
   ]
 })
 
-export class AppModule {
-}
+export class AppModule {}

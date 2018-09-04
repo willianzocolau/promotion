@@ -11,13 +11,13 @@
     </div>
 
     <!-- Login form -->
-    <form class="list-form">
+    <form class="list-form" [formGroup]="form" (ngSubmit)="register()">
       <ion-item>
         <ion-label floating>
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
           Nome Completo
         </ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input type="text" formControlName="name"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -25,7 +25,7 @@
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
           CPF
         </ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input type="text" formControlName="cpf" [brmasker]="{mask:'000.000.000-00', len:14, type:'num'}"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -33,7 +33,7 @@
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
           Nome de Usuário
         </ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input type="text" formControlName="nickname"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -41,7 +41,7 @@
           <ion-icon name="mail" item-start class="text-primary"></ion-icon>
           Email
         </ion-label>
-        <ion-input type="email"></ion-input>
+        <ion-input type="email" formControlName="email"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -49,12 +49,19 @@
           <ion-icon name="lock" item-start class="text-primary"></ion-icon>
           Senha
         </ion-label>
-        <ion-input type="password"></ion-input>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          Confirmar Senha
+        </ion-label>
+        <ion-input type="password" formControlName="confirm_password"></ion-input>
       </ion-item>
     </form>
 
     <div margin-top>
-      <button ion-button block color="dark" tappable (click)="register()">
+      <button ion-button block color="dark" type="submit" [disabled]="!form.valid">
         Cadastrar
       </button>
 
