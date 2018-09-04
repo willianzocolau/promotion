@@ -1,8 +1,13 @@
-﻿namespace PromotionApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PromotionApi.Models
 {
     public class State
     {
-        public long Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [MaxLength(45)]
         public string Name { get; set; }
     }
 }

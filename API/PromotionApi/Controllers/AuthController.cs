@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,13 +23,11 @@ namespace PromotionApi.Controllers
         }
 
         // POST api/<controller>/register
-        [HttpPost("register/{nickname}")]
-        public async Task<IActionResult> RegisterAsync([FromHeader] string authorization, [FromRoute] string nickname)
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync([FromHeader] string authorization)
         {
             if (string.IsNullOrWhiteSpace(authorization))
                 return BadRequest(new { error = "Missing header: authorization" });
-            if (string.IsNullOrWhiteSpace(nickname))
-                return BadRequest(new { error = "Missing parameter: nickname" });
 
             if (authorization.StartsWith("Basic "))
             {
@@ -42,34 +42,46 @@ namespace PromotionApi.Controllers
                 string email = splitString[0];
                 string password = splitString[1];
 
+                string body;
+                using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                    body = await reader.ReadToEndAsync();
+
+                RegisterUser userData = JsonConvert.DeserializeObject<RegisterUser>(body);
+                if (userData == null)
+                    return BadRequest(new { error = "Invalid json" });
+
                 if (!Utils.IsValidEmail(email))
                     return BadRequest(new { error = "Invalid email" });
-                if (!Utils.IsValidNickname(nickname))
-                    return BadRequest(new { error = "Invalid nickname" });
                 if (!Utils.IsValidPassword(password))
                     return BadRequest(new { error = "Invalid password" });
+                if (!Utils.IsValidNickname(userData.Nickname))
+                    return BadRequest(new { error = "Invalid nickname" });
+                if (!Utils.IsValidName(userData.Name))
+                    return BadRequest(new { error = "Invalid name" });
+                if (!Utils.IsValidCpf(userData.Cpf))
+                    return BadRequest(new { error = "Invalid cpf" });
 
                 bool alreadyUsedEmail = await _context.Users.AnyAsync(x => x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase));
                 if (alreadyUsedEmail)
                     return BadRequest(new { error = "Already used email" });
 
-                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => x.Nickname.Equals(nickname, StringComparison.InvariantCultureIgnoreCase));
+                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => x.Nickname.Equals(userData.Nickname, StringComparison.InvariantCultureIgnoreCase));
                 if (alreadyUsedNickname)
                     return BadRequest(new { error = "Already used nickname" });
 
                 string token = Token.Generate();
                 _context.Users.Add(new User
                 {
-                    Nickname = nickname,
+                    Nickname = userData.Nickname,
                     Email = email,
                     Password = password,
-                    Name = null,
+                    Name = userData.Name,
                     Credit = 0,
                     StateFK = 0,
                     Type = 0,
                     RegisterDate = DateTimeOffset.UtcNow,
                     Token = token,
-                    Cpf = null,
+                    Cpf = userData.Cpf,
                     ImageUrl = null,
                     Cellphone = null,
                     Telephone = null,
