@@ -6,9 +6,11 @@ namespace PromotionApi
 {
     internal static class Utils
     {
+        //Formato (1 à 150): Example Name F. of Someone
         internal static readonly Regex _regexName = new Regex("(^[A-Z][a-z]+( ([A-Z]{1}\\.|[a-zA-Z]{2,}))*$){1,150}", RegexOptions.Compiled | RegexOptions.ECMAScript);
         internal static readonly Regex _regexNickname = new Regex("[a-z0-9_]{1,45}", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
         internal static readonly Regex _regexEmail = new Regex("^(\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*){1,255}$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
+        //Pelo menos 1 caracter maiúsculo, 1 minúsculo e 1 número, de 6 até 25 caracteres
         internal static readonly Regex _regexPassword = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[\\w#?!@$%^&*-]{6,25}$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
 
         internal static bool IsValidNickname(string nickname)

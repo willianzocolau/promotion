@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PromotionApi.Data;
+using PromotionApi.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,17 +49,19 @@ namespace PromotionApi.Controllers
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();
 
+            var users = new List<User>();
             var equalUser = await _context.Users.FirstOrDefaultAsync(x => x.Nickname.Equals(nickname, StringComparison.InvariantCultureIgnoreCase));
-            if (equalUser == null)
+            if (equalUser != null)
             {
-                var approxUsers = _context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase)).Take(10);
-                if (!approxUsers.Any())
-                    return NotFound(new { error = "No users found" });
-                else
-                    return Ok(approxUsers.Select(x => new { id = x.Id, nickname = x.Nickname }));
+                users.Add(equalUser);
+                users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalUser.Id).Take(9).ToList());
             }
             else
-                return Ok(new[] { equalUser }.Select(x => new { id = x.Id, nickname = x.Nickname }));
+                users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
+            if (!users.Any())
+                return NotFound(new { error = "No users found" });
+            else
+                return Ok(users.Select(x => new { id = x.Id, nickname = x.Nickname }));
         }
 
         // GET api/<controller>/5
