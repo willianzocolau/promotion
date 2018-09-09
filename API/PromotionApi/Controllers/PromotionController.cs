@@ -52,7 +52,7 @@ namespace PromotionApi.Controllers
                 if (alreadyUsedEmail)
                     return BadRequest(new { error = "Already used email" });
                 */
-                /* 
+                 
                 _context.Promotions.Add(new Promotion
                 {
                     Name = promotionData.Name,
@@ -61,9 +61,27 @@ namespace PromotionApi.Controllers
                     ExpireDate = DateTimeOffset.UtcNow,
                     ImageUrl = promotionData.ImageUrl,
                 });
-                await _context.SaveChangesAsync();*/
+                await _context.SaveChangesAsync();
 
-                return Ok(new { Result = "Row added" });
+                return Ok();
+        }
+
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] int id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
+                return Unauthorized();
+
+            var promotion = await _context.Promotions.FindAsync(id);
+            if (promotion == null)
+                return NotFound("Promotion not found");
+
+            return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate });
         }
     }
 }

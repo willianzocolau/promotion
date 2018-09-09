@@ -20,7 +20,7 @@ namespace PromotionApi.Models
         public int StoreFK { get; set; }
         [ForeignKey("UserFK")]
         public User User { get; set; }
-        public int UserFK { get; set; }
+        public long UserFK { get; set; }
         [ForeignKey("StateFK")]
         public State State { get; set; }
         public int StateFK { get; set; }
