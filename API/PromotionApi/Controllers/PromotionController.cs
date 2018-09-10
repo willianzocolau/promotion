@@ -66,9 +66,36 @@ namespace PromotionApi.Controllers
                 return Ok();
         }
 
+        // GET: api/<controller>/search/{name}
+        [HttpGet("search/{name}")]
+        public async Task<IActionResult> SearchAsync([FromHeader] string authorization, [FromRoute] string name)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
+                return Unauthorized();
+
+            var promotions = new List<Promotion>();
+            var equalPromotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            if (equalPromotion != null)
+            {
+                promotions.Add(equalPromotion);
+                promotions.AddRange(_context.Promotions.Where(x => x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalPromotion.Id).Take(9).ToList());
+            }
+            else
+                promotions.AddRange(_context.Promotions.Where(x => x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
+            
+            if (!promotions.Any())
+                return NotFound(new { error = "No promotion found" });
+            else
+                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name }));
+        }
+
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] int id)
+        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)

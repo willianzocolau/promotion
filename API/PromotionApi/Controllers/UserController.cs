@@ -55,6 +55,7 @@ namespace PromotionApi.Controllers
             {
                 users.Add(equalUser);
                 users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalUser.Id).Take(9).ToList());
+                return Ok("end");
             }
             else
                 users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
