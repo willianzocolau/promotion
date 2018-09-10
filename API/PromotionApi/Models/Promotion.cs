@@ -11,8 +11,8 @@ namespace PromotionApi.Models
         [MaxLength(45)]
         public string Name { get; set; }
         public double Price {get; set; }
-        public DateTimeOffset RegisterDate { get; set; }
-        public DateTimeOffset ExpireDate { get; set; }
+        public DateTime RegisterDate { get; set; }
+        public DateTime ExpireDate { get; set; }
         [MaxLength(150)]
         public string ImageUrl { get; set; }
         [ForeignKey("StoreFK")]
@@ -23,6 +23,6 @@ namespace PromotionApi.Models
         public long UserFK { get; set; }
         [ForeignKey("StateFK")]
         public State State { get; set; }
-        public int StateFK { get; set; }
+        public long StateFK { get; set; }
     }
 }

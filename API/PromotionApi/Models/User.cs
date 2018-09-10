@@ -17,7 +17,7 @@ namespace PromotionApi.Models
         [MaxLength(64)]
         public string Password { get; set; }
         public int Type { get; set; }
-        public DateTimeOffset RegisterDate { get; set; }
+        public DateTime RegisterDate { get; set; }
         [MaxLength(11)]
         public string Cpf { get; set; }
         public double Credit { get; set; }
@@ -31,6 +31,6 @@ namespace PromotionApi.Models
         public string Token { get; set; }
         [ForeignKey("StateFK")]
         public State State { get; set; }
-        public int StateFK { get; set; }
+        public long StateFK { get; set; }
     }
 }

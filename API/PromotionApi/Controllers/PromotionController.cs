@@ -55,15 +55,19 @@ namespace PromotionApi.Controllers
                  
                 _context.Promotions.Add(new Promotion
                 {
+                    Id = 1,
                     Name = promotionData.Name,
                     Price = Convert.ToDouble(promotionData.Price),
-                    RegisterDate = DateTimeOffset.UtcNow,
-                    ExpireDate = DateTimeOffset.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
+                    ExpireDate = DateTime.UtcNow,
                     ImageUrl = promotionData.ImageUrl,
+                    StoreFK = promotionData.StoreFK,
+                    UserFK = user.Id,
+                    StateFK = promotionData.StateFK,
                 });
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                return Ok("Ok");
         }
 
         // GET: api/<controller>/search/{name}

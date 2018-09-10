@@ -72,6 +72,7 @@ namespace PromotionApi.Controllers
                 string token = Token.Generate();
                 _context.Users.Add(new User
                 {
+                    Id = 1,
                     Nickname = userData.Nickname,
                     Email = email,
                     Password = password,
@@ -79,7 +80,7 @@ namespace PromotionApi.Controllers
                     Credit = 0,
                     StateFK = 0,
                     Type = 0,
-                    RegisterDate = DateTimeOffset.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
                     Token = token,
                     Cpf = userData.Cpf,
                     ImageUrl = null,
