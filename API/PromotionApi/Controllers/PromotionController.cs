@@ -52,10 +52,17 @@ namespace PromotionApi.Controllers
                 if (alreadyUsedEmail)
                     return BadRequest(new { error = "Already used email" });
                 */
-                 
+                
+                var lastPromotion = await _context.Promotions.OrderBy(x => x.Id).LastOrDefaultAsync();
+                long newId;
+                if(lastPromotion == null)
+                    newId = 1;
+                else 
+                    newId = lastPromotion.Id+1;
+
                 _context.Promotions.Add(new Promotion
                 {
-                    Id = 1,
+                    Id = newId,
                     Name = promotionData.Name,
                     Price = Convert.ToDouble(promotionData.Price),
                     RegisterDate = DateTime.UtcNow,
