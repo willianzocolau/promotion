@@ -29,7 +29,7 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.Include(x => x.State).FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
