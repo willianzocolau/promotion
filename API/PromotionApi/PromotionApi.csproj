@@ -12,8 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Scripts\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
