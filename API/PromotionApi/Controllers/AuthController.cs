@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace PromotionApi.Controllers
 {
@@ -69,9 +70,17 @@ namespace PromotionApi.Controllers
                 if (alreadyUsedNickname)
                     return BadRequest(new { error = "Already used nickname" });
 
+                var lastUser = await _context.Users.OrderBy(x => x.Id).LastOrDefaultAsync();
+                long newId;
+                if(lastUser == null)
+                    newId = 1;
+                else 
+                    newId = lastUser.Id+1;
+
                 string token = Token.Generate();
                 _context.Users.Add(new User
                 {
+                    Id = newId,
                     Nickname = userData.Nickname,
                     Email = email,
                     Password = password,
@@ -79,7 +88,7 @@ namespace PromotionApi.Controllers
                     Credit = 0,
                     StateFK = 0,
                     Type = 0,
-                    RegisterDate = DateTimeOffset.UtcNow,
+                    RegisterDate = DateTime.UtcNow,
                     Token = token,
                     Cpf = userData.Cpf,
                     ImageUrl = null,

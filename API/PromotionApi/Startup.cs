@@ -14,14 +14,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace PromotionApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -29,8 +35,12 @@ namespace PromotionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(options => //TODO: Change DB
-               options.UseInMemoryDatabase("TempDb"));
+            /*services.AddDbContext<DatabaseContext>(options => //TODO: Change DB
+               options.UseInMemoryDatabase("TempDb"));*/
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<DatabaseContext>(
+                    options => options.UseNpgsql(
+                        Configuration.GetConnectionString("ConnectionString")));
             /*services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Configuration.GetConnectionString("DefaultConnection")));
