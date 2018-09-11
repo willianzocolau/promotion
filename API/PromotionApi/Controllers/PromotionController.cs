@@ -4,13 +4,11 @@ using Newtonsoft.Json;
 using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PromotionApi.Controllers
 {
@@ -28,53 +26,38 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/register
         [HttpGet("register")]
-        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization) //TODO: Add estados no State
+        public async Task<IActionResult> RegisterAsync([FromHeader] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users/*.Include(x => x.State)*/.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
-            //return Ok( authorization );
-            
             string body;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                 body = await reader.ReadToEndAsync();
 
             RegisterPromotion promotionData = JsonConvert.DeserializeObject<RegisterPromotion>(body);
-                if (promotionData == null)
-                    return BadRequest(new { error = "Invalid json" });
-                /*
-                bool alreadyUsedEmail = await _context.Users.AnyAsync(x => x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase));
-                if (alreadyUsedEmail)
-                    return BadRequest(new { error = "Already used email" });
-                */
-                
-                var lastPromotion = await _context.Promotions.OrderBy(x => x.Id).LastOrDefaultAsync();
-                long newId;
-                if(lastPromotion == null)
-                    newId = 1;
-                else 
-                    newId = lastPromotion.Id+1;
+            if (promotionData == null)
+                return BadRequest(new { error = "Invalid json" });
 
-                _context.Promotions.Add(new Promotion
-                {
-                    Id = newId,
-                    Name = promotionData.Name,
-                    Price = Convert.ToDouble(promotionData.Price),
-                    RegisterDate = DateTime.UtcNow,
-                    ExpireDate = DateTime.UtcNow,
-                    ImageUrl = promotionData.ImageUrl,
-                    StoreFK = promotionData.StoreFK,
-                    UserFK = user.Id,
-                    StateFK = promotionData.StateFK,
-                });
-                await _context.SaveChangesAsync();
+            _context.Promotions.Add(new Promotion
+            {
+                Name = promotionData.Name,
+                Price = promotionData.Price,
+                RegisterDate = DateTimeOffset.UtcNow,
+                ExpireDate = DateTimeOffset.UtcNow.AddDays(7),
+                ImageUrl = promotionData.ImageUrl,
+                StoreFK = promotionData.StoreFK,
+                UserFK = user.Id,
+                StateFK = promotionData.StateFK,
+            });
+            await _context.SaveChangesAsync();
 
-                return Ok("Ok");
+            return Ok();
         }
 
         // GET: api/<controller>/search/{name}
@@ -104,7 +87,7 @@ namespace PromotionApi.Controllers
                 return Ok(promotions.Select(x => new { id = x.Id, name = x.Name }));
         }
 
-        // GET api/<controller>/5
+        // GET api/<controller>/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
         {

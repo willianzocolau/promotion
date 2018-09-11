@@ -11,6 +11,8 @@ namespace PromotionApi.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<State> States { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Store> Stores { get; set; }
     }
 }

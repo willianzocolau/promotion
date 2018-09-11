@@ -64,7 +64,7 @@ namespace PromotionApi.Controllers
                 return Ok(users.Select(x => new { id = x.Id, nickname = x.Nickname }));
         }
 
-        // GET api/<controller>/5
+        // GET api/<controller>/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
         {
