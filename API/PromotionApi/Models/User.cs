@@ -31,6 +31,6 @@ namespace PromotionApi.Models
         public string Token { get; set; }
         [ForeignKey("StateFK")]
         public State State { get; set; }
-        public long StateFK { get; set; }
+        public long? StateFK { get; set; }
     }
 }

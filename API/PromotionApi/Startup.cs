@@ -11,59 +11,53 @@ namespace PromotionApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-#if DEBUG
-            services.AddDbContext<DatabaseContext>(options =>
-               options.UseInMemoryDatabase("TempDb"));
-#else
-            services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(
-                    options => options.UseNpgsql(
-                        Configuration.GetConnectionString("DefaultConnection")));
-#endif
-
-            /*services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            var identityServerBuilder = services.AddIdentityServer();
-            identityServerBuilder.AddDeveloperSigningCredential();*/
+            if (HostingEnvironment.IsDevelopment())
+            {
+                services.AddDbContext<DatabaseContext>(options =>
+                   options.UseInMemoryDatabase("TempDb"));
+            }
+            else
+            {
+                services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(
+                        options => options.UseNpgsql(
+                            Configuration.GetConnectionString("DefaultConnection")));
+            }
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, DatabaseContext context)
         {
-            if (env.IsDevelopment())
+            if (HostingEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseHttpsRedirection();
+                context.Database.EnsureCreated();
             }
             else
             {
                 app.UseHsts();
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
             }
 
-#if DEBUG
-            app.UseHttpsRedirection();
-#else
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-#endif
-
             //app.UseStaticFiles();
-
-            //app.UseIdentityServer();
 
             app.UseMvc();
         }

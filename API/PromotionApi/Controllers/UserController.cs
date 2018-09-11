@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace PromotionApi.Controllers
 {
     [Produces("application/json")]
@@ -25,17 +23,17 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization) //TODO: Add estados no State
+        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users/*.Include(x => x.State)*/.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
-            return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name/*, stateName = user.State.Name*/ });
+            return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name, state = (user.StateFK == null ? null : new { id = user.StateFK, name = user.State?.Name }) });
         }
 
         // GET: api/<controller>/search/{nickname}

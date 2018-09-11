@@ -7,7 +7,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace PromotionApi.Controllers
 {
@@ -78,7 +77,7 @@ namespace PromotionApi.Controllers
                     Password = password,
                     Name = userData.Name,
                     Credit = 0,
-                    StateFK = 0,
+                    StateFK = null,
                     Type = 0,
                     RegisterDate = DateTimeOffset.UtcNow,
                     Token = token,
