@@ -29,24 +29,18 @@ export class RegisterPage {
   }
 
   register() {
-    console.log("Teste");
-
-    let username: string = this.form.get('email').value;
+    let name: string = this.form.get('name').value;
+    let nickname: string = this.form.get('nickname').value;
+    let cpf: string = this.form.get('cpf').value;
+    let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;
 
     let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');
-    headers = headers.set('Accept', 'application/json');
+    headers = headers.set('Content-Type', 'application/json');    
+    headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
 
-    headers = headers.set('Access-Control-Allow-Origin', 'http://localhost:8100');
-    headers = headers.set('Access-Control-Allow-Credentials', 'true');
-    
-    headers = headers.set("Authorization", "Basic " + btoa(username + ":" + password));
-
+    //let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
     let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
-
-    console.log(btoa(username + ":" + password));
-    console.log(body);
 
     const req = this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
         res => {
@@ -56,7 +50,6 @@ export class RegisterPage {
           console.log("Erro");
         }
       );
-      console.log(req);
   }
 
   login() {
@@ -64,12 +57,10 @@ export class RegisterPage {
   }
 
   doAlert() {
-    let alert = this.alertCtrl.create({
+    this.alertCtrl.create({
       title: 'New Friend!',
       subTitle: this.form.get('password').value,
       buttons: ['Ok']
-    });
-
-    alert.present();
+    }).present();
   }
 }
