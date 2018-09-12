@@ -14,6 +14,8 @@ namespace PromotionApi.Data
         public DbSet<State> States { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Store> Stores { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<ForgotPasswordRequest> ForgotPasswordRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

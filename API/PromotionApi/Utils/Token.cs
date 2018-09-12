@@ -9,14 +9,13 @@ namespace PromotionApi
     internal static class Token
     {
         private static readonly ushort _workerId = 1;
-        private static readonly DateTimeOffset _promotionEpoch = new DateTimeOffset(2018, 9, 1, 0, 0, 0, 0, TimeSpan.Zero);
         private static readonly Regex _regexToken = new Regex("^[A-Za-z0-9+/=]{1,16}\\.[0-9a-fA-F]{1,20}[0-9]{4}[0-9]{4}$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
         private static readonly TimeSpan _tokenLifeSpan = TimeSpan.FromDays(1);
 
         // Key (45): {epoch(1,16)}.{randomNumber(1,20)}{workerId(4)}{threadId{4}}
         internal static string Generate()
         {
-            long epoch = (long)(DateTimeOffset.UtcNow - _promotionEpoch).TotalSeconds;
+            long epoch = (long)(DateTimeOffset.UtcNow - Utils.PromotionEpoch).TotalSeconds;
 
             RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
             var byteArray = new byte[8];
@@ -33,7 +32,7 @@ namespace PromotionApi
                 string epochBase64 = token.Substring(0, token.IndexOf('.'));
                 string epochString = Utils.DecodeBase64(epochBase64);
                 long secondsSinceEpoch = long.Parse(epochString);
-                DateTimeOffset generationDate = _promotionEpoch.AddSeconds(secondsSinceEpoch);
+                DateTimeOffset generationDate = Utils.PromotionEpoch.AddSeconds(secondsSinceEpoch);
 
                 return (DateTimeOffset.UtcNow - generationDate) <= _tokenLifeSpan;
             }

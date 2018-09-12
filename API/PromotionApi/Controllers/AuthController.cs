@@ -186,9 +186,19 @@ namespace PromotionApi.Controllers
             if (!Utils.IsValidEmail(data.Email))
                 return BadRequest(new { error = "Invalid email" });
 
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(data.Email, StringComparison.InvariantCultureIgnoreCase));
+            if (user == null)
+                return NotFound(new { error = "Email not found" });
+
             //TODO: send code by email
-            //TODO: add code to user
-            //TODO: add ratelimit to this endpoint
+            _context.ForgotPasswordRequests.Add(new ForgotPasswordRequest
+            {
+                Ip = this.Request.HttpContext.Connection.RemoteIpAddress.ToString(),
+                Code = Code.Generate(),
+                RequestDate = DateTimeOffset.UtcNow,
+                UserFK = user.Id
+            });
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
@@ -217,7 +227,9 @@ namespace PromotionApi.Controllers
                 return BadRequest(new { error = "Invalid new password" });
 
             //TODO: validate newpass+code or oldpass+newpass
-            //TODO: add ratelimit to this endpoint
+
+            user.Password = data.NewPassword;
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
