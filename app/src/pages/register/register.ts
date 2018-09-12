@@ -4,7 +4,7 @@ import {LoginPage} from "../login/login";
 import {HomePage} from "../home/home";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
-import { Http , Headers, Response } from '@angular/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'page-register',
@@ -14,7 +14,10 @@ export class RegisterPage {
 
   public form : FormGroup;
 
-  constructor(public nav: NavController, public formBuilder: FormBuilder, private alertCtrl: AlertController, private http: Http) {
+  constructor(public nav: NavController
+    , public formBuilder: FormBuilder
+    , private alertCtrl: AlertController
+    , private httpClient: HttpClient ) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       nickname: ['', Validators.required],
@@ -25,24 +28,37 @@ export class RegisterPage {
     });
   }
 
-  // register and go to home page
   register() {
-    const body = JSON.stringify({username: this.form.get('email').value, password: this.form.get('password').value});
+    console.log("Teste");
 
-    let headers = new Headers();
-    headers = headers.append("Authorization", "Basic " + btoa("username:password"));
-    headers = headers.append("Content-Type", "application/x-www-form-urlencoded");
+    let username: string = this.form.get('email').value;
+    let password: string = this.form.get('password').value;
 
-    this.http.post('http://178.128.186.9/api/auth/register/',body, {headers: headers}).subscribe(response => {
-        let alert = this.alertCtrl.create({title: 'Sucesso', subTitle: '', buttons: ['Ok']});
-        alert.present();
-    }, err => {
-        let alert = this.alertCtrl.create({title: 'Falha', subTitle: '', buttons: ['Ok']});
-        alert.present();
-    });
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
+
+    headers = headers.set('Access-Control-Allow-Origin', 'http://localhost:8100');
+    headers = headers.set('Access-Control-Allow-Credentials', 'true');
+    
+    headers = headers.set("Authorization", "Basic " + btoa(username + ":" + password));
+
+    let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
+
+    console.log(btoa(username + ":" + password));
+    console.log(body);
+
+    const req = this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
+        res => {
+          console.log("Sucesso");
+        },
+        err => {
+          console.log("Erro");
+        }
+      );
+      console.log(req);
   }
 
-  // go to login page
   login() {
     this.nav.setRoot(LoginPage);
   }
