@@ -1,6 +1,6 @@
 namespace PromotionApi.Models
 {
-    public class RegisterPromotion
+    public class RegisterPromotionBody
     {
         public string Name { get; set; }
         public double Price { get; set; }

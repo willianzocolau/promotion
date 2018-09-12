@@ -46,7 +46,7 @@ namespace PromotionApi.Controllers
                 using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                     body = await reader.ReadToEndAsync();
 
-                RegisterUser userData = JsonConvert.DeserializeObject<RegisterUser>(body);
+                RegisterUserBody userData = JsonConvert.DeserializeObject<RegisterUserBody>(body);
                 if (userData == null)
                     return BadRequest(new { error = "Invalid json" });
 
@@ -144,22 +144,12 @@ namespace PromotionApi.Controllers
                 return NotFound(new { error = "Token not found" });
             else
             {
-                if (!Token.IsValid(validation.Token))
-                {
-                    user.Token = null;
-                    await _context.SaveChangesAsync();
+                string newtoken = Token.Generate();
 
-                    return BadRequest(new { error = "Invalid token" });
-                }
-                else
-                {
-                    string newtoken = Token.Generate();
+                user.Token = newtoken;
+                await _context.SaveChangesAsync();
 
-                    user.Token = newtoken;
-                    await _context.SaveChangesAsync();
-
-                    return Ok(new { token = newtoken });
-                }
+                return Ok(new { token = newtoken });
             }
         }
 
@@ -177,6 +167,57 @@ namespace PromotionApi.Controllers
                 user.Token = null;
                 await _context.SaveChangesAsync();
             }
+
+            return Ok();
+        }
+
+        // POST api/<controller>/reset
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetAsync()
+        {
+            string body;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                body = await reader.ReadToEndAsync();
+
+            ResetPasswordBody data = JsonConvert.DeserializeObject<ResetPasswordBody>(body);
+            if (data == null)
+                return BadRequest(new { error = "Invalid json" });
+
+            if (!Utils.IsValidEmail(data.Email))
+                return BadRequest(new { error = "Invalid email" });
+
+            //TODO: send code by email
+            //TODO: add code to user
+            //TODO: add ratelimit to this endpoint
+
+            return Ok();
+        }
+
+        // POST api/<controller>/change
+        [HttpPost("change")]
+        public async Task<IActionResult> ChangeAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return NotFound(new { error = "Token not found" });
+
+            string body;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                body = await reader.ReadToEndAsync();
+
+            ChangePasswordBody data = JsonConvert.DeserializeObject<ChangePasswordBody>(body);
+            if (data == null)
+                return BadRequest(new { error = "Invalid json" });
+
+            if (!Utils.IsValidEmail(data.NewPassword))
+                return BadRequest(new { error = "Invalid new password" });
+
+            //TODO: validate newpass+code or oldpass+newpass
+            //TODO: add ratelimit to this endpoint
 
             return Ok();
         }

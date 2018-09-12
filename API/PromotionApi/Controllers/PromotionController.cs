@@ -40,7 +40,7 @@ namespace PromotionApi.Controllers
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                 body = await reader.ReadToEndAsync();
 
-            RegisterPromotion promotionData = JsonConvert.DeserializeObject<RegisterPromotion>(body);
+            RegisterPromotionBody promotionData = JsonConvert.DeserializeObject<RegisterPromotionBody>(body);
             if (promotionData == null)
                 return BadRequest(new { error = "Invalid json" });
 

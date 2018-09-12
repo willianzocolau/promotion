@@ -1,4 +1,6 @@
-﻿using AspNetCoreRateLimit;
+﻿#define TEMP_DB
+
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -24,8 +26,14 @@ namespace PromotionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+#if TEMP_DB
+            services.AddDbContext<DatabaseContext>(options =>
+                   options.UseInMemoryDatabase("TempDb"));
+#else
             if (HostingEnvironment.IsDevelopment())
             {
+
                 services.AddDbContext<DatabaseContext>(options =>
                    options.UseInMemoryDatabase("TempDb"));
             }
@@ -35,6 +43,7 @@ namespace PromotionApi
                         options => options.UseNpgsql(
                             Configuration.GetConnectionString("DefaultConnection")));
             }
+#endif
 
             services.AddOptions();
 
@@ -48,6 +57,8 @@ namespace PromotionApi
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
+            services.AddCors();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -56,6 +67,24 @@ namespace PromotionApi
         {
             app.UseIpRateLimiting();
 
+#if TEMP_DB
+            if (HostingEnvironment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                app.UseHttpsRedirection();
+                context.Database.EnsureCreated();
+            }
+            else
+            {
+                context.Database.EnsureCreated();
+                app.UseHsts();
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
+            }
+#else
             if (HostingEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -71,8 +100,15 @@ namespace PromotionApi
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
                 });
             }
+#endif
 
             //app.UseStaticFiles();
+
+            app.UseCors(builder =>
+                builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+            );
 
             app.UseMvc();
         }
