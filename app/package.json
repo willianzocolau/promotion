@@ -65,6 +65,7 @@
     ]
   },
   "config": {
-    "ionic_sass": "./sass.js"
+    "ionic_sass": "./sass.js",
+    "ionic_source_map": "source_map"
   }
 }

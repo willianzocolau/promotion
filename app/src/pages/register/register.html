@@ -11,7 +11,7 @@
     </div>
 
     <!-- Login form -->
-    <form class="list-form" [formGroup]="form" (ngSubmit)="register()">
+    <form class="list-form" [formGroup]="form">
       <ion-item>
         <ion-label floating>
           <ion-icon name="person" item-start class="text-primary"></ion-icon>
@@ -61,9 +61,10 @@
     </form>
 
     <div margin-top>
-      <button ion-button block color="dark" type="submit" [disabled]="!form.valid">
+      <button ion-button block color="dark" (click)="register()" [disabled]="!form.valid">
         Cadastrar
       </button>
+      <button ion-button block (click)="doAlert()">Basic Alert</button>
 
       <p text-center ion-text color="secondary">Ou entre com uma rede social:</p>
 
