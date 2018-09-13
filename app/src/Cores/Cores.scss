@@ -3,20 +3,20 @@
 @import "ionic.globals";
 
 // Shared Variables
-// --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass variables found in Ionic's source scss files.
+// ------------------------------------------------ -
+// Para personalizar a aparência deste aplicativo, você pode substituir
+// as variáveis Sass encontradas nos arquivos scss de origem do Ionic.
 
 $text-color: #4c6df9;
 $background-color: #fff;
 
-// Named Color Variables
-// --------------------------------------------------
-// Named colors makes it easy to reuse colors on various components.
-// It's highly recommended to change the default colors
-// to match your app's branding. Ionic uses a Sass map of
-// colors so you can add, rename and remove colors as needed.
-// The "primary" color is the only required color in the map.
+// Variáveis de cor nomeadas
+// ------------------------------------------------ -
+// Cores nomeadas facilitam a reutilização de cores em vários componentes.
+// É altamente recomendado alterar as cores padrão
+// para corresponder à marca da sua aplicação. Ionic usa um mapa Sass de
+// colors para que você possa adicionar, renomear e remover cores conforme necessário.
+// A cor "primária" é a única cor requerida no mapa.
 
 $colors: (
   primary: #4c6df9,
