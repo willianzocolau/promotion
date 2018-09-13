@@ -5,6 +5,8 @@ using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
 using System.IO;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -190,15 +192,22 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return NotFound(new { error = "Email not found" });
 
-            //TODO: send code by email
+            string code = Code.Generate();
+
             _context.ForgotPasswordRequests.Add(new ForgotPasswordRequest
             {
                 Ip = this.Request.HttpContext.Connection.RemoteIpAddress.ToString(),
-                Code = Code.Generate(),
+                Code = code,
                 RequestDate = DateTimeOffset.UtcNow,
                 UserFK = user.Id
             });
             await _context.SaveChangesAsync();
+
+            await Utils.SendEmailAsync(
+                data.Email,
+                "[ProMotion] Mudança de senha",
+                $"Para alterar sua senha, utilize o seguinte código: {code}<br />Caso não tenha sido você que fez essa requisição, desconsidere este e-mail ou entre em contato com o suporte."
+            );
 
             return Ok();
         }

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionApi.Data;
+using PromotionApi.Models;
 
 namespace PromotionApi
 {
