@@ -1,0 +1,29 @@
+<!-- # -->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-input placeholder="Digite..." padding-left autofocus></ion-input>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div class="list-no-border">
+    <!--nearby places-->
+    <ion-item *ngFor="let item of promotions.basket" tappable (click)="searchBy(item)">
+      <div class="name">
+        <span ion-text color="primary">{{ item.name }}</span>
+      </div>
+      <div>
+        <table>
+          <tr>
+            <th class="image"><img width="80" height="80" [src]=item.imgurl></th>
+            <th class="price">price: {{item.price}}</th>
+          </tr>
+        </table>
+        
+        
+      </div>
+    </ion-item>
+  </div>
+</ion-content>
