@@ -19,7 +19,7 @@ namespace PromotionApi
         internal static readonly Regex _regexPassword = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[\\w#?!@$%^&*-]{6,25}$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
 
         private static string EmailDomain   { get; } = "smtp.live.com";
-        private static int EmailPort        { get; } = 587;
+        private static int    EmailPort     { get; } = 587;
         private static string EmailUsername { get; } = "prmtn@outlook.com";
         private static string EmailPassword { get; } = "Pr0M0tiOnP44ssSS";
 
@@ -65,6 +65,25 @@ namespace PromotionApi
                 smtp.EnableSsl = true;
                 await smtp.SendMailAsync(mail);
             }
+        }
+
+        internal static string DecryptPassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                return null;
+            return Encryption.Decrypt(password);
+        }
+
+        internal static string HashPassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                return null;
+            return Hash.Process(password);
+        }
+
+        internal static string GenerateCode(int size = 6)
+        {
+            return Code.Generate(size);
         }
     }
 }

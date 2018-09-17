@@ -42,7 +42,7 @@ namespace PromotionApi.Controllers
 
                 string[] splitString = decodedString.Split(':', 2);
                 string email = splitString[0];
-                string password = splitString[1];
+                string password = Utils.DecryptPassword(splitString[1]);
 
                 string body;
                 using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
@@ -76,7 +76,7 @@ namespace PromotionApi.Controllers
                 {
                     Nickname = userData.Nickname,
                     Email = email,
-                    Password = password,
+                    Password = Utils.HashPassword(password),
                     Name = userData.Name,
                     Credit = 0,
                     StateFK = null,
@@ -114,7 +114,7 @@ namespace PromotionApi.Controllers
 
                 string[] splitString = decodedString.Split(':', 2);
                 string email = splitString[0];
-                string password = splitString[1];
+                string password = Utils.HashPassword(Utils.DecryptPassword(splitString[1]));
 
                 User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
 
@@ -192,7 +192,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return NotFound(new { error = "Email not found" });
 
-            string code = Code.Generate();
+            string code = Utils.GenerateCode();
 
             _context.ForgotPasswordRequests.Add(new ForgotPasswordRequest
             {
@@ -214,16 +214,8 @@ namespace PromotionApi.Controllers
 
         // POST api/<controller>/change
         [HttpPost("change")]
-        public async Task<IActionResult> ChangeAsync([FromHeader] string authorization)
+        public async Task<IActionResult> ChangeAsync([FromHeader] string authorization = null)
         {
-            var validation = Token.ValidateAuthorization(authorization);
-            if (!validation.IsValid)
-                return validation.Result;
-
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null)
-                return NotFound(new { error = "Token not found" });
-
             string body;
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                 body = await reader.ReadToEndAsync();
@@ -232,12 +224,58 @@ namespace PromotionApi.Controllers
             if (data == null)
                 return BadRequest(new { error = "Invalid json" });
 
-            if (!Utils.IsValidEmail(data.NewPassword))
+            string newPass = Utils.DecryptPassword(data.NewPassword);
+            string oldPass = Utils.DecryptPassword(data.OldPassword);
+
+            if (!Utils.IsValidPassword(data.NewPassword))
                 return BadRequest(new { error = "Invalid new password" });
 
-            //TODO: validate newpass+code or oldpass+newpass
+            bool withOldPass = oldPass != null;
+            bool withResetCode = !string.IsNullOrWhiteSpace(data.ResetCode);
 
-            user.Password = data.NewPassword;
+            if (!withOldPass && !withResetCode)
+                return BadRequest(new { error = "Missing old password or reset code" });
+
+            if (withOldPass && withResetCode)
+                return BadRequest(new { error = "Requests shouldn't contain old password and reset code" });
+
+            if (withResetCode && string.IsNullOrWhiteSpace(data.Email))
+                return BadRequest(new { error = "Requests with reset code require email" });
+
+            User user;
+            if (withOldPass)
+            {
+                var validation = Token.ValidateAuthorization(authorization);
+                if (!validation.IsValid)
+                    return validation.Result;
+
+                user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+                if (user == null)
+                    return NotFound(new { error = "Token not found" });
+
+                if (user.Password != Utils.HashPassword(oldPass))
+                    return BadRequest(new { error = "Old password is wrong" });
+            }
+            else
+            {
+                if (Utils.IsValidEmail(data.Email))
+                    return BadRequest(new { error = "Invalid email" });
+
+                var resetRequest = await _context.ForgotPasswordRequests.Include(x => x.User).FirstOrDefaultAsync(x => x.Code == data.ResetCode);
+                if (resetRequest == null)
+                    return BadRequest(new { error = "Invalid reset code" });
+
+                user = resetRequest.User;
+                if (!user.Email.Equals(data.Email, StringComparison.InvariantCultureIgnoreCase))
+                    return BadRequest(new { error = "Invalid reset code" });
+
+                if (resetRequest.RequestDate < DateTimeOffset.UtcNow.Subtract(Code.LifeSpan))
+                    return BadRequest(new { error = "Invalid reset code" });
+
+                _context.ForgotPasswordRequests.Remove(resetRequest);
+            }
+
+            user.Password = Utils.HashPassword(newPass);
             await _context.SaveChangesAsync();
 
             return Ok();

@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PromotionApi
 {
     internal static class Code
     {
-        public static string Generate()
+        internal static TimeSpan LifeSpan { get; } = TimeSpan.FromHours(1);
+
+        internal static string Generate(int size)
         {
             //TODO: generate 6-digit token
             return "";
