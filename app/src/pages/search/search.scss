@@ -1,0 +1,25 @@
+page-search,
+.search {
+	ion-input,
+	ion-input::placeholder {
+		color: #fff;
+	}
+}
+
+.name {
+	text-align: center;
+}
+
+.price {
+	color: blue;
+	text-align: right;
+}
+
+.image{
+	display: inline-block;
+	text-align: center;
+}
+
+table{
+	width: 100%;
+}

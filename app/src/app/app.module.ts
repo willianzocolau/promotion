@@ -15,6 +15,7 @@ import {HomePage} from "../pages/home/home";
 import {LoginPage} from "../pages/login/login";
 import {NotificationsPage} from "../pages/notifications/notifications";
 import {RegisterPage} from "../pages/register/register";
+import { SearchPage } from "../pages/search/search";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 
@@ -33,6 +34,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     LoginPage,
     NotificationsPage,
     RegisterPage,
+    SearchPage,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +58,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     LoginPage,
     NotificationsPage,
     RegisterPage,
+    SearchPage,
   ],
   providers: [
     StatusBar,

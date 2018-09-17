@@ -7,6 +7,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 
 import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
+import { SearchPage } from "../pages/search/search";
 
 
 export interface MenuItem {
@@ -36,6 +37,7 @@ export class MyApp {
 
     this.appMenuItems = [
       {title: 'Home', component: HomePage, icon: 'home'},
+      {title: 'Search', component: SearchPage, icon: 'search'},
     ];
   }
 
@@ -61,6 +63,7 @@ export class MyApp {
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   }
+
 
   logout() {
     this.nav.setRoot(LoginPage);

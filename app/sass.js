@@ -69,7 +69,7 @@ module.exports = {
    * to be imported so their values override default variables.
    */
   variableSassFiles: [
-    '{{SRC}}/theme/variables.scss'
+    '{{SRC}}/Cores/Cores.scss'
   ],
 
   /**
