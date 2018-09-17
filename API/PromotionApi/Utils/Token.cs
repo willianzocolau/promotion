@@ -17,12 +17,13 @@ namespace PromotionApi
         {
             long epoch = (long)(DateTimeOffset.UtcNow - Utils.PromotionEpoch).TotalSeconds;
 
-            RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
-            var byteArray = new byte[8];
-            provider.GetBytes(byteArray);
-            var randomInteger = BitConverter.ToUInt64(byteArray, 0);
-
-            return $"{Utils.EncodeBase64(epoch.ToString())}.{randomInteger.ToString("X")}{_workerId.ToString("0000")}{Thread.CurrentThread.ManagedThreadId.ToString("0000")}";
+            using (RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider())
+            {
+                var byteArray = new byte[8];
+                provider.GetBytes(byteArray);
+                var randomInteger = BitConverter.ToUInt64(byteArray, 0);
+                return $"{Utils.EncodeBase64(epoch.ToString())}.{randomInteger.ToString("X")}{_workerId.ToString("0000")}{Thread.CurrentThread.ManagedThreadId.ToString("0000")}";
+            }
         }
 
         internal static bool IsValid(string token)

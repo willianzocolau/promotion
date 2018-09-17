@@ -16,6 +16,8 @@ namespace PromotionApi.Models
         public string Email { get; set; }
         [MaxLength(64)]
         public string Password { get; set; }
+        [MaxLength(64)]
+        public string PasswordSalt { get; set; }
         public UserType Type { get; set; }
         public DateTimeOffset RegisterDate { get; set; }
         [MaxLength(11)]

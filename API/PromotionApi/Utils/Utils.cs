@@ -10,7 +10,7 @@ namespace PromotionApi
     internal static class Utils
     {
         internal static DateTimeOffset PromotionEpoch { get; } = new DateTimeOffset(2018, 9, 1, 0, 0, 0, 0, TimeSpan.Zero);
-        
+
         //Formato (1 à 150): Example Name F. of Someone
         internal static readonly Regex _regexName = new Regex("(^[A-Z][a-z]+( ([A-Z]{1}\\.|[a-zA-Z]{2,}))*$){1,150}", RegexOptions.Compiled | RegexOptions.ECMAScript);
         internal static readonly Regex _regexNickname = new Regex("[a-z0-9_]{1,45}", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
@@ -22,6 +22,8 @@ namespace PromotionApi
         private static int    EmailPort     { get; } = 587;
         private static string EmailUsername { get; } = "prmtn@outlook.com";
         private static string EmailPassword { get; } = "Pr0M0tiOnP44ssSS";
+
+        private static Random _random = new Random();
 
         internal static bool IsValidNickname(string nickname)
             => nickname == null ? false : _regexNickname.IsMatch(nickname);
@@ -67,23 +69,9 @@ namespace PromotionApi
             }
         }
 
-        internal static string DecryptPassword(string password)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-                return null;
-            return Encryption.Decrypt(password);
-        }
-
-        internal static string HashPassword(string password)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-                return null;
-            return Hash.Process(password);
-        }
-
-        internal static string GenerateCode(int size = 6)
-        {
-            return Code.Generate(size);
-        }
+        internal static int Random(int minValue, int maxValue)
+            => _random.Next(minValue, maxValue);
+        internal static int Random(int maxValue)
+            => _random.Next(0, maxValue);
     }
 }

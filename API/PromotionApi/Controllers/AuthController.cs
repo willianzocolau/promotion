@@ -42,7 +42,7 @@ namespace PromotionApi.Controllers
 
                 string[] splitString = decodedString.Split(':', 2);
                 string email = splitString[0];
-                string password = Utils.DecryptPassword(splitString[1]);
+                string password = Encryption.Decrypt(splitString[1]);
 
                 string body;
                 using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
@@ -72,11 +72,13 @@ namespace PromotionApi.Controllers
                     return BadRequest(new { error = "Already used nickname" });
 
                 string token = Token.Generate();
+                string salt = Hash.GenerateSalt();
                 _context.Users.Add(new User
                 {
                     Nickname = userData.Nickname,
                     Email = email,
-                    Password = Utils.HashPassword(password),
+                    Password = Hash.Process(password, salt),
+                    PasswordSalt = salt,
                     Name = userData.Name,
                     Credit = 0,
                     StateFK = null,
@@ -114,20 +116,22 @@ namespace PromotionApi.Controllers
 
                 string[] splitString = decodedString.Split(':', 2);
                 string email = splitString[0];
-                string password = Utils.HashPassword(Utils.DecryptPassword(splitString[1]));
 
-                User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+                User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
 
                 if (user == null)
-                    return NotFound(new { error = "Login not found" });
-                else
-                {
-                    string token = Token.Generate();
-                    user.Token = token;
-                    await _context.SaveChangesAsync();
+                    return NotFound(new { error = "Email or password wrong" });
 
-                    return Ok(new { id = user.Id, token });
-                }
+                string password = Hash.Process(Encryption.Decrypt(splitString[1]), user.PasswordSalt);
+
+                if (user.Password != password)
+                    return NotFound(new { error = "Email or password wrong" });
+
+                string token = Token.Generate();
+                user.Token = token;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { id = user.Id, token });
             }
 
             return BadRequest(new { error = "Invalid authorization" });
@@ -192,7 +196,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return NotFound(new { error = "Email not found" });
 
-            string code = Utils.GenerateCode();
+            string code = Code.Generate();
 
             _context.ForgotPasswordRequests.Add(new ForgotPasswordRequest
             {
@@ -224,8 +228,8 @@ namespace PromotionApi.Controllers
             if (data == null)
                 return BadRequest(new { error = "Invalid json" });
 
-            string newPass = Utils.DecryptPassword(data.NewPassword);
-            string oldPass = Utils.DecryptPassword(data.OldPassword);
+            string newPass = Encryption.Decrypt(data.NewPassword);
+            string oldPass = Encryption.Decrypt(data.OldPassword);
 
             if (!Utils.IsValidPassword(data.NewPassword))
                 return BadRequest(new { error = "Invalid new password" });
@@ -253,7 +257,7 @@ namespace PromotionApi.Controllers
                 if (user == null)
                     return NotFound(new { error = "Token not found" });
 
-                if (user.Password != Utils.HashPassword(oldPass))
+                if (user.Password != Hash.Process(oldPass, user.PasswordSalt))
                     return BadRequest(new { error = "Old password is wrong" });
             }
             else
@@ -275,7 +279,9 @@ namespace PromotionApi.Controllers
                 _context.ForgotPasswordRequests.Remove(resetRequest);
             }
 
-            user.Password = Utils.HashPassword(newPass);
+            string salt = Hash.GenerateSalt();
+            user.Password = Hash.Process(newPass, salt);
+            user.PasswordSalt = salt;
             await _context.SaveChangesAsync();
 
             return Ok();
