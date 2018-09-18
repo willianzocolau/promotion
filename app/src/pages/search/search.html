@@ -2,7 +2,13 @@
 <ion-header>
 
   <ion-navbar color="primary">
-    <ion-input placeholder="Digite..." padding-left autofocus></ion-input>
+    <form class="list-form" [formGroup]="form">
+      <ion-input class="inp" placeholder="Digite..." padding-left autofocus formControlName="input"></ion-input>  
+      <button class="btt" ion-button icon-start block color="dark" tappable (click)="pesquisa()">
+        <ion-icon name="search"></ion-icon>
+        Pesquisar
+      </button>
+    </form>
   </ion-navbar>
 
 </ion-header>
@@ -10,14 +16,14 @@
 <ion-content>
   <div class="list-no-border">
     <!--nearby places-->
-    <ion-item *ngFor="let item of promotions.basket" tappable (click)="searchBy(item)">
+    <ion-item *ngFor="let item of promotions" tappable (click)="searchBy(item)">
       <div class="name">
         <span ion-text color="primary">{{ item.name }}</span>
       </div>
       <div>
         <table>
           <tr>
-            <th class="image"><img width="80" height="80" [src]=item.imgurl></th>
+            <th class="image"><img width="80" height="80" [src]=item.img_url></th>
             <th class="price">price: {{item.price}}</th>
           </tr>
         </table>

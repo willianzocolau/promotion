@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
-import {NavController, NavParams} from "ionic-angular";
-import {Storage} from '@ionic/storage';
-
-// import {SearchCarsPage} from "../search-cars/search-cars";
+import {NavController, NavParams, AlertController} from "ionic-angular";
+import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Token } from '../../providers/token';
 
 @Component({
   selector: 'page-search',
@@ -10,39 +10,50 @@ import {Storage} from '@ionic/storage';
 })
 
 export class SearchPage {
-  public fromto: any;
-  // places
-  public promotions = {
-    basket: [
-      {
-        id: 1,
-        name: "Imagem 1",
-        imgurl:"https://brandmark.io/logo-rank/random/bp.png", 
-        price: "10,99"
-      },
-      {
-        id: 2,
-        name: "Imagem 2",
-        imgurl:"https://brandmark.io/logo-rank/random/bp.png", 
-        price: "20,99"
-      },
-    ],
-  };
+  public form: FormGroup;
 
-  constructor(private storage: Storage, public nav: NavController, public navParams: NavParams) {
-    this.fromto = this.navParams.data;
+  public promotions = [];
+
+  constructor(public formBuilder: FormBuilder,
+              private httpClient: HttpClient,
+              public alertCtrl: AlertController,
+              public nav: NavController, 
+              public navParams: NavParams,
+              public token: Token) {
+    this.form = this.formBuilder.group({
+      input: ['', Validators.maxLength(50)],
+    });
+    let msg = this.alertCtrl.create({
+      message:  this.token.getToken()});
+    msg.present();
   }
 
   // search by item
   searchBy(item) {
-    if (this.fromto === 'from') {
-      this.storage.set('pickup', item.name);
-    }
+  }
 
-    if (this.fromto === 'to') {
-      this.storage.set('dropOff', item.name);
+  pesquisa(){
+    let headers = new HttpHeaders();
+    let input: string = this.form.get('input').value;
+    headers = headers.set('Content-Type', 'application/json');    
+    headers = headers.set("Authorization", "Bearer " + this.token.getToken());
+    let url = 'http://178.128.186.9/api/promotion/search/' + input;
+    while(this.promotions.length != 0){
+      this.promotions.pop();
     }
-    // this.nav.push(SearchCarsPage);
-    this.nav.pop();
+    const req = this.httpClient.get(url, {headers: headers}).subscribe(
+      res => {
+        let data : any[];
+        data = res as any[];
+        data.forEach(element => {
+          this.promotions.push({id:element.id, name:element.name, img_url:element.img_url, price:element.price});
+        });
+      },
+      err => {
+        let msg = this.alertCtrl.create({
+          message: "erro:" + err.error});
+        msg.present();
+      }
+    );
   }
 }

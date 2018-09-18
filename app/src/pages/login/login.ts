@@ -3,7 +3,8 @@ import {NavController, AlertController, ToastController, MenuController} from "i
 import {HomePage} from "../home/home";
 import {RegisterPage} from "../register/register";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Token } from "../../providers/token";
 
 @Component({
   selector: 'page-login',
@@ -19,7 +20,8 @@ export class LoginPage {
               public forgotCtrl: AlertController, 
               public menu: MenuController, 
               public toastCtrl: ToastController, 
-              private httpClient: HttpClient) {
+              private httpClient: HttpClient,
+              private token: Token) {
     this.form = this.formBuilder.group({
       email: ['', Validators.email],
       password: ['', Validators.required],
@@ -47,6 +49,7 @@ export class LoginPage {
         let erro = this.forgotCtrl.create({
           message:  this.data.token});
         erro.present();
+        this.token.setToken(this.data.token);
         this.nav.setRoot(HomePage);
       },
       err => {
