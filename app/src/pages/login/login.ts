@@ -5,6 +5,7 @@ import {RegisterPage} from "../register/register";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Token } from "../../providers/token";
+import { ServerStrings } from "../../providers/serverStrings";
 
 @Component({
   selector: 'page-login',
@@ -21,7 +22,9 @@ export class LoginPage {
               public menu: MenuController, 
               public toastCtrl: ToastController, 
               private httpClient: HttpClient,
-              private token: Token) {
+              private token: Token,
+              private server: ServerStrings
+              ) {
     this.form = this.formBuilder.group({
       email: ['', Validators.email],
       password: ['', Validators.required],
@@ -42,7 +45,8 @@ export class LoginPage {
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
     let body: string = "";
-    const req = this.httpClient.post('http://178.128.186.9/api/auth/login/', body, {headers: headers}).subscribe(
+    let url: string = this.server.api.auth.login;
+    const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
       res => {
         console.log("Sucesso");
         this.data = res;

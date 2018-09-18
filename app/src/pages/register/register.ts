@@ -5,6 +5,7 @@ import {HomePage} from "../home/home";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { ServerStrings } from '../../providers/serverStrings';
 
 @Component({
   selector: 'page-register',
@@ -17,7 +18,8 @@ export class RegisterPage {
   constructor(public nav: NavController
     , public formBuilder: FormBuilder
     , private alertCtrl: AlertController
-    , private httpClient: HttpClient ) {
+    , private httpClient: HttpClient 
+    , private server: ServerStrings) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       nickname: ['', Validators.required],
@@ -41,8 +43,8 @@ export class RegisterPage {
 
     //let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
     let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
-
-    const req = this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
+    let url: string = this.server.api.auth.register;
+    const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
         res => {
           console.log("Sucesso");
         },

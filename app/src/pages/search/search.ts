@@ -3,6 +3,7 @@ import {NavController, NavParams, AlertController} from "ionic-angular";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Token } from '../../providers/token';
+import { ServerStrings } from '../../providers/serverStrings';
 
 @Component({
   selector: 'page-search',
@@ -19,7 +20,8 @@ export class SearchPage {
               public alertCtrl: AlertController,
               public nav: NavController, 
               public navParams: NavParams,
-              public token: Token) {
+              public token: Token,
+              public server: ServerStrings) {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
     });
@@ -37,7 +39,7 @@ export class SearchPage {
     let input: string = this.form.get('input').value;
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Bearer " + this.token.getToken());
-    let url = 'http://178.128.186.9/api/promotion/search/' + input;
+    let url = this.server.api.promotion.search + input;
     while(this.promotions.length != 0){
       this.promotions.pop();
     }
