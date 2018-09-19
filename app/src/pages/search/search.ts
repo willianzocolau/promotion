@@ -48,7 +48,7 @@ export class SearchPage {
         let data : any[];
         data = res as any[];
         data.forEach(element => {
-          this.promotions.push({id:element.id, name:element.name, img_url:element.img_url, price:element.price});
+          this.promotions.push({id:element.id, name:element.name, image_url:element.image_url, price:element.price});
         });
       },
       err => {

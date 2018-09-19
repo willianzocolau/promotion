@@ -84,7 +84,7 @@ namespace PromotionApi.Controllers
             if (!promotions.Any())
                 return NotFound(new { error = "No promotion found" });
             else
-                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name }));
+                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price }));
         }
 
         // GET api/<controller>/{id}
@@ -103,6 +103,24 @@ namespace PromotionApi.Controllers
                 return NotFound("Promotion not found");
 
             return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate });
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.Include(x => x.State).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+            var promotions = new List<Promotion>();
+            promotions.AddRange(_context.Promotions.Where(x => x.UserFK == user.Id).Take(10).ToList());            
+            if (!promotions.Any())
+                return NotFound(new { error = "No promotion found" });
+            else
+                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price }));
         }
     }
 }
