@@ -7,6 +7,8 @@ import {IonicStorageModule} from '@ionic/storage';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import {Keyboard} from '@ionic-native/keyboard';
+import {Token} from '../providers/token';
+import {ServerStrings} from '../providers/serverStrings';
 
 import {MyApp} from "./app.component";
 
@@ -63,7 +65,9 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
   providers: [
     StatusBar,
     SplashScreen,
-    Keyboard
+    Keyboard,
+    Token,
+    ServerStrings
   ]
 })
 

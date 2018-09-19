@@ -4,7 +4,7 @@ import {LoginPage} from "../login/login";
 import {HomePage} from "../home/home";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'page-register',
@@ -31,19 +31,37 @@ export class RegisterPage {
   register() {
     let name: string = this.form.get('name').value;
     let nickname: string = this.form.get('nickname').value;
-    let cpf: string = this.form.get('cpf').value;
+    let cpf: string = this.form.get('cpf').value.replace('.', '');
+    cpf = cpf.replace('.', '');
+    cpf = cpf.replace('-', '');
     let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;
+    let c_password: string = this.form.get('confirm_password').value;
+
+    console.log(cpf);
+
+    if(password != c_password){
+      this.alertCtrl.create({title: 'Senhas não conferem!',buttons: ['Ok']}).present();
+      return;
+    }
 
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
 
-    //let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
-    let body: string = '{"name": "Teste","nickname": "Teste2123","cpf": "01234567890"}';
+    var body = 
+    {
+        "name": name,
+        "nickname": nickname,
+        "cpf": cpf,
+        "email": email,
+        "password": password
+    };
 
-    const req = this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
+    this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
         res => {
+          this.nav.setRoot(LoginPage);
+          this.alertCtrl.create({title: 'Cadastro criado com sucesso!',buttons: ['Ok']}).present();
           console.log("Sucesso");
         },
         err => {
