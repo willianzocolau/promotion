@@ -18,10 +18,10 @@ namespace PromotionApi
         //Pelo menos 1 caracter maiúsculo, 1 minúsculo e 1 número, de 6 até 25 caracteres
         internal static readonly Regex _regexPassword = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[\\w#?!@$%^&*-]{6,25}$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
 
-        private static string EmailDomain   { get; } = "smtp.live.com";
+        private static string EmailDomain   { get; } = "smtp.gmail.com";
         private static int    EmailPort     { get; } = 587;
-        private static string EmailUsername { get; } = "prmtn@outlook.com";
-        private static string EmailPassword { get; } = "Pr0M0tiOnP44ssSS";
+        private static string EmailUsername { get; } = "promotion.suporte@gmail.com";
+        private static string EmailPassword { get; } = "<Uiop}+hjkl)";
 
         private static Random _random = new Random();
 
@@ -53,6 +53,7 @@ namespace PromotionApi
 
         internal static async Task SendEmailAsync(string email, string subject, string message)
         {
+            //TODO: Test email
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(EmailUsername, "Promotion");
             mail.To.Add(new MailAddress(email));

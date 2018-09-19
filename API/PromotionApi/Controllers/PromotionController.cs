@@ -24,8 +24,46 @@ namespace PromotionApi.Controllers
             _context = context;
         }
 
-        // GET api/<controller>/register
-        [HttpGet("register")]
+        // GET api/<controller>
+        [HttpGet]
+        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 50, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null)
+        {
+            //TODO: Add price (<x, >x, x-y), add name?
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            if (limit < 0 || limit > 100)
+                return BadRequest(new { error = "Invalid limit" });
+
+            IQueryable<Promotion> promotionQuery = _context.Promotions;
+
+            if (afterId != null)
+                promotionQuery = promotionQuery.Where(x => x.Id > afterId.Value);
+
+            if (userId != null)
+                promotionQuery = promotionQuery.Where(x => x.UserFK == userId.Value);
+
+            if (storeId != null)
+                promotionQuery = promotionQuery.Where(x => x.StoreFK == storeId.Value);
+
+            if (stateId != null)
+                promotionQuery = promotionQuery.Where(x => x.StateFK == stateId.Value);
+
+            List<Promotion> promotions = await promotionQuery.Take(limit).ToListAsync();
+
+            if (!promotions.Any())
+                return NotFound(new { error = "No promotion found" });
+            else
+                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price, user_id = x.UserFK, store_id = x.StoreFK, state_id = x.StateFK }));
+        }
+
+        // POST api/<controller>/register
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromHeader] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
@@ -43,6 +81,19 @@ namespace PromotionApi.Controllers
             RegisterPromotionBody promotionData = JsonConvert.DeserializeObject<RegisterPromotionBody>(body);
             if (promotionData == null)
                 return BadRequest(new { error = "Invalid json" });
+
+            if (string.IsNullOrWhiteSpace(promotionData.Name))
+                return BadRequest(new { error = "Invalid name" });
+            if (promotionData.Price <= 0)
+                return BadRequest(new { error = "Invalid price" });
+            if (string.IsNullOrWhiteSpace(promotionData.ImageUrl))
+                return BadRequest(new { error = "Invalid image url" });
+            //TODO: Add expire_date
+            //TODO: Uncomment following section
+            /*if (!await _context.States.AnyAsync(x => x.Id == promotionData.StateFK))
+                return BadRequest(new { error = "Invalid state id" });
+            if (!await _context.Stores.AnyAsync(x => x.Id == promotionData.StoreFK))
+                return BadRequest(new { error = "Invalid state id" });*/
 
             _context.Promotions.Add(new Promotion
             {
@@ -103,24 +154,6 @@ namespace PromotionApi.Controllers
                 return NotFound("Promotion not found");
 
             return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate });
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization)
-        {
-            var validation = Token.ValidateAuthorization(authorization);
-            if (!validation.IsValid)
-                return validation.Result;
-
-            var user = await _context.Users.Include(x => x.State).FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null)
-                return Unauthorized();
-            var promotions = new List<Promotion>();
-            promotions.AddRange(_context.Promotions.Where(x => x.UserFK == user.Id).Take(10).ToList());            
-            if (!promotions.Any())
-                return NotFound(new { error = "No promotion found" });
-            else
-                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price }));
         }
     }
 }

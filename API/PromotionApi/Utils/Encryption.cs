@@ -2,6 +2,7 @@
 {
     internal static class Encryption
     {
+        //TODO: Implement
         internal static string Encrypt(string str)
         {
             if (string.IsNullOrWhiteSpace(str))
