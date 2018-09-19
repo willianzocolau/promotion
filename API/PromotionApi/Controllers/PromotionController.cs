@@ -26,7 +26,7 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 50, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null)
+        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null)
         {
             //TODO: Add price (<x, >x, x-y), add name?
             var validation = Token.ValidateAuthorization(authorization);
