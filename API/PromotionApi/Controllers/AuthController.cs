@@ -5,8 +5,6 @@ using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 

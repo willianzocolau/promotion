@@ -54,7 +54,7 @@ namespace PromotionApi
         internal static async Task SendEmailAsync(string email, string subject, string message)
         {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("promotion@gmail.com", "Promotion");
+            mail.From = new MailAddress(EmailUsername, "Promotion");
             mail.To.Add(new MailAddress(email));
             mail.Subject = subject;
             mail.Body = message;
