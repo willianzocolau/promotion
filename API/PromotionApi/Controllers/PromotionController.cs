@@ -156,5 +156,27 @@ namespace PromotionApi.Controllers
 
             return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate, active = promotion.Active });
         }
+
+        // DELETE api/<controller>/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromHeader] string authorization, [FromRoute] long id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null || user.Type < UserType.Moderator)
+                return Unauthorized();
+
+            var promotion = await _context.Promotions.FindAsync(id);
+            if (promotion == null)
+                return NotFound("Promotion not found");
+
+            _context.Promotions.Remove(promotion);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
