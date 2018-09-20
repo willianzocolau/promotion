@@ -40,7 +40,7 @@ namespace PromotionApi.Controllers
             if (limit < 0 || limit > 100)
                 return BadRequest(new { error = "Invalid limit" });
 
-            IQueryable<Promotion> promotionQuery = _context.Promotions;
+            IQueryable<Promotion> promotionQuery = _context.Promotions.Where(x => x.Active);
 
             if (afterId != null)
                 promotionQuery = promotionQuery.Where(x => x.Id > afterId.Value);
@@ -101,6 +101,7 @@ namespace PromotionApi.Controllers
                 Price = promotionData.Price,
                 RegisterDate = DateTimeOffset.UtcNow,
                 ExpireDate = DateTimeOffset.UtcNow.AddDays(7),
+                Active = true,
                 ImageUrl = promotionData.ImageUrl,
                 StoreFK = promotionData.StoreFK,
                 UserFK = user.Id,
@@ -123,14 +124,14 @@ namespace PromotionApi.Controllers
                 return Unauthorized();
 
             var promotions = new List<Promotion>();
-            var equalPromotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            var equalPromotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Active && x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
             if (equalPromotion != null)
             {
                 promotions.Add(equalPromotion);
-                promotions.AddRange(_context.Promotions.Where(x => x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalPromotion.Id).Take(9).ToList());
+                promotions.AddRange(_context.Promotions.Where(x => x.Active && x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalPromotion.Id).Take(9).ToList());
             }
             else
-                promotions.AddRange(_context.Promotions.Where(x => x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
+                promotions.AddRange(_context.Promotions.Where(x => x.Active && x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
             
             if (!promotions.Any())
                 return NotFound(new { error = "No promotion found" });
@@ -153,7 +154,7 @@ namespace PromotionApi.Controllers
             if (promotion == null)
                 return NotFound("Promotion not found");
 
-            return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate });
+            return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate, active = promotion.Active });
         }
     }
 }
