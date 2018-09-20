@@ -84,7 +84,7 @@ namespace PromotionApi.Controllers
         }
 
         // GET api/<controller>/edit
-        [HttpGet("edit")]
+        [HttpPatch("edit")]
         public async Task<IActionResult> EditAsync([FromHeader] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
