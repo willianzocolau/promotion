@@ -24,6 +24,7 @@ namespace PromotionApi
         private static string EmailPassword { get; } = "<Uiop}+hjkl)";
 
         private static Random _random = new Random();
+        private static object _randomLock = new object();
 
         internal static bool IsValidNickname(string nickname)
             => nickname == null ? false : _regexNickname.IsMatch(nickname);
@@ -71,8 +72,13 @@ namespace PromotionApi
         }
 
         internal static int Random(int minValue, int maxValue)
-            => _random.Next(minValue, maxValue);
+        {
+            lock (_randomLock)
+            {
+                return _random.Next(minValue, maxValue);
+            }
+        }
         internal static int Random(int maxValue)
-            => _random.Next(0, maxValue);
+            => Random(0, maxValue);
     }
 }
