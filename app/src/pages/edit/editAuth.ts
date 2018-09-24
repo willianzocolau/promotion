@@ -6,6 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {NotificationsPage} from "../notifications/notifications";
 import {SettingsPage} from "../settings/settings";
 import {EditPage} from "../edit/edit";
+import { UserData } from "../../providers/userData";
+import { ServerStrings } from "../../providers/serverStrings";
 
 @Component({
     selector: 'page-editAuth',
@@ -21,16 +23,16 @@ import {EditPage} from "../edit/edit";
                 public alertCtrl: AlertController, 
                 public menu: MenuController,
                 public popoverCtrl: PopoverController,  
-                /*private httpClient: HttpClient,
-                private token: Token,
-                private server: ServerStrings*/
+                private httpClient: HttpClient,
+                private user: UserData,
+                private server: ServerStrings
                 ) {
         this.menu.swipeEnable(false);
         this.form = this.formBuilder.group({
             password: ['', Validators.required],
         });
     }
-    confirm(){ 
+    confirm(){
         this.nav.push(EditPage);
     }
 

@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {NavController, NavParams, AlertController} from "ionic-angular";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Token } from '../../providers/token';
+import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
 
 @Component({
@@ -20,14 +20,14 @@ export class SearchPage {
               public alertCtrl: AlertController,
               public nav: NavController, 
               public navParams: NavParams,
-              public token: Token,
+              public user: UserData,
               public server: ServerStrings) {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
     });
-    /*let msg = this.alertCtrl.create({
-      message:  this.token.getToken()});
-    msg.present();*/
+    let msg = this.alertCtrl.create({
+      message:  this.user.getToken() + " " + this.user.getEmail()});
+    msg.present();
   }
 
   // search by item
@@ -38,7 +38,7 @@ export class SearchPage {
     let headers = new HttpHeaders();
     let input: string = this.form.get('input').value;
     headers = headers.set('Content-Type', 'application/json');    
-    headers = headers.set("Authorization", "Bearer " + this.token.getToken());
+    headers = headers.set("Authorization", "Bearer " + this.user.getToken());
     let url = this.server.promotionSearch(input);
     while(this.promotions.length != 0){
       this.promotions.pop();
