@@ -45,14 +45,11 @@ export class LoginPage {
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
     let body: string = "";
-    let url: string = this.server.api.auth.login;
+    let url: string = this.server.auth("login");
     const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
       res => {
         console.log("Sucesso");
         this.data = res;
-        let erro = this.forgotCtrl.create({
-          message:  this.data.token});
-        erro.present();
         this.token.setToken(this.data.token);
         this.nav.setRoot(HomePage);
       },

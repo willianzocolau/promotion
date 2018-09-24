@@ -2,6 +2,9 @@
 <ion-header>
 
   <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <form class="list-form" [formGroup]="form">
       <ion-input class="inp" placeholder="Digite..." padding-left autofocus formControlName="input"></ion-input>  
       <button class="btt" ion-button icon-start block color="dark" tappable (click)="pesquisa()">

@@ -18,6 +18,8 @@ import {LoginPage} from "../pages/login/login";
 import {NotificationsPage} from "../pages/notifications/notifications";
 import {RegisterPage} from "../pages/register/register";
 import { SearchPage } from "../pages/search/search";
+import { EditPage } from "../pages/edit/edit";
+import { EditAuthPage } from "../pages/edit/editAuth";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 
@@ -37,6 +39,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     NotificationsPage,
     RegisterPage,
     SearchPage,
+    EditPage,
+    EditAuthPage,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +65,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     NotificationsPage,
     RegisterPage,
     SearchPage,
+    EditPage,
+    EditAuthPage,
   ],
   providers: [
     StatusBar,

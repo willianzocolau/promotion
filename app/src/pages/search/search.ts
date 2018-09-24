@@ -25,9 +25,9 @@ export class SearchPage {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
     });
-    let msg = this.alertCtrl.create({
+    /*let msg = this.alertCtrl.create({
       message:  this.token.getToken()});
-    msg.present();
+    msg.present();*/
   }
 
   // search by item
