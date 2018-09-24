@@ -11,6 +11,7 @@ namespace PromotionApi.Models
         [MaxLength(45)]
         public string Name { get; set; }
         public double Price {get; set; }
+        public bool Active { get; set; }
         public double? CashbackPercentage {get; set; }
         public DateTimeOffset RegisterDate { get; set; }
         public DateTimeOffset ExpireDate { get; set; }

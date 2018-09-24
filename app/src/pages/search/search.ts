@@ -39,7 +39,7 @@ export class SearchPage {
     let input: string = this.form.get('input').value;
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Bearer " + this.token.getToken());
-    let url = this.server.api.promotion.search + input;
+    let url = this.server.promotionSearch(input);
     while(this.promotions.length != 0){
       this.promotions.pop();
     }
