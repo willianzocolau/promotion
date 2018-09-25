@@ -5,6 +5,7 @@ import {HomePage} from "../home/home";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ServerStrings } from "../../providers/serverStrings";
 
 @Component({
   selector: 'page-register',
@@ -17,7 +18,8 @@ export class RegisterPage {
   constructor(public nav: NavController
     , public formBuilder: FormBuilder
     , private alertCtrl: AlertController
-    , private httpClient: HttpClient ) {
+    , private httpClient: HttpClient
+    , private server: ServerStrings ) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       nickname: ['', Validators.required],
@@ -37,6 +39,7 @@ export class RegisterPage {
     let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;
     let c_password: string = this.form.get('confirm_password').value;
+    let url: string = this.server.auth("register");
 
     console.log(cpf);
 
@@ -58,7 +61,7 @@ export class RegisterPage {
         "password": password
     };
 
-    this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
+    this.httpClient.post(url, body, {headers: headers}).subscribe(
         res => {
           this.nav.setRoot(LoginPage);
           this.alertCtrl.create({title: 'Cadastro criado com sucesso!',buttons: ['Ok']}).present();
