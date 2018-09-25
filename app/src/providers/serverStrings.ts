@@ -25,6 +25,9 @@ export class ServerStrings{
     userId(id: number){
         return this.user() + id;
     }
+    userEdit(){
+        return this.user() + "edit/";
+    }
     // promotionControler
     promotion(){
         return this.url + "api/promotion/";
