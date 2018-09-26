@@ -83,7 +83,7 @@ namespace PromotionApi.Controllers
             return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type });
         }
 
-        // GET api/<controller>/edit
+        // PATCH api/<controller>/edit
         [HttpPatch("edit")]
         public async Task<IActionResult> EditAsync([FromHeader] string authorization)
         {
