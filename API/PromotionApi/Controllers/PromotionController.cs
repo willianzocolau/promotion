@@ -26,7 +26,7 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null)
+        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null, [FromQuery] int? priceLessThan = null, [FromQuery] int? priceGreaterThan = null, [FromQuery] string name = null)
         {
             //TODO: Add price (<x, >x, x-y), add name?
             var validation = Token.ValidateAuthorization(authorization);
@@ -53,6 +53,15 @@ namespace PromotionApi.Controllers
 
             if (stateId != null)
                 promotionQuery = promotionQuery.Where(x => x.StateFK == stateId.Value);
+
+            if (priceLessThan != null)
+                promotionQuery = promotionQuery.Where(x => x.Price < priceLessThan.Value);
+
+            if (priceGreaterThan != null)
+                promotionQuery = promotionQuery.Where(x => x.Price > priceGreaterThan.Value);
+
+            if (name != null)
+                promotionQuery = promotionQuery.Where(x => EF.Functions.ILike(x.Name, $"%{x.Name}%")); //TODO: Testar
 
             List<Promotion> promotions = await promotionQuery.Take(limit).ToListAsync();
 
@@ -110,33 +119,6 @@ namespace PromotionApi.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        }
-
-        // GET: api/<controller>/search/{name}
-        [HttpGet("search/{name}")]
-        public async Task<IActionResult> SearchAsync([FromHeader] string authorization, [FromRoute] string name)
-        {
-            var validation = Token.ValidateAuthorization(authorization);
-            if (!validation.IsValid)
-                return validation.Result;
-
-            if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
-                return Unauthorized();
-
-            var promotions = new List<Promotion>();
-            var equalPromotion = await _context.Promotions.FirstOrDefaultAsync(x => x.Active && x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (equalPromotion != null)
-            {
-                promotions.Add(equalPromotion);
-                promotions.AddRange(_context.Promotions.Where(x => x.Active && x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalPromotion.Id).Take(9).ToList());
-            }
-            else
-                promotions.AddRange(_context.Promotions.Where(x => x.Active && x.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
-            
-            if (!promotions.Any())
-                return NotFound(new { error = "No promotion found" });
-            else
-                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price }));
         }
 
         // GET api/<controller>/{id}
