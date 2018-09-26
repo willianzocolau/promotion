@@ -78,7 +78,7 @@ namespace PromotionApi.Controllers
 
             var user = await _context.Users.FindAsync(id);
             if (user == null)
-                return NotFound("User not found");
+                return NotFound(new { error = "User not found" });
 
             return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type });
         }
