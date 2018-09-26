@@ -37,7 +37,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            if (limit < 0 || limit > 100)
+            if (limit < 1 || limit > 100)
                 return BadRequest(new { error = "Invalid limit" });
 
             IQueryable<Promotion> promotionQuery = _context.Promotions.Where(x => x.Active);

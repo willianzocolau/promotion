@@ -129,7 +129,7 @@ namespace PromotionApi.Controllers
                 user.Token = token;
                 await _context.SaveChangesAsync();
 
-                return Ok(new { id = user.Id, token });
+                return Ok(new { id = user.Id, token, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name, state = user.StateFK });
             }
 
             return BadRequest(new { error = "Invalid authorization" });

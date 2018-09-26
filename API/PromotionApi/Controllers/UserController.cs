@@ -36,7 +36,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name, state = (user.StateFK == null ? null : new { id = user.StateFK, name = user.State?.Name }) });
+            return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name, state = user.StateFK });
         }
 
         // GET api/<controller>/search/{nickname}
