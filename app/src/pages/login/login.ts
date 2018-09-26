@@ -4,7 +4,7 @@ import {HomePage} from "../home/home";
 import {RegisterPage} from "../register/register";
 import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Token } from "../../providers/token";
+import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
 
 @Component({
@@ -22,7 +22,7 @@ export class LoginPage {
               public menu: MenuController, 
               public toastCtrl: ToastController, 
               private httpClient: HttpClient,
-              private token: Token,
+              private user: UserData,
               private server: ServerStrings
               ) {
     this.form = this.formBuilder.group({
@@ -45,15 +45,13 @@ export class LoginPage {
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
     let body: string = "";
-    let url: string = this.server.api.auth.login;
+    let url: string = this.server.auth("login");
     const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
       res => {
         console.log("Sucesso");
         this.data = res;
-        let erro = this.forgotCtrl.create({
-          message:  this.data.token});
-        erro.present();
-        this.token.setToken(this.data.token);
+        this.user.setToken(this.data.token);
+        this.user.setEmail(email);
         this.nav.setRoot(HomePage);
       },
       err => {
