@@ -5,4 +5,4 @@ Exemplo no PowerShell: `$env:ASPNETCORE_ENVIRONMENT = 'Production'`
 
 # Comandos
 - Criar migration: `dotnet ef migrations add <Nome> -v`
-- Criar script: `dotnet ef migrations scripts -o Scripts/<Nome>.sql -v`
+- Criar script: `dotnet ef migrations script -o Scripts/<Nome>.sql -v`

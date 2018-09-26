@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace PromotionApi.Migrations
 {
-    public partial class PromotionDb : Migration
+    public partial class PromotionDb1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,8 @@ namespace PromotionApi.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 45, nullable: true),
-                    RegisterDate = table.Column<DateTimeOffset>(nullable: false)
+                    RegisterDate = table.Column<DateTimeOffset>(nullable: false),
+                    Token = table.Column<string>(maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,6 +45,7 @@ namespace PromotionApi.Migrations
                     Name = table.Column<string>(maxLength: 150, nullable: true),
                     Email = table.Column<string>(maxLength: 255, nullable: true),
                     Password = table.Column<string>(maxLength: 64, nullable: true),
+                    PasswordSalt = table.Column<string>(maxLength: 64, nullable: true),
                     Type = table.Column<int>(nullable: false),
                     RegisterDate = table.Column<DateTimeOffset>(nullable: false),
                     Cpf = table.Column<string>(maxLength: 11, nullable: true),
@@ -66,6 +68,28 @@ namespace PromotionApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ForgotPasswordRequests",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Ip = table.Column<string>(maxLength: 45, nullable: true),
+                    Code = table.Column<string>(maxLength: 6, nullable: true),
+                    RequestDate = table.Column<DateTimeOffset>(nullable: false),
+                    UserFK = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForgotPasswordRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForgotPasswordRequests_Users_UserFK",
+                        column: x => x.UserFK,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Promotions",
                 columns: table => new
                 {
@@ -73,6 +97,8 @@ namespace PromotionApi.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 45, nullable: true),
                     Price = table.Column<double>(nullable: false),
+                    Active = table.Column<bool>(nullable: false),
+                    CashbackPercentage = table.Column<double>(nullable: true),
                     RegisterDate = table.Column<DateTimeOffset>(nullable: false),
                     ExpireDate = table.Column<DateTimeOffset>(nullable: false),
                     ImageUrl = table.Column<string>(maxLength: 150, nullable: true),
@@ -97,6 +123,40 @@ namespace PromotionApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Promotions_Users_UserFK",
+                        column: x => x.UserFK,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Date = table.Column<DateTimeOffset>(nullable: false),
+                    ApprovedByUserFK = table.Column<long>(nullable: true),
+                    UserFK = table.Column<long>(nullable: false),
+                    PromotionFK = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_ApprovedByUserFK",
+                        column: x => x.ApprovedByUserFK,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Promotions_PromotionFK",
+                        column: x => x.PromotionFK,
+                        principalTable: "Promotions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserFK",
                         column: x => x.UserFK,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -138,6 +198,26 @@ namespace PromotionApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForgotPasswordRequests_UserFK",
+                table: "ForgotPasswordRequests",
+                column: "UserFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ApprovedByUserFK",
+                table: "Orders",
+                column: "ApprovedByUserFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_PromotionFK",
+                table: "Orders",
+                column: "PromotionFK");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserFK",
+                table: "Orders",
+                column: "UserFK");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Promotions_StateFK",
                 table: "Promotions",
                 column: "StateFK");
@@ -160,6 +240,12 @@ namespace PromotionApi.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ForgotPasswordRequests");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
             migrationBuilder.DropTable(
                 name: "Promotions");
 

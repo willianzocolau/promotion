@@ -166,12 +166,15 @@ namespace PromotionApi.Controllers
                 return validation.Result;
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null || user.Type < UserType.Moderator)
+            if (user == null)
                 return Unauthorized();
 
             var promotion = await _context.Promotions.FindAsync(id);
             if (promotion == null)
                 return NotFound("Promotion not found");
+
+            if (promotion.UserFK != user.Id && !Utils.CanDeletePromotion(user.Type))
+                return Unauthorized();
 
             _context.Promotions.Remove(promotion);
             await _context.SaveChangesAsync();

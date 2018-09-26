@@ -10,21 +10,71 @@ using PromotionApi.Data;
 namespace PromotionApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20180911194013_PromotionDb")]
-    partial class PromotionDb
+    [Migration("20180926191140_PromotionDb1")]
+    partial class PromotionDb1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("PromotionApi.Models.ForgotPasswordRequest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(6);
+
+                    b.Property<string>("Ip")
+                        .HasMaxLength(45);
+
+                    b.Property<DateTimeOffset>("RequestDate");
+
+                    b.Property<long>("UserFK");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserFK");
+
+                    b.ToTable("ForgotPasswordRequests");
+                });
+
+            modelBuilder.Entity("PromotionApi.Models.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("ApprovedByUserFK");
+
+                    b.Property<DateTimeOffset>("Date");
+
+                    b.Property<long>("PromotionFK");
+
+                    b.Property<long>("UserFK");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedByUserFK");
+
+                    b.HasIndex("PromotionFK");
+
+                    b.HasIndex("UserFK");
+
+                    b.ToTable("Orders");
+                });
 
             modelBuilder.Entity("PromotionApi.Models.Promotion", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Active");
+
+                    b.Property<double?>("CashbackPercentage");
 
                     b.Property<DateTimeOffset>("ExpireDate");
 
@@ -107,6 +157,9 @@ namespace PromotionApi.Migrations
 
                     b.Property<DateTimeOffset>("RegisterDate");
 
+                    b.Property<string>("Token")
+                        .HasMaxLength(64);
+
                     b.HasKey("Id");
 
                     b.ToTable("Stores");
@@ -140,6 +193,9 @@ namespace PromotionApi.Migrations
                     b.Property<string>("Password")
                         .HasMaxLength(64);
 
+                    b.Property<string>("PasswordSalt")
+                        .HasMaxLength(64);
+
                     b.Property<DateTimeOffset>("RegisterDate");
 
                     b.Property<long?>("StateFK");
@@ -157,6 +213,31 @@ namespace PromotionApi.Migrations
                     b.HasIndex("StateFK");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PromotionApi.Models.ForgotPasswordRequest", b =>
+                {
+                    b.HasOne("PromotionApi.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("PromotionApi.Models.Order", b =>
+                {
+                    b.HasOne("PromotionApi.Models.User", "ApprovedByUser")
+                        .WithMany()
+                        .HasForeignKey("ApprovedByUserFK");
+
+                    b.HasOne("PromotionApi.Models.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionFK")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PromotionApi.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserFK")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PromotionApi.Models.Promotion", b =>

@@ -1,4 +1,4 @@
-﻿#define TEMP_DB
+﻿//#define TEMP_DB
 
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;

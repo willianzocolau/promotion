@@ -33,7 +33,7 @@ namespace PromotionApi.Controllers
                 return validation.Result;
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null || user.Type < UserType.Moderator)
+            if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
             if (limit < 0 || limit > 100)
@@ -122,17 +122,22 @@ namespace PromotionApi.Controllers
                 return validation.Result;
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null || user.Type < UserType.Moderator)
+            if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.FindAsync(id);
+            Order order = await _context.Orders.Include(x => x.Promotion).Include(x => x.User).Include(x => x.Promotion.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return BadRequest("Invalid order");
 
             if (order.ApprovedByUserFK != null)
                 return BadRequest("Order already approved");
 
-            //TODO: Give cashback
+            if (!order.Promotion.CashbackPercentage.HasValue)
+                return BadRequest("Promotion linked to this order has no cashback percentage");
+
+            double totalCashback = order.Promotion.Price * order.Promotion.CashbackPercentage.Value;
+            order.User.Credit += Utils.GetBuyerCashback(totalCashback);
+            order.Promotion.User.Credit += Utils.GetSellerCashback(totalCashback);
 
             order.ApprovedByUserFK = user.Id;
             await _context.SaveChangesAsync();
@@ -149,19 +154,46 @@ namespace PromotionApi.Controllers
                 return validation.Result;
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null || user.Type < UserType.Moderator)
+            if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.FindAsync(id);
+            Order order = await _context.Orders.Include(x => x.Promotion).Include(x => x.User).Include(x => x.Promotion.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return BadRequest("Invalid order");
 
             if (order.ApprovedByUserFK == null)
                 return BadRequest("Order isn't approved");
 
-            //TODO: Remove cashback
+            double totalCashback = order.Promotion.Price * order.Promotion.CashbackPercentage.Value;
+            order.User.Credit -= Utils.GetBuyerCashback(totalCashback);
+            order.Promotion.User.Credit -= Utils.GetSellerCashback(totalCashback);
 
             order.ApprovedByUserFK = null;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DELETE api/<controller>/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromHeader] string authorization, [FromRoute] long id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+                return NotFound("Order not found");
+
+            if (!Utils.CanAdministrateOrders(user.Type))
+                return Unauthorized();
+
+            _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
 
             return Ok();
