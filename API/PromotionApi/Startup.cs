@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionApi.Data;
@@ -26,12 +27,11 @@ namespace PromotionApi
         {
             if (HostingEnvironment.IsDevelopment())
             {
-                services.AddDbContext<DatabaseContext>(options =>
-                   options.UseInMemoryDatabase("TempDb"));
+                services.AddDbContext<DatabaseContext>(options => options.ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning)).UseInMemoryDatabase("TempDb"));
             }
             else
             {
-                services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(options => options.ConfigureWarnings(x => x.Throw(RelationalEventId.QueryClientEvaluationWarning)).UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             }
 
             services.AddOptions();
