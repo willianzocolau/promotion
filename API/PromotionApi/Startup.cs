@@ -88,13 +88,14 @@ namespace PromotionApi
 #else
             if (HostingEnvironment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
                 app.UseHttpsRedirection();
                 context.Database.EnsureCreated();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.ConfigureExceptionHandler();
                 app.UseHsts();
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
