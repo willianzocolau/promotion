@@ -1,6 +1,4 @@
-﻿//#define TEMP_DB
-
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -9,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PromotionApi.Data;
-using PromotionApi.Models;
 
 namespace PromotionApi
 {
@@ -27,24 +24,15 @@ namespace PromotionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-#if TEMP_DB
-            services.AddDbContext<DatabaseContext>(options =>
-                   options.UseInMemoryDatabase("TempDb"));
-#else
             if (HostingEnvironment.IsDevelopment())
             {
-
                 services.AddDbContext<DatabaseContext>(options =>
                    options.UseInMemoryDatabase("TempDb"));
             }
             else
             {
-                services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(
-                        options => options.UseNpgsql(
-                            Configuration.GetConnectionString("DefaultConnection")));
+                services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             }
-#endif
 
             services.AddOptions();
 
@@ -68,7 +56,6 @@ namespace PromotionApi
         {
             app.UseIpRateLimiting();
 
-#if TEMP_DB
             if (HostingEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -78,31 +65,14 @@ namespace PromotionApi
             }
             else
             {
-                context.Database.EnsureCreated();
                 app.UseHsts();
                 app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
                 });
             }
-#else
-            if (HostingEnvironment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseHttpsRedirection();
-                context.Database.EnsureCreated();
-            }
-            else
-            {
-                app.ConfigureExceptionHandler();
-                app.UseHsts();
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                });
-            }
-#endif
+
+            app.ConfigureExceptionHandler();
 
             //app.UseStaticFiles();
 
