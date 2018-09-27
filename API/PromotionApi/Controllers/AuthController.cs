@@ -39,7 +39,7 @@ namespace PromotionApi.Controllers
                     return BadRequest(new { error = "Invalid authorization" });
 
                 string[] splitString = decodedString.Split(':', 2);
-                string email = splitString[0];
+                string email = splitString[0].ToUpperInvariant();
                 string password = Encryption.Decrypt(splitString[1]);
 
                 string body;
@@ -61,11 +61,11 @@ namespace PromotionApi.Controllers
                 if (!Utils.IsValidCpf(userData.Cpf))
                     return BadRequest(new { error = "Invalid cpf" });
 
-                bool alreadyUsedEmail = await _context.Users.AnyAsync(x => x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase));
+                bool alreadyUsedEmail = await _context.Users.AnyAsync(x => x.Email == email);
                 if (alreadyUsedEmail)
                     return BadRequest(new { error = "Already used email" });
 
-                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => x.Nickname.Equals(userData.Nickname, StringComparison.InvariantCultureIgnoreCase));
+                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => EF.Functions.ILike(userData.Nickname, x.Nickname));
                 if (alreadyUsedNickname)
                     return BadRequest(new { error = "Already used nickname" });
 
@@ -113,7 +113,7 @@ namespace PromotionApi.Controllers
                     return BadRequest(new { error = "Invalid authorization" });
 
                 string[] splitString = decodedString.Split(':', 2);
-                string email = splitString[0];
+                string email = splitString[0].ToUpperInvariant();
 
                 User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
 
@@ -190,7 +190,7 @@ namespace PromotionApi.Controllers
             if (!Utils.IsValidEmail(data.Email))
                 return BadRequest(new { error = "Invalid email" });
 
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(data.Email, StringComparison.InvariantCultureIgnoreCase));
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == data.Email.ToUpperInvariant());
             if (user == null)
                 return NotFound(new { error = "Email not found" });
 

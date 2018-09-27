@@ -51,14 +51,14 @@ namespace PromotionApi.Controllers
                 return Unauthorized();
 
             var users = new List<User>();
-            var equalUser = await _context.Users.FirstOrDefaultAsync(x => x.Nickname.Equals(nickname, StringComparison.InvariantCultureIgnoreCase));
+            var equalUser = await _context.Users.FirstOrDefaultAsync(x => EF.Functions.ILike(x.Nickname, $"{nickname}"));
             if (equalUser != null)
             {
                 users.Add(equalUser);
-                users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase) && x.Id != equalUser.Id).Take(9).ToList());
+                users.AddRange(_context.Users.Where(x => x.Id != equalUser.Id && EF.Functions.ILike(x.Nickname, $"%{nickname}%")).Take(9).ToList());
             }
             else
-                users.AddRange(_context.Users.Where(x => x.Nickname.Contains(nickname, StringComparison.InvariantCultureIgnoreCase)).Take(10).ToList());
+                users.AddRange(_context.Users.Where(x => EF.Functions.ILike(x.Nickname, $"%{nickname}%")).Take(10).ToList());
             if (!users.Any())
                 return NotFound(new { error = "No users found" });
             else
@@ -142,7 +142,7 @@ namespace PromotionApi.Controllers
             {
                 if (!Utils.IsValidNickname(data.Nickname))
                     return BadRequest(new { error = "Invalid nickname" });
-                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => x.Nickname.Equals(data.Nickname, StringComparison.InvariantCultureIgnoreCase));
+                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => EF.Functions.ILike(x.Nickname, data.Nickname));
                 if (alreadyUsedNickname)
                     return BadRequest(new { error = "Already used nickname" });
                 user.Nickname = data.Nickname;
