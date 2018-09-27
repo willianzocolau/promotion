@@ -66,7 +66,7 @@ namespace PromotionApi.Controllers
             if (!orders.Any())
                 return NotFound(new { error = "No promotion found" });
             else
-                return Ok(orders.Select(x => new { id = x.Id, date = x.Date, approved_by = x.ApprovedByUserFK, user_id = x.UserFK, promotion_id = x.PromotionFK }));
+                return Ok(orders.Select(x => new { id = x.Id, date = x.RegisterDate, approved_by = x.ApprovedByUserFK, user_id = x.UserFK, promotion_id = x.PromotionFK }));
         }
 
         // POST api/<controller>
@@ -102,7 +102,7 @@ namespace PromotionApi.Controllers
 
             _context.Orders.Add(new Order
             {
-                Date = DateTimeOffset.UtcNow,
+                RegisterDate = DateTimeOffset.UtcNow,
                 ApprovedByUserFK = null,
                 PromotionFK = data.PromotionId,
                 UserFK = data.UserId

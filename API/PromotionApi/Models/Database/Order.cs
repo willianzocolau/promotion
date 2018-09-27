@@ -8,7 +8,7 @@ namespace PromotionApi.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
-        public DateTimeOffset Date { get; set; }
+        public DateTimeOffset RegisterDate { get; set; }
         [ForeignKey("ApprovedByUserFK")]
         public User ApprovedByUser { get; set; }
         public long? ApprovedByUserFK { get; set; }

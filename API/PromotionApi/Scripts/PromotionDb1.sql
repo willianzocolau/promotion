@@ -4,151 +4,151 @@
     CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
 );
 
-CREATE TABLE "States" (
-    "Id" bigint NOT NULL,
-    "Name" character varying(45) NULL,
-    CONSTRAINT "PK_States" PRIMARY KEY ("Id")
+CREATE TABLE states (
+    id bigint NOT NULL,
+    name character varying(45) NULL,
+    CONSTRAINT pk_states PRIMARY KEY (id)
 );
 
-CREATE TABLE "Stores" (
-    "Id" bigserial NOT NULL,
-    "Name" character varying(45) NULL,
-    "RegisterDate" timestamp with time zone NOT NULL,
-    "Token" character varying(64) NULL,
-    CONSTRAINT "PK_Stores" PRIMARY KEY ("Id")
+CREATE TABLE stores (
+    id bigserial NOT NULL,
+    name character varying(45) NULL,
+    register_date timestamp with time zone NOT NULL,
+    token character varying(64) NULL,
+    CONSTRAINT pk_stores PRIMARY KEY (id)
 );
 
-CREATE TABLE "Users" (
-    "Id" bigserial NOT NULL,
-    "Nickname" character varying(45) NULL,
-    "Name" character varying(150) NULL,
-    "Email" character varying(255) NULL,
-    "Password" character varying(64) NULL,
-    "PasswordSalt" character varying(64) NULL,
-    "Type" integer NOT NULL,
-    "RegisterDate" timestamp with time zone NOT NULL,
-    "Cpf" character varying(11) NULL,
-    "Credit" double precision NOT NULL,
-    "ImageUrl" character varying(150) NULL,
-    "Telephone" character varying(11) NULL,
-    "Cellphone" character varying(11) NULL,
-    "Token" character varying(64) NULL,
-    "StateFK" bigint NULL,
-    CONSTRAINT "PK_Users" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Users_States_StateFK" FOREIGN KEY ("StateFK") REFERENCES "States" ("Id") ON DELETE RESTRICT
+CREATE TABLE users (
+    id bigserial NOT NULL,
+    nickname character varying(45) NULL,
+    name character varying(150) NULL,
+    email character varying(255) NULL,
+    password character varying(64) NULL,
+    password_salt character varying(64) NULL,
+    type integer NOT NULL,
+    register_date timestamp with time zone NOT NULL,
+    cpf character varying(11) NULL,
+    credit double precision NOT NULL,
+    image_url character varying(150) NULL,
+    telephone character varying(11) NULL,
+    cellphone character varying(11) NULL,
+    token character varying(64) NULL,
+    state_fk bigint NULL,
+    CONSTRAINT pk_users PRIMARY KEY (id),
+    CONSTRAINT fk_users_states_state_fk FOREIGN KEY (state_fk) REFERENCES states (id) ON DELETE RESTRICT
 );
 
-CREATE TABLE "ForgotPasswordRequests" (
-    "Id" bigserial NOT NULL,
-    "Ip" character varying(45) NULL,
-    "Code" character varying(6) NULL,
-    "RequestDate" timestamp with time zone NOT NULL,
-    "UserFK" bigint NOT NULL,
-    CONSTRAINT "PK_ForgotPasswordRequests" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_ForgotPasswordRequests_Users_UserFK" FOREIGN KEY ("UserFK") REFERENCES "Users" ("Id") ON DELETE CASCADE
+CREATE TABLE forgot_password_requests (
+    id bigserial NOT NULL,
+    ip character varying(45) NULL,
+    code character varying(6) NULL,
+    request_date timestamp with time zone NOT NULL,
+    user_fk bigint NOT NULL,
+    CONSTRAINT pk_forgot_password_requests PRIMARY KEY (id),
+    CONSTRAINT fk_forgot_password_requests_users_user_fk FOREIGN KEY (user_fk) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Promotions" (
-    "Id" bigserial NOT NULL,
-    "Name" character varying(45) NULL,
-    "Price" double precision NOT NULL,
-    "Active" boolean NOT NULL,
-    "CashbackPercentage" double precision NULL,
-    "RegisterDate" timestamp with time zone NOT NULL,
-    "ExpireDate" timestamp with time zone NOT NULL,
-    "ImageUrl" character varying(150) NULL,
-    "UserFK" bigint NOT NULL,
-    "StateFK" bigint NOT NULL,
-    "StoreFK" bigint NOT NULL,
-    CONSTRAINT "PK_Promotions" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Promotions_States_StateFK" FOREIGN KEY ("StateFK") REFERENCES "States" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_Promotions_Stores_StoreFK" FOREIGN KEY ("StoreFK") REFERENCES "Stores" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_Promotions_Users_UserFK" FOREIGN KEY ("UserFK") REFERENCES "Users" ("Id") ON DELETE CASCADE
+CREATE TABLE promotions (
+    id bigserial NOT NULL,
+    name character varying(45) NULL,
+    price double precision NOT NULL,
+    active boolean NOT NULL,
+    cashback_percentage double precision NULL,
+    register_date timestamp with time zone NOT NULL,
+    expire_date timestamp with time zone NOT NULL,
+    image_url character varying(150) NULL,
+    user_fk bigint NOT NULL,
+    state_fk bigint NOT NULL,
+    store_fk bigint NOT NULL,
+    CONSTRAINT pk_promotions PRIMARY KEY (id),
+    CONSTRAINT fk_promotions_states_state_fk FOREIGN KEY (state_fk) REFERENCES states (id) ON DELETE CASCADE,
+    CONSTRAINT fk_promotions_stores_store_fk FOREIGN KEY (store_fk) REFERENCES stores (id) ON DELETE CASCADE,
+    CONSTRAINT fk_promotions_users_user_fk FOREIGN KEY (user_fk) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE "Orders" (
-    "Id" bigserial NOT NULL,
-    "Date" timestamp with time zone NOT NULL,
-    "ApprovedByUserFK" bigint NULL,
-    "UserFK" bigint NOT NULL,
-    "PromotionFK" bigint NOT NULL,
-    CONSTRAINT "PK_Orders" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Orders_Users_ApprovedByUserFK" FOREIGN KEY ("ApprovedByUserFK") REFERENCES "Users" ("Id") ON DELETE RESTRICT,
-    CONSTRAINT "FK_Orders_Promotions_PromotionFK" FOREIGN KEY ("PromotionFK") REFERENCES "Promotions" ("Id") ON DELETE CASCADE,
-    CONSTRAINT "FK_Orders_Users_UserFK" FOREIGN KEY ("UserFK") REFERENCES "Users" ("Id") ON DELETE CASCADE
+CREATE TABLE orders (
+    id bigserial NOT NULL,
+    register_date timestamp with time zone NOT NULL,
+    approved_by_user_fk bigint NULL,
+    user_fk bigint NOT NULL,
+    promotion_fk bigint NOT NULL,
+    CONSTRAINT pk_orders PRIMARY KEY (id),
+    CONSTRAINT fk_orders_users_approved_by_user_fk FOREIGN KEY (approved_by_user_fk) REFERENCES users (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_orders_promotions_promotion_fk FOREIGN KEY (promotion_fk) REFERENCES promotions (id) ON DELETE CASCADE,
+    CONSTRAINT fk_orders_users_user_fk FOREIGN KEY (user_fk) REFERENCES users (id) ON DELETE CASCADE
 );
 
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (0, 'Acre');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (24, 'Sergipe');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (23, 'Santa Catarina');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (22, 'Roraima');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (21, 'Rondônia');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (20, 'Rio de Janeiro');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (19, 'Rio Grande do Sul');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (18, 'Rio Grande do Norte');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (17, 'Piauí');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (16, 'Pernambuco');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (15, 'Pará');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (14, 'Paraíba');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (25, 'São Paulo');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (13, 'Paraná');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (11, 'Mato Grosso do Sul');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (10, 'Mato Grosso');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (9, 'Maranhão');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (8, 'Goiás');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (7, 'Espírito Santo');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (6, 'Distrito Federal');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (5, 'Ceará');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (4, 'Bahia');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (3, 'Amazonas');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (2, 'Amapá');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (1, 'Alagoas');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (12, 'Minas Gerais');
-INSERT INTO "States" ("Id", "Name")
+INSERT INTO states (id, name)
 VALUES (26, 'Tocantins');
 
-CREATE INDEX "IX_ForgotPasswordRequests_UserFK" ON "ForgotPasswordRequests" ("UserFK");
+CREATE INDEX ix_forgot_password_requests_user_fk ON forgot_password_requests (user_fk);
 
-CREATE INDEX "IX_Orders_ApprovedByUserFK" ON "Orders" ("ApprovedByUserFK");
+CREATE INDEX ix_orders_approved_by_user_fk ON orders (approved_by_user_fk);
 
-CREATE INDEX "IX_Orders_PromotionFK" ON "Orders" ("PromotionFK");
+CREATE INDEX ix_orders_promotion_fk ON orders (promotion_fk);
 
-CREATE INDEX "IX_Orders_UserFK" ON "Orders" ("UserFK");
+CREATE INDEX ix_orders_user_fk ON orders (user_fk);
 
-CREATE INDEX "IX_Promotions_StateFK" ON "Promotions" ("StateFK");
+CREATE INDEX ix_promotions_state_fk ON promotions (state_fk);
 
-CREATE INDEX "IX_Promotions_StoreFK" ON "Promotions" ("StoreFK");
+CREATE INDEX ix_promotions_store_fk ON promotions (store_fk);
 
-CREATE INDEX "IX_Promotions_UserFK" ON "Promotions" ("UserFK");
+CREATE INDEX ix_promotions_user_fk ON promotions (user_fk);
 
-CREATE INDEX "IX_Users_StateFK" ON "Users" ("StateFK");
+CREATE INDEX ix_users_state_fk ON users (state_fk);
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20180926191140_PromotionDb1', '2.1.2-rtm-30932');
+VALUES ('20180927111052_PromotionDb1', '2.1.2-rtm-30932');
 

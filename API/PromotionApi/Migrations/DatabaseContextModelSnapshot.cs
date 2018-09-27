@@ -22,97 +22,131 @@ namespace PromotionApi.Migrations
             modelBuilder.Entity("PromotionApi.Models.ForgotPasswordRequest", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
 
                     b.Property<string>("Code")
+                        .HasColumnName("code")
                         .HasMaxLength(6);
 
                     b.Property<string>("Ip")
+                        .HasColumnName("ip")
                         .HasMaxLength(45);
 
-                    b.Property<DateTimeOffset>("RequestDate");
+                    b.Property<DateTimeOffset>("RequestDate")
+                        .HasColumnName("request_date");
 
-                    b.Property<long>("UserFK");
+                    b.Property<long>("UserFK")
+                        .HasColumnName("user_fk");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_forgot_password_requests");
 
-                    b.HasIndex("UserFK");
+                    b.HasIndex("UserFK")
+                        .HasName("ix_forgot_password_requests_user_fk");
 
-                    b.ToTable("ForgotPasswordRequests");
+                    b.ToTable("forgot_password_requests");
                 });
 
             modelBuilder.Entity("PromotionApi.Models.Order", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
 
-                    b.Property<long?>("ApprovedByUserFK");
+                    b.Property<long?>("ApprovedByUserFK")
+                        .HasColumnName("approved_by_user_fk");
 
-                    b.Property<DateTimeOffset>("Date");
+                    b.Property<long>("PromotionFK")
+                        .HasColumnName("promotion_fk");
 
-                    b.Property<long>("PromotionFK");
+                    b.Property<DateTimeOffset>("RegisterDate")
+                        .HasColumnName("register_date");
 
-                    b.Property<long>("UserFK");
+                    b.Property<long>("UserFK")
+                        .HasColumnName("user_fk");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
 
-                    b.HasIndex("ApprovedByUserFK");
+                    b.HasIndex("ApprovedByUserFK")
+                        .HasName("ix_orders_approved_by_user_fk");
 
-                    b.HasIndex("PromotionFK");
+                    b.HasIndex("PromotionFK")
+                        .HasName("ix_orders_promotion_fk");
 
-                    b.HasIndex("UserFK");
+                    b.HasIndex("UserFK")
+                        .HasName("ix_orders_user_fk");
 
-                    b.ToTable("Orders");
+                    b.ToTable("orders");
                 });
 
             modelBuilder.Entity("PromotionApi.Models.Promotion", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
 
-                    b.Property<bool>("Active");
+                    b.Property<bool>("Active")
+                        .HasColumnName("active");
 
-                    b.Property<double?>("CashbackPercentage");
+                    b.Property<double?>("CashbackPercentage")
+                        .HasColumnName("cashback_percentage");
 
-                    b.Property<DateTimeOffset>("ExpireDate");
+                    b.Property<DateTimeOffset>("ExpireDate")
+                        .HasColumnName("expire_date");
 
                     b.Property<string>("ImageUrl")
+                        .HasColumnName("image_url")
                         .HasMaxLength(150);
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasMaxLength(45);
 
-                    b.Property<double>("Price");
+                    b.Property<double>("Price")
+                        .HasColumnName("price");
 
-                    b.Property<DateTimeOffset>("RegisterDate");
+                    b.Property<DateTimeOffset>("RegisterDate")
+                        .HasColumnName("register_date");
 
-                    b.Property<long>("StateFK");
+                    b.Property<long>("StateFK")
+                        .HasColumnName("state_fk");
 
-                    b.Property<long>("StoreFK");
+                    b.Property<long>("StoreFK")
+                        .HasColumnName("store_fk");
 
-                    b.Property<long>("UserFK");
+                    b.Property<long>("UserFK")
+                        .HasColumnName("user_fk");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_promotions");
 
-                    b.HasIndex("StateFK");
+                    b.HasIndex("StateFK")
+                        .HasName("ix_promotions_state_fk");
 
-                    b.HasIndex("StoreFK");
+                    b.HasIndex("StoreFK")
+                        .HasName("ix_promotions_store_fk");
 
-                    b.HasIndex("UserFK");
+                    b.HasIndex("UserFK")
+                        .HasName("ix_promotions_user_fk");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("promotions");
                 });
 
             modelBuilder.Entity("PromotionApi.Models.State", b =>
                 {
-                    b.Property<long>("Id");
+                    b.Property<long>("Id")
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasMaxLength(45);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_states");
 
-                    b.ToTable("States");
+                    b.ToTable("states");
 
                     b.HasData(
                         new { Id = 0L, Name = "Acre" },
@@ -148,69 +182,91 @@ namespace PromotionApi.Migrations
             modelBuilder.Entity("PromotionApi.Models.Store", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasMaxLength(45);
 
-                    b.Property<DateTimeOffset>("RegisterDate");
+                    b.Property<DateTimeOffset>("RegisterDate")
+                        .HasColumnName("register_date");
 
                     b.Property<string>("Token")
+                        .HasColumnName("token")
                         .HasMaxLength(64);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_stores");
 
-                    b.ToTable("Stores");
+                    b.ToTable("stores");
                 });
 
             modelBuilder.Entity("PromotionApi.Models.User", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id");
 
                     b.Property<string>("Cellphone")
+                        .HasColumnName("cellphone")
                         .HasMaxLength(11);
 
                     b.Property<string>("Cpf")
+                        .HasColumnName("cpf")
                         .HasMaxLength(11);
 
-                    b.Property<double>("Credit");
+                    b.Property<double>("Credit")
+                        .HasColumnName("credit");
 
                     b.Property<string>("Email")
+                        .HasColumnName("email")
                         .HasMaxLength(255);
 
                     b.Property<string>("ImageUrl")
+                        .HasColumnName("image_url")
                         .HasMaxLength(150);
 
                     b.Property<string>("Name")
+                        .HasColumnName("name")
                         .HasMaxLength(150);
 
                     b.Property<string>("Nickname")
+                        .HasColumnName("nickname")
                         .HasMaxLength(45);
 
                     b.Property<string>("Password")
+                        .HasColumnName("password")
                         .HasMaxLength(64);
 
                     b.Property<string>("PasswordSalt")
+                        .HasColumnName("password_salt")
                         .HasMaxLength(64);
 
-                    b.Property<DateTimeOffset>("RegisterDate");
+                    b.Property<DateTimeOffset>("RegisterDate")
+                        .HasColumnName("register_date");
 
-                    b.Property<long?>("StateFK");
+                    b.Property<long?>("StateFK")
+                        .HasColumnName("state_fk");
 
                     b.Property<string>("Telephone")
+                        .HasColumnName("telephone")
                         .HasMaxLength(11);
 
                     b.Property<string>("Token")
+                        .HasColumnName("token")
                         .HasMaxLength(64);
 
-                    b.Property<int>("Type");
+                    b.Property<int>("Type")
+                        .HasColumnName("type");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_users");
 
-                    b.HasIndex("StateFK");
+                    b.HasIndex("StateFK")
+                        .HasName("ix_users_state_fk");
 
-                    b.ToTable("Users");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("PromotionApi.Models.ForgotPasswordRequest", b =>
@@ -218,6 +274,7 @@ namespace PromotionApi.Migrations
                     b.HasOne("PromotionApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserFK")
+                        .HasConstraintName("fk_forgot_password_requests_users_user_fk")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -225,16 +282,19 @@ namespace PromotionApi.Migrations
                 {
                     b.HasOne("PromotionApi.Models.User", "ApprovedByUser")
                         .WithMany()
-                        .HasForeignKey("ApprovedByUserFK");
+                        .HasForeignKey("ApprovedByUserFK")
+                        .HasConstraintName("fk_orders_users_approved_by_user_fk");
 
                     b.HasOne("PromotionApi.Models.Promotion", "Promotion")
                         .WithMany()
                         .HasForeignKey("PromotionFK")
+                        .HasConstraintName("fk_orders_promotions_promotion_fk")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PromotionApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserFK")
+                        .HasConstraintName("fk_orders_users_user_fk")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -243,16 +303,19 @@ namespace PromotionApi.Migrations
                     b.HasOne("PromotionApi.Models.State", "State")
                         .WithMany()
                         .HasForeignKey("StateFK")
+                        .HasConstraintName("fk_promotions_states_state_fk")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PromotionApi.Models.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreFK")
+                        .HasConstraintName("fk_promotions_stores_store_fk")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PromotionApi.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserFK")
+                        .HasConstraintName("fk_promotions_users_user_fk")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -260,7 +323,8 @@ namespace PromotionApi.Migrations
                 {
                     b.HasOne("PromotionApi.Models.State", "State")
                         .WithMany()
-                        .HasForeignKey("StateFK");
+                        .HasForeignKey("StateFK")
+                        .HasConstraintName("fk_users_states_state_fk");
                 });
 #pragma warning restore 612, 618
         }
