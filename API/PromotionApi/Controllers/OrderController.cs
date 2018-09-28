@@ -125,7 +125,7 @@ namespace PromotionApi.Controllers
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.Include(x => x.Promotion).Include(x => x.User).Include(x => x.Promotion.User).FirstOrDefaultAsync(x => x.Id == id);
+            Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return BadRequest("Invalid order");
 
@@ -157,7 +157,7 @@ namespace PromotionApi.Controllers
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.Include(x => x.Promotion).Include(x => x.User).Include(x => x.Promotion.User).FirstOrDefaultAsync(x => x.Id == id);
+            Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return BadRequest("Invalid order");
 
