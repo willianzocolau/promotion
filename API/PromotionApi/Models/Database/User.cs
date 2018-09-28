@@ -1,11 +1,26 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace PromotionApi.Models
 {
     public class User
     {
+        private ICollection<WishItem> _wishList;
+        private ILazyLoader LazyLoader { get; set; }
+
+        public User()
+        {
+        }
+
+        private User(ILazyLoader lazyLoader)
+        {
+            LazyLoader = lazyLoader;
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         [MaxLength(45)]
@@ -34,5 +49,11 @@ namespace PromotionApi.Models
         [ForeignKey("StateFK")]
         public State State { get; set; }
         public long? StateFK { get; set; }
+
+        public async Task<ICollection<WishItem>> GetWishList()
+        {
+            await LazyLoader.LoadAsync(this, navigationName: "_wishList");
+            return _wishList;
+        }
     }
 }

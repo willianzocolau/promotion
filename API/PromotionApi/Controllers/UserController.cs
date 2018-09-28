@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PromotionApi.Data;
 using PromotionApi.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -149,6 +148,66 @@ namespace PromotionApi.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // GET api/<controller>
+        [HttpGet("wishlist")]
+        public async Task<IActionResult> GetOwnWishListAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            return Ok();
+        }
+
+        // POST api/<controller>
+        [HttpPost("wishlist")]
+        public async Task<IActionResult> AddWishItemAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            return Ok();
+        }
+
+        // PATCH api/<controller>
+        [HttpPatch("wishlist")]
+        public async Task<IActionResult> EditWishItemAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            return Ok();
+        }
+
+        // DELETE api/<controller>
+        [HttpDelete("wishlist")]
+        public async Task<IActionResult> DeleteWishItemAsync([FromHeader] string authorization)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
 
             return Ok();
         }
