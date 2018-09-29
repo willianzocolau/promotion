@@ -23,6 +23,7 @@ namespace PromotionApi.Data
         public DbSet<Store> Stores { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ForgotPasswordRequest> ForgotPasswordRequests { get; set; }
+        public DbSet<WishItem> WishList { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

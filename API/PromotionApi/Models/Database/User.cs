@@ -50,8 +50,9 @@ namespace PromotionApi.Models
         public State State { get; set; }
         public long? StateFK { get; set; }
 
-        public async Task<ICollection<WishItem>> GetWishList()
+        public async Task<ICollection<WishItem>> GetWishListAsync()
         {
+            //TODO: Test this method at UserController
             await LazyLoader.LoadAsync(this, navigationName: "_wishList");
             return _wishList;
         }

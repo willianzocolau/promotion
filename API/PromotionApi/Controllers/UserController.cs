@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PromotionApi.Data;
 using PromotionApi.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -152,7 +153,7 @@ namespace PromotionApi.Controllers
             return Ok();
         }
 
-        // GET api/<controller>
+        // GET api/<controller>/wishlist
         [HttpGet("wishlist")]
         public async Task<IActionResult> GetOwnWishListAsync([FromHeader] string authorization)
         {
@@ -160,14 +161,16 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
-            return Ok();
+            ICollection<WishItem> wishList = await user.GetWishListAsync();
+
+            return Ok(wishList.Select(x => new { id = x.Id, name = x.Name, register_date = x.RegisterDate }));
         }
 
-        // POST api/<controller>
+        // POST api/<controller>/wishlist
         [HttpPost("wishlist")]
         public async Task<IActionResult> AddWishItemAsync([FromHeader] string authorization)
         {
@@ -175,39 +178,120 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
+
+            string body;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                body = await reader.ReadToEndAsync();
+
+            AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
+            if (data == null)
+                return BadRequest(new { error = "Invalid json" });
+
+            ICollection<WishItem> wishList = await user.GetWishListAsync();
+            wishList.Add(new WishItem
+            {
+                Name = data.Name,
+                RegisterDate = DateTimeOffset.UtcNow,
+                UserFK = user.Id
+            });
+
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
 
-        // PATCH api/<controller>
-        [HttpPatch("wishlist")]
-        public async Task<IActionResult> EditWishItemAsync([FromHeader] string authorization)
+        // GET api/<controller>/wishlist/{id}
+        [HttpGet("wishlist/{id}")]
+        public async Task<IActionResult> GetOwnWishListAsync([FromHeader] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
-            return Ok();
+            var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
+            if (wishItem == null)
+                return NotFound(new { error = "Id not found" });
+
+            if (user.Id != wishItem.UserFK)
+                return Unauthorized();
+
+            return Ok(new { id = wishItem.Id, name = wishItem.Name, register_date = wishItem.RegisterDate });
         }
 
-        // DELETE api/<controller>
-        [HttpDelete("wishlist")]
-        public async Task<IActionResult> DeleteWishItemAsync([FromHeader] string authorization)
+        // PATCH api/<controller>/wishlist/{id}
+        [HttpPatch("wishlist/{id}")]
+        public async Task<IActionResult> EditWishItemAsync([FromHeader] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
                 return validation.Result;
 
-            var user = await _context.Users.Include(x => x.WishList).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
+
+            string body;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                body = await reader.ReadToEndAsync();
+
+            AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
+            if (data == null)
+                return BadRequest(new { error = "Invalid json" });
+
+            var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
+            if (wishItem == null)
+                return NotFound(new { error = "Id not found" });
+
+            if (user.Id != wishItem.UserFK)
+                return Unauthorized();
+
+            if (!string.IsNullOrWhiteSpace(data.Name))
+            {
+                wishItem.Name = data.Name;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DELETE api/<controller>/wishlist/{id}
+        [HttpDelete("wishlist/{id}")]
+        public async Task<IActionResult> DeleteWishItemAsync([FromHeader] string authorization, [FromRoute] long id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return validation.Result;
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            string body;
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+                body = await reader.ReadToEndAsync();
+
+            AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
+            if (data == null)
+                return BadRequest(new { error = "Invalid json" });
+
+            var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
+            if (wishItem == null)
+                return NotFound(new { error = "Id not found" });
+
+            if (user.Id != wishItem.UserFK)
+                return Unauthorized();
+
+            _context.WishList.Remove(wishItem);
+
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
