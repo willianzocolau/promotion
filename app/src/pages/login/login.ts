@@ -39,6 +39,7 @@ export class LoginPage {
 
   // login and go to home page
   login() {
+    this.nav.setRoot(HomePage);
     let headers = new HttpHeaders();
     let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;

@@ -9,6 +9,7 @@ import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
 import { SearchPage } from "../pages/search/search";
 import { EditAuthPage } from "../pages/edit/editAuth";
+import { UserData } from "../providers/userData";
 
 
 export interface MenuItem {
@@ -25,6 +26,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = LoginPage;
+  dnickname: string = null;
 
   appMenuItems: Array<MenuItem>;
 
@@ -32,7 +34,8 @@ export class MyApp {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    public keyboard: Keyboard
+    public keyboard: Keyboard,
+    private user: UserData
   ) {
     this.initializeApp();
 
@@ -40,6 +43,10 @@ export class MyApp {
       {title: 'Home', component: HomePage, icon: 'home'},
       {title: 'Search', component: SearchPage, icon: 'search'},
     ];
+    
+    this.user.getNickname().then( val => {
+        this.dnickname = val
+    });
   }
 
   initializeApp() {
@@ -74,4 +81,8 @@ export class MyApp {
     this.nav.setRoot(EditAuthPage);
   }
 
+  get nickname(): any {
+    
+    return this.dnickname;
+  }
 }
