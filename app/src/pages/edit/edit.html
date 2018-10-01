@@ -6,14 +6,14 @@
         <ion-icon name="menu"></ion-icon>
       </button>
       <ion-title>
-        pro<strong>Motion</strong> edit page
+        Editar Perfil
       </ion-title>
       <ion-buttons end>
         <button ion-button tappable (click)="presentNotifications($event)">
           <ion-icon name="notifications"></ion-icon>
         </button>
         <button ion-button tappable (click)="goToAccount()">
-          <ion-icon name="cog"></ion-icon>
+          <ion-icon name="settings"></ion-icon>
         </button>
       </ion-buttons>
     </ion-navbar>
@@ -25,6 +25,17 @@
 
     <!-- Login form -->
     <form class="list-form" [formGroup]="form">
+      <ion-item>
+
+      </ion-item>
+
+      <ion-item>
+        
+      </ion-item>
+
+      <ion-item>
+        
+      </ion-item>
 
       <ion-item>
         <ion-label floating>
@@ -52,14 +63,14 @@
 
       <ion-item>
         <ion-label floating>
-          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          <ion-icon name="phone-portrait" item-start class="text-primary"></ion-icon>
           Celular
         </ion-label>
         <ion-input type="cellphone" formControlName="cellphone"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>
-          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          <ion-icon name="call" item-start class="text-primary"></ion-icon>
           Telefone
         </ion-label>
         <ion-input type="telephone" formControlName="telephone"></ion-input>
@@ -67,7 +78,7 @@
 
       <ion-item>
         <ion-label floating>
-          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+          <ion-icon name="image" item-start class="text-primary"></ion-icon>
           Imagem de perfil
         </ion-label>
         <ion-input type="image_url" formControlName="image_url"></ion-input>
