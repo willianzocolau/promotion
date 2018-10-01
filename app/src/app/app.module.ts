@@ -3,6 +3,7 @@ import {IonicApp, IonicModule} from "ionic-angular";
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {IonicStorageModule} from '@ionic/storage';
+import { HTTP } from '@ionic-native/http';
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
@@ -22,7 +23,6 @@ import { EditPage } from "../pages/edit/edit";
 import { EditAuthPage } from "../pages/edit/editAuth";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
-
 // import services
 // end import services
 // end import services
@@ -73,7 +73,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     SplashScreen,
     Keyboard,
     UserData,
-    ServerStrings
+    ServerStrings,
+    HTTP
   ]
 })
 
