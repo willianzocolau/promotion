@@ -34,7 +34,7 @@ export class EditAuthPage {
     }
     confirm() {
         let headers = new HttpHeaders();
-        let email: string = this.user.getEmail();
+        let email: string = this.user.email;
         let password: string = this.form.get('password').value;
         headers = headers.set('Content-Type', 'application/json');    
         headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));

@@ -9,10 +9,10 @@ export class UserData{
     private register_date : string = null;
     private type : string = null;
     private credit : string = null;
-    private email : string = null;
+    public email : string = null;
     private name : string = null;
     private state : string = null;
-    private token : string = null;
+    public token : string = null;
 
     constructor(private storage: Storage){
         console.log("Token provider");

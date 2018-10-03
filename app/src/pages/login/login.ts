@@ -39,7 +39,7 @@ export class LoginPage {
 
   // login and go to home page
   login() {
-    this.nav.setRoot(HomePage);
+    //this.nav.setRoot(HomePage);
     let headers = new HttpHeaders();
     let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;
@@ -58,7 +58,7 @@ export class LoginPage {
       err => {
         console.log("Erro");
         let erro = this.forgotCtrl.create({
-          message:  err.error + "Para logar use login: user@user.com senha:123abc" });
+          message:  err.error });
         erro.present();
       }
     );

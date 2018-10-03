@@ -57,8 +57,13 @@ export class EditPage {
 
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json');    
-        headers = headers.set("Authorization", "Bearer " + this.user.getToken());
-
+        headers = headers.set("Authorization", "Bearer " + this.user.token);
+        if(name == "") name = null;
+        if(nickname == "") nickname = null;
+        if(cpf == "") cpf = null;
+        if(cellphone == "") cellphone = null;
+        if(telephone == "") telephone = null;
+        if(image_url == "") image_url = null;
         var body = 
         {
             "name": name,
@@ -69,7 +74,8 @@ export class EditPage {
             "image_url": image_url
         };
         let url = this.server.userEdit();
-        this.httpClient.patch(url, body, {headers: headers}).subscribe(
+        this.httpClient.patch(url, body, {headers: headers, responseType: "text"})
+        .subscribe(
             res => {
                 this.nav.setRoot(HomePage);
                 this.alertCtrl.create({title: 'Perfil editado com sucesso!',buttons: ['Ok']}).present();
