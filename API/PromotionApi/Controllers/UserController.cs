@@ -5,6 +5,7 @@ using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,11 +27,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetOwnAsync([FromHeader] string authorization)
+        public async Task<IActionResult> GetOwnAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.Include(x => x.State).FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -41,11 +42,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/search/{nickname}
         [HttpGet("search/{nickname}")]
-        public async Task<IActionResult> SearchAsync([FromHeader] string authorization, [FromRoute] string nickname)
+        public async Task<IActionResult> SearchAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] string nickname)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();
@@ -67,11 +68,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();
@@ -85,11 +86,11 @@ namespace PromotionApi.Controllers
 
         // PATCH api/<controller>/edit
         [HttpPatch("edit")]
-        public async Task<IActionResult> EditAsync([FromHeader] string authorization)
+        public async Task<IActionResult> EditAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -155,11 +156,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/wishlist
         [HttpGet("wishlist")]
-        public async Task<IActionResult> GetOwnWishListAsync([FromHeader] string authorization)
+        public async Task<IActionResult> GetOwnWishListAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -172,11 +173,11 @@ namespace PromotionApi.Controllers
 
         // POST api/<controller>/wishlist
         [HttpPost("wishlist")]
-        public async Task<IActionResult> AddWishItemAsync([FromHeader] string authorization)
+        public async Task<IActionResult> AddWishItemAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -205,11 +206,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/wishlist/{id}
         [HttpGet("wishlist/{id}")]
-        public async Task<IActionResult> GetOwnWishListAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> GetOwnWishListAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -227,11 +228,11 @@ namespace PromotionApi.Controllers
 
         // PATCH api/<controller>/wishlist/{id}
         [HttpPatch("wishlist/{id}")]
-        public async Task<IActionResult> EditWishItemAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> EditWishItemAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -264,11 +265,11 @@ namespace PromotionApi.Controllers
 
         // DELETE api/<controller>/wishlist/{id}
         [HttpDelete("wishlist/{id}")]
-        public async Task<IActionResult> DeleteWishItemAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> DeleteWishItemAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)

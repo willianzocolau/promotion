@@ -5,6 +5,7 @@ using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,11 +27,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetOrdersAsync([FromHeader] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "promotion_id")] long? promotionId = null, [FromQuery] bool? approved = null)
+        public async Task<IActionResult> GetOrdersAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "promotion_id")] long? promotionId = null, [FromQuery] bool? approved = null)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
@@ -71,11 +72,11 @@ namespace PromotionApi.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public async Task<IActionResult> AddOrderAsync([FromHeader] string authorization)
+        public async Task<IActionResult> AddOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var store = await _context.Stores.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (store == null)
@@ -115,11 +116,11 @@ namespace PromotionApi.Controllers
 
         // PATCH api/<controller>/{id}/approve
         [HttpPatch("{id}/approve")]
-        public async Task<IActionResult> ApproveOrderAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> ApproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
@@ -147,11 +148,11 @@ namespace PromotionApi.Controllers
 
         // PATCH api/<controller>/{id}/disapprove
         [HttpPatch("{id}/disapprove")]
-        public async Task<IActionResult> DisapproveOrderAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> DisapproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
@@ -176,11 +177,11 @@ namespace PromotionApi.Controllers
 
         // DELETE api/<controller>/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)

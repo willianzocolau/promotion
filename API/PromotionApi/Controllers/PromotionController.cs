@@ -5,6 +5,7 @@ using PromotionApi.Data;
 using PromotionApi.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,12 +27,12 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetPromotionsAsync([FromHeader] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null, [FromQuery] int? priceLessThan = null, [FromQuery] int? priceGreaterThan = null, [FromQuery] string name = null)
+        public async Task<IActionResult> GetPromotionsAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null, [FromQuery] int? priceLessThan = null, [FromQuery] int? priceGreaterThan = null, [FromQuery] string name = null)
         {
             //TODO: Add price (<x, >x, x-y), add name?
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -73,11 +74,11 @@ namespace PromotionApi.Controllers
 
         // POST api/<controller>/register
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromHeader] string authorization)
+        public async Task<IActionResult> RegisterAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -123,11 +124,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();
@@ -141,11 +142,11 @@ namespace PromotionApi.Controllers
 
         // DELETE api/<controller>/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)

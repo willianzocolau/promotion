@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PromotionApi.Models
 {
-    public class RegisterResponse
+    public class TokenResponse
     {
         [JsonProperty("token"), Required]
         public string Token { get; set; }

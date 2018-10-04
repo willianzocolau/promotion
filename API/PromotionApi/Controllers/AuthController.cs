@@ -45,9 +45,9 @@ namespace PromotionApi.Controllers
         /// <response code="200">Returns the token</response>
         /// <response code="400">If invalid authorization, invalid json, invalid email, invalid password, invalid nickname, invalid name, invalid cpf, already used email, or already used nickname</response>
         [HttpPost("register")]
-        [ProducesResponseType(200, Type = typeof(RegisterResponse))]
+        [ProducesResponseType(200, Type = typeof(TokenResponse))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<RegisterResponse>> RegisterAsync([FromHeader, Required] string authorization, [FromBody, Required] RegisterUserBody registerUserData)
+        public async Task<ActionResult<TokenResponse>> RegisterAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromBody, Required] RegisterUserBody registerUserData)
         {
             if (string.IsNullOrWhiteSpace(authorization))
                 return BadRequest(new ErrorResponse { Error = "Missing header: authorization" });
@@ -68,10 +68,6 @@ namespace PromotionApi.Controllers
                 string body;
                 using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
                     body = await reader.ReadToEndAsync();
-
-                /*RegisterUserBody userData = JsonConvert.DeserializeObject<RegisterUserBody>(body);
-                if (userData == null)
-                    return BadRequest(new ErrorResponse { Error = "Invalid json" });*/
 
                 if (!Utils.IsValidEmail(email))
                     return BadRequest(new ErrorResponse { Error = "Invalid email" });
@@ -113,15 +109,26 @@ namespace PromotionApi.Controllers
                 });
                 await _context.SaveChangesAsync();
 
-                return Ok(new RegisterResponse { Token = token });
+                return base.Ok(new TokenResponse { Token = token });
             }
 
             return BadRequest(new ErrorResponse { Error = "Invalid authorization" });
         }
 
         // POST api/<controller>/login
+        /// <summary>
+        /// Login with a registered user
+        /// </summary>
+        /// <param name="authorization">Basic Auth format</param>
+        /// <returns>Token and user information</returns>
+        /// <response code="200">Returns the token and user information</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="404">If wrong email or password</response>
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromHeader] string authorization)
+        [ProducesResponseType(200, Type = typeof(LoginResponse))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<LoginResponse>> LoginAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             if (string.IsNullOrWhiteSpace(authorization))
                 return BadRequest(new ErrorResponse { Error = "Missing header: authorization" });
@@ -152,19 +159,30 @@ namespace PromotionApi.Controllers
                 user.Token = token;
                 await _context.SaveChangesAsync();
 
-                return Ok(new { id = user.Id, token, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type, credit = user.Credit, email = user.Email, name = user.Name, state = user.StateFK });
+                return Ok(new LoginResponse { Id = user.Id, Token = token, Nickname = user.Nickname, ImageUrl = user.ImageUrl, RegisterDate = user.RegisterDate, Type = user.Type, Credit = user.Credit, Email = user.Email, Name = user.Name, StateFK = user.StateFK });
             }
 
             return BadRequest(new ErrorResponse { Error = "Invalid authorization" });
         }
 
         // POST api/<controller>/extend
+        /// <summary>
+        /// Login with a registered user
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <returns>Token</returns>
+        /// <response code="200">Returns the new token</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="404">If token not found</response>
         [HttpPost("extend")]
-        public async Task<IActionResult> ExtendAsync([FromHeader] string authorization)
+        [ProducesResponseType(200, Type = typeof(TokenResponse))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<TokenResponse>> ExtendAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -176,17 +194,25 @@ namespace PromotionApi.Controllers
                 user.Token = newtoken;
                 await _context.SaveChangesAsync();
 
-                return Ok(new { token = newtoken });
+                return Ok(new TokenResponse { Token = newtoken });
             }
         }
 
         // POST api/<controller>/logout
+        /// <summary>
+        /// Logout (invalidate a token)
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <returns>Nothing</returns>
+        /// <response code="200">Invalidated the token (doesn't check if it was valid)</response>
+        /// <response code="400">If invalid authorization</response>
         [HttpPost("logout")]
-        public async Task<IActionResult> LogoutAsync([FromHeader] string authorization)
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> LogoutAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user != null)
@@ -199,21 +225,24 @@ namespace PromotionApi.Controllers
         }
 
         // POST api/<controller>/reset
+        /// <summary>
+        /// Initiate the password reset process for a specific user
+        /// </summary>
+        /// <param name="resetPasswordData">Required information to reset the password from a specific user</param>
+        /// <returns>Nothing</returns>
+        /// <response code="200">Email sent to the specified user with the code to change their password</response>
+        /// <response code="400">If invalid email</response>
+        /// <response code="404">If email not found</response>
         [HttpPost("reset")]
-        public async Task<IActionResult> ResetAsync()
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> ResetAsync([FromBody, Required] ResetPasswordBody resetPasswordData)
         {
-            string body;
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
-                body = await reader.ReadToEndAsync();
-
-            ResetPasswordBody data = JsonConvert.DeserializeObject<ResetPasswordBody>(body);
-            if (data == null)
-                return BadRequest(new ErrorResponse { Error = "Invalid json" });
-
-            if (!Utils.IsValidEmail(data.Email))
+            if (!Utils.IsValidEmail(resetPasswordData.Email))
                 return BadRequest(new ErrorResponse { Error = "Invalid email" });
 
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == data.Email.ToUpperInvariant());
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == resetPasswordData.Email.ToUpperInvariant());
             if (user == null)
                 return NotFound(new ErrorResponse { Error = "Email not found" });
 
@@ -229,7 +258,7 @@ namespace PromotionApi.Controllers
             await _context.SaveChangesAsync();
 
             await Utils.SendEmailAsync(
-                data.Email,
+                resetPasswordData.Email,
                 "[ProMotion] Mudança de senha",
                 $"Para alterar sua senha, utilize o seguinte código: {code}<br />Caso não tenha sido você que fez essa requisição, desconsidere este e-mail ou entre em contato com o suporte."
             );
@@ -238,25 +267,34 @@ namespace PromotionApi.Controllers
         }
 
         // POST api/<controller>/change
+        /// <summary>
+        /// Change the password for a specific user
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="changePasswordData">Information to change the password</param>
+        /// <remarks>
+        /// Two ways of changing the password (information needed):
+        /// - New password, token, and old password 
+        /// - New password, email, and reset code
+        /// </remarks>
+        /// <returns>Nothing</returns>
+        /// <response code="200">Password changed</response>
+        /// <response code="400">If invalid new password, invalid old password, invalid reset code, invalid email, or old password and reset code provided</response>
+        /// <response code="404">If token not found</response>
         [HttpPost("change")]
-        public async Task<IActionResult> ChangeAsync([FromHeader] string authorization = null)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> ChangeAsync([FromBody, Required] ChangePasswordBody changePasswordData, [FromHeader(Name = "Authorization")] string authorization = null)
         {
-            string body;
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
-                body = await reader.ReadToEndAsync();
+            string newPass = Encryption.Decrypt(changePasswordData.NewPassword);
+            string oldPass = Encryption.Decrypt(changePasswordData.OldPassword);
 
-            ChangePasswordBody data = JsonConvert.DeserializeObject<ChangePasswordBody>(body);
-            if (data == null)
-                return BadRequest(new ErrorResponse { Error = "Invalid json" });
-
-            string newPass = Encryption.Decrypt(data.NewPassword);
-            string oldPass = Encryption.Decrypt(data.OldPassword);
-
-            if (!Utils.IsValidPassword(data.NewPassword))
+            if (!Utils.IsValidPassword(changePasswordData.NewPassword))
                 return BadRequest(new ErrorResponse { Error = "Invalid new password" });
 
             bool withOldPass = oldPass != null;
-            bool withResetCode = !string.IsNullOrWhiteSpace(data.ResetCode);
+            bool withResetCode = !string.IsNullOrWhiteSpace(changePasswordData.ResetCode);
 
             if (!withOldPass && !withResetCode)
                 return BadRequest(new ErrorResponse { Error = "Missing old password or reset code" });
@@ -264,7 +302,7 @@ namespace PromotionApi.Controllers
             if (withOldPass && withResetCode)
                 return BadRequest(new ErrorResponse { Error = "Requests shouldn't contain old password and reset code" });
 
-            if (withResetCode && string.IsNullOrWhiteSpace(data.Email))
+            if (withResetCode && string.IsNullOrWhiteSpace(changePasswordData.Email))
                 return BadRequest(new ErrorResponse { Error = "Requests with reset code require email" });
 
             User user;
@@ -272,7 +310,7 @@ namespace PromotionApi.Controllers
             {
                 var validation = Token.ValidateAuthorization(authorization);
                 if (!validation.IsValid)
-                    return validation.Result;
+                    return BadRequest(validation.Result);
 
                 user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
                 if (user == null)
@@ -283,15 +321,15 @@ namespace PromotionApi.Controllers
             }
             else
             {
-                if (Utils.IsValidEmail(data.Email))
+                if (Utils.IsValidEmail(changePasswordData.Email))
                     return BadRequest(new ErrorResponse { Error = "Invalid email" });
 
-                var resetRequest = await _context.ForgotPasswordRequests.Include(x => x.User).FirstOrDefaultAsync(x => x.Code == data.ResetCode);
+                var resetRequest = await _context.ForgotPasswordRequests.Include(x => x.User).FirstOrDefaultAsync(x => x.Code == changePasswordData.ResetCode);
                 if (resetRequest == null)
                     return BadRequest(new ErrorResponse { Error = "Invalid reset code" });
 
                 user = resetRequest.User;
-                if (!user.Email.Equals(data.Email, StringComparison.InvariantCultureIgnoreCase))
+                if (!user.Email.Equals(changePasswordData.Email, StringComparison.InvariantCultureIgnoreCase))
                     return BadRequest(new ErrorResponse { Error = "Invalid reset code" });
 
                 if (resetRequest.RequestDate < DateTimeOffset.UtcNow.Subtract(Code.LifeSpan))

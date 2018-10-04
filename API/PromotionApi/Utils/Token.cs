@@ -41,38 +41,38 @@ namespace PromotionApi
             return false;
         }
 
-        internal static TokenResponse ValidateAuthorization(string authorization)
+        internal static TokenValidationResult ValidateAuthorization(string authorization)
         {
             if (string.IsNullOrWhiteSpace(authorization))
-                return new TokenResponse(new BadRequestObjectResult(new ErrorResponse { Error = "Missing header: authorization" }));
+                return new TokenValidationResult(new ErrorResponse { Error = "Missing header: authorization" });
             else
             {
                 if (!authorization.StartsWith("Bearer "))
-                    return new TokenResponse(new BadRequestObjectResult(new ErrorResponse { Error = "Invalid authorization" }));
+                    return new TokenValidationResult(new ErrorResponse { Error = "Invalid authorization" });
                 else
                 {
                     string token = authorization.Substring(7);
                     if (!IsValid(token))
-                        return new TokenResponse(new BadRequestObjectResult(new ErrorResponse { Error = "Invalid authorization" }));
-                    return new TokenResponse(token);
+                        return new TokenValidationResult(new ErrorResponse { Error = "Invalid authorization" });
+                    return new TokenValidationResult(token);
                 }
             }
         }
     }
 
-    internal class TokenResponse
+    internal class TokenValidationResult
     {
         public bool IsValid { get; }
         public string Token { get; }
-        public IActionResult Result { get; }
+        public object Result { get; }
 
-        public TokenResponse(IActionResult result)
+        public TokenValidationResult(object result)
         {
             IsValid = false;
             Result = result;
         }
 
-        public TokenResponse(string token)
+        public TokenValidationResult(string token)
         {
             IsValid = true;
             Token = token;

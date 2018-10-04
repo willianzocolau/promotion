@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PromotionApi.Data;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +21,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromHeader] string authorization)
+        public async Task<IActionResult> GetAllAsync([FromHeader(Name = "Authorization"), Required] string authorization)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
@@ -35,11 +36,11 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromHeader] string authorization, [FromRoute] long id)
+        public async Task<IActionResult> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
-                return validation.Result;
+                return BadRequest(validation.Result);
 
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();

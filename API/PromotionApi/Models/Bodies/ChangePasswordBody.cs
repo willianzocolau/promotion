@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace PromotionApi.Models
 {
     public class ChangePasswordBody
     {
-        [JsonProperty("new_password")]
+        [JsonProperty("new_password"), Required]
         public string NewPassword { get; set; }
         [JsonProperty("reset_code")]
         public string ResetCode { get; set; }
