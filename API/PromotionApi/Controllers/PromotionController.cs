@@ -38,7 +38,7 @@ namespace PromotionApi.Controllers
                 return Unauthorized();
 
             if (limit < 1 || limit > 100)
-                return BadRequest(new { error = "Invalid limit" });
+                return BadRequest(new ErrorResponse { Error = "Invalid limit" });
 
             IQueryable<Promotion> promotionQuery = _context.Promotions.Where(x => x.Active);
 
@@ -66,7 +66,7 @@ namespace PromotionApi.Controllers
             List<Promotion> promotions = await promotionQuery.Take(limit).ToListAsync();
 
             if (!promotions.Any())
-                return NotFound(new { error = "No promotion found" });
+                return NotFound(new ErrorResponse { Error = "No promotion found" });
             else
                 return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price, user_id = x.UserFK, store_id = x.StoreFK, state_id = x.StateFK }));
         }
@@ -89,20 +89,20 @@ namespace PromotionApi.Controllers
 
             RegisterPromotionBody promotionData = JsonConvert.DeserializeObject<RegisterPromotionBody>(body);
             if (promotionData == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             if (string.IsNullOrWhiteSpace(promotionData.Name))
-                return BadRequest(new { error = "Invalid name" });
+                return BadRequest(new ErrorResponse { Error = "Invalid name" });
             if (promotionData.Price <= 0)
-                return BadRequest(new { error = "Invalid price" });
+                return BadRequest(new ErrorResponse { Error = "Invalid price" });
             if (string.IsNullOrWhiteSpace(promotionData.ImageUrl))
-                return BadRequest(new { error = "Invalid image url" });
+                return BadRequest(new ErrorResponse { Error = "Invalid image url" });
             //TODO: Add expire_date
             //TODO: Uncomment following section
             /*if (!await _context.States.AnyAsync(x => x.Id == promotionData.StateFK))
-                return BadRequest(new { error = "Invalid state id" });
+                return BadRequest(new ErrorResponse { Error = "Invalid state id" });
             if (!await _context.Stores.AnyAsync(x => x.Id == promotionData.StoreFK))
-                return BadRequest(new { error = "Invalid state id" });*/
+                return BadRequest(new ErrorResponse { Error = "Invalid state id" });*/
 
             _context.Promotions.Add(new Promotion
             {

@@ -37,7 +37,7 @@ namespace PromotionApi.Controllers
                 return Unauthorized();
 
             if (limit < 0 || limit > 100)
-                return BadRequest(new { error = "Invalid limit" });
+                return BadRequest(new ErrorResponse { Error = "Invalid limit" });
 
             IQueryable<Order> orderQuery = _context.Orders;
 
@@ -64,7 +64,7 @@ namespace PromotionApi.Controllers
             List<Order> orders = await orderQuery.Take(limit).ToListAsync();
 
             if (!orders.Any())
-                return NotFound(new { error = "No promotion found" });
+                return NotFound(new ErrorResponse { Error = "No promotion found" });
             else
                 return Ok(orders.Select(x => new { id = x.Id, date = x.RegisterDate, approved_by = x.ApprovedByUserFK, user_id = x.UserFK, promotion_id = x.PromotionFK }));
         }
@@ -87,18 +87,18 @@ namespace PromotionApi.Controllers
 
             AddOrderBody data = JsonConvert.DeserializeObject<AddOrderBody>(body);
             if (data == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             Promotion promotion = await _context.Promotions.FindAsync(data.PromotionId);
             if (promotion == null)
-                return NotFound(new { error = "Promotion not found" });
+                return NotFound(new ErrorResponse { Error = "Promotion not found" });
 
             if (promotion.StoreFK != store.Id)
-                return BadRequest(new { error = "Promotion not from your store" });
+                return BadRequest(new ErrorResponse { Error = "Promotion not from your store" });
 
             User user = await _context.Users.FindAsync(data.UserId);
             if (user == null)
-                return NotFound(new { error = "User not found" });
+                return NotFound(new ErrorResponse { Error = "User not found" });
 
             _context.Orders.Add(new Order
             {

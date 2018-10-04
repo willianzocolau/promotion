@@ -60,7 +60,7 @@ namespace PromotionApi.Controllers
             else
                 users.AddRange(_context.Users.Where(x => EF.Functions.ILike(x.Nickname, $"%{nickname}%")).Take(10).ToList());
             if (!users.Any())
-                return NotFound(new { error = "No users found" });
+                return NotFound(new ErrorResponse { Error = "No users found" });
             else
                 return Ok(users.Select(x => new { id = x.Id, nickname = x.Nickname }));
         }
@@ -78,7 +78,7 @@ namespace PromotionApi.Controllers
 
             var user = await _context.Users.FindAsync(id);
             if (user == null)
-                return NotFound(new { error = "User not found" });
+                return NotFound(new ErrorResponse { Error = "User not found" });
 
             return Ok(new { id = user.Id, nickname = user.Nickname, image_url = user.ImageUrl, register_date = user.RegisterDate, type = user.Type });
         }
@@ -101,50 +101,50 @@ namespace PromotionApi.Controllers
 
             EditUserBody data = JsonConvert.DeserializeObject<EditUserBody>(body);
             if (data == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             if (data.Name != null)
             {
                 if (!Utils.IsValidName(data.Name))
-                    return BadRequest(new { error = "Invalid name" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid name" });
                 user.Name = data.Name;
             }
 
             if (data.Cpf != null)
             {
                 if (!Utils.IsValidCpf(data.Cpf))
-                    return BadRequest(new { error = "Invalid cpf" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid cpf" });
                 user.Cpf = data.Cpf;
             }
 
             if (data.Telephone != null)
             {
                 if (!Utils.IsValidTelephone(data.Telephone))
-                    return BadRequest(new { error = "Invalid telephone" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid telephone" });
                 user.Telephone = data.Telephone;
             }
 
             if (data.Cellphone != null)
             {
                 if (!Utils.IsValidTelephone(data.Cellphone))
-                    return BadRequest(new { error = "Invalid cellphone" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid cellphone" });
                 user.Cellphone = data.Cellphone;
             }
 
             if (data.ImageUrl != null)
             {
                 if (!Utils.IsValidImageUrl(data.ImageUrl))
-                    return BadRequest(new { error = "Invalid image url" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid image url" });
                 user.ImageUrl = data.ImageUrl;
             }
 
             if (data.Nickname != null)
             {
                 if (!Utils.IsValidNickname(data.Nickname))
-                    return BadRequest(new { error = "Invalid nickname" });
+                    return BadRequest(new ErrorResponse { Error = "Invalid nickname" });
                 bool alreadyUsedNickname = await _context.Users.AnyAsync(x => EF.Functions.ILike(x.Nickname, data.Nickname));
                 if (alreadyUsedNickname)
-                    return BadRequest(new { error = "Already used nickname" });
+                    return BadRequest(new ErrorResponse { Error = "Already used nickname" });
                 user.Nickname = data.Nickname;
             }
 
@@ -188,7 +188,7 @@ namespace PromotionApi.Controllers
 
             AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
             if (data == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             ICollection<WishItem> wishList = await user.GetWishListAsync();
             wishList.Add(new WishItem
@@ -217,7 +217,7 @@ namespace PromotionApi.Controllers
 
             var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
             if (wishItem == null)
-                return NotFound(new { error = "Id not found" });
+                return NotFound(new ErrorResponse { Error = "Id not found" });
 
             if (user.Id != wishItem.UserFK)
                 return Unauthorized();
@@ -243,11 +243,11 @@ namespace PromotionApi.Controllers
 
             AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
             if (data == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
             if (wishItem == null)
-                return NotFound(new { error = "Id not found" });
+                return NotFound(new ErrorResponse { Error = "Id not found" });
 
             if (user.Id != wishItem.UserFK)
                 return Unauthorized();
@@ -280,11 +280,11 @@ namespace PromotionApi.Controllers
 
             AddWishItemBody data = JsonConvert.DeserializeObject<AddWishItemBody>(body);
             if (data == null)
-                return BadRequest(new { error = "Invalid json" });
+                return BadRequest(new ErrorResponse { Error = "Invalid json" });
 
             var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
             if (wishItem == null)
-                return NotFound(new { error = "Id not found" });
+                return NotFound(new ErrorResponse { Error = "Id not found" });
 
             if (user.Id != wishItem.UserFK)
                 return Unauthorized();
