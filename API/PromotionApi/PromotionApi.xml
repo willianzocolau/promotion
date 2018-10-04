@@ -37,7 +37,7 @@
         </member>
         <member name="M:PromotionApi.Controllers.AuthController.ExtendAsync(System.String)">
             <summary>
-            Login with a registered user
+            Extend the login
             </summary>
             <param name="authorization">Bearer Auth format</param>
             <returns>Token</returns>

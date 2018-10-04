@@ -167,7 +167,7 @@ namespace PromotionApi.Controllers
 
         // POST api/<controller>/extend
         /// <summary>
-        /// Login with a registered user
+        /// Extend the login
         /// </summary>
         /// <param name="authorization">Bearer Auth format</param>
         /// <returns>Token</returns>
