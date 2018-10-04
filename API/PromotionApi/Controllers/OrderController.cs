@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 namespace PromotionApi.Controllers
 {
     [Produces("application/json")]
-    [Consumes("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : Controller
@@ -27,29 +26,7 @@ namespace PromotionApi.Controllers
         }
 
         // GET api/<controller>
-        /// <summary>
-        /// Search all orders
-        /// </summary>
-        /// <remarks>
-        /// The user needs permission to administrate the orders, otherwise the user id parameter will be auto filled.
-        /// </remarks>
-        /// <param name="authorization">Bearer Auth format</param>
-        /// <param name="limit">Max amount of orders that should be returned (must be a value between [1,100])</param>
-        /// <param name="afterId">Id of the order that will be before the first object returned (used to paginate)</param>
-        /// <param name="userId">User id that made the order</param>
-        /// <param name="storeId">Store id that the promotion related to the order is from</param>
-        /// <param name="promotionId">Promotion id related to the order</param>
-        /// <param name="approved">If the orders should be approved or not</param>
-        /// <returns>List of orders</returns>
-        /// <response code="200">Returns the list of orders that match the parameters</response>
-        /// <response code="400">If invalid authorization, or invalid limit</response>
-        /// <response code="401">If token is invalid</response>
-        /// <response code="404">If no order matchs the parameters</response>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(HashSet<OrderResponse>))]
-        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
-        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
-        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetOrdersAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "promotion_id")] long? promotionId = null, [FromQuery] bool? approved = null)
         {
             var validation = Token.ValidateAuthorization(authorization);
@@ -57,13 +34,10 @@ namespace PromotionApi.Controllers
                 return BadRequest(validation.Result);
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (user == null)
+            if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            if (!Utils.CanAdministrateOrders(user.Type))
-                userId = user.Id;
-
-            if (limit < 1 || limit > 100)
+            if (limit < 0 || limit > 100)
                 return BadRequest(new ErrorResponse { Error = "Invalid limit" });
 
             IQueryable<Order> orderQuery = _context.Orders;
@@ -91,9 +65,9 @@ namespace PromotionApi.Controllers
             List<Order> orders = await orderQuery.Take(limit).ToListAsync();
 
             if (!orders.Any())
-                return NotFound(new ErrorResponse { Error = "No order found" });
+                return NotFound(new ErrorResponse { Error = "No promotion found" });
             else
-                return Ok(orders.Select(x => new OrderResponse { Id = x.Id, RegisterDate = x.RegisterDate, ApprovedByUserFK = x.ApprovedByUserFK, UserFK = x.UserFK, PromotionFK = x.PromotionFK }));
+                return Ok(orders.Select(x => new { id = x.Id, date = x.RegisterDate, approved_by = x.ApprovedByUserFK, user_id = x.UserFK, promotion_id = x.PromotionFK }));
         }
 
         // POST api/<controller>
