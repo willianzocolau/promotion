@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace PromotionApi.Controllers
 {
     [Produces("application/json")]
+    [Consumes("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class PromotionController : Controller
