@@ -4,12 +4,81 @@
         <name>PromotionApi</name>
     </assembly>
     <members>
-        <member name="M:PromotionApi.Controllers.AuthController.RegisterAsync(System.String)">
+        <member name="M:PromotionApi.Controllers.AuthController.RegisterAsync(System.String,PromotionApi.Models.RegisterUserBody)">
             <summary>
             Register a new user
             </summary>
+            <remarks>
+            Sample request:
+            
+                POST /register
+                {
+                    "nickname": "Nickname",
+                    "name": "Name Lastname"
+                    "cpf": "01234567890"
+                }
+                
+            </remarks>
             <param name="authorization">Basic Auth format</param>
+            <param name="registerUserData">Register information</param>
             <returns>Token</returns>
+            <response code="200">Returns the token</response>
+            <response code="400">If invalid authorization, invalid json, invalid email, invalid password, invalid nickname, invalid name, invalid cpf, already used email, or already used nickname</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.AuthController.LoginAsync(System.String)">
+            <summary>
+            Login with a registered user
+            </summary>
+            <param name="authorization">Basic Auth format</param>
+            <returns>Token and user information</returns>
+            <response code="200">Returns the token and user information</response>
+            <response code="400">If invalid authorization</response>
+            <response code="404">If wrong email or password</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.AuthController.ExtendAsync(System.String)">
+            <summary>
+            Login with a registered user
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <returns>Token</returns>
+            <response code="200">Returns the new token</response>
+            <response code="400">If invalid authorization</response>
+            <response code="404">If token not found</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.AuthController.LogoutAsync(System.String)">
+            <summary>
+            Logout (invalidate a token)
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <returns>Nothing</returns>
+            <response code="200">Invalidated the token (doesn't check if it was valid)</response>
+            <response code="400">If invalid authorization</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.AuthController.ResetAsync(PromotionApi.Models.ResetPasswordBody)">
+            <summary>
+            Initiate the password reset process for a specific user
+            </summary>
+            <param name="resetPasswordData">Required information to reset the password from a specific user</param>
+            <returns>Nothing</returns>
+            <response code="200">Email sent to the specified user with the code to change their password</response>
+            <response code="400">If invalid email</response>
+            <response code="404">If email not found</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.AuthController.ChangeAsync(PromotionApi.Models.ChangePasswordBody,System.String)">
+            <summary>
+            Change the password for a specific user
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="changePasswordData">Information to change the password</param>
+            <remarks>
+            Two ways of changing the password (information needed):
+            - (With Authorization header) New password, and old password
+            - (Without Authorization header) New password, email, and reset code
+            </remarks>
+            <returns>Nothing</returns>
+            <response code="200">Password changed</response>
+            <response code="400">If invalid new password, invalid old password, invalid reset code, invalid email, or old password and reset code provided</response>
+            <response code="404">If token not found</response>
         </member>
     </members>
 </doc>

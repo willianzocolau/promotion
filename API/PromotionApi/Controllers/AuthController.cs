@@ -274,8 +274,8 @@ namespace PromotionApi.Controllers
         /// <param name="changePasswordData">Information to change the password</param>
         /// <remarks>
         /// Two ways of changing the password (information needed):
-        /// - New password, token, and old password 
-        /// - New password, email, and reset code
+        /// - (With Authorization header) New password, and old password
+        /// - (Without Authorization header) New password, email, and reset code
         /// </remarks>
         /// <returns>Nothing</returns>
         /// <response code="200">Password changed</response>
