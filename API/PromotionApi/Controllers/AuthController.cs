@@ -23,6 +23,11 @@ namespace PromotionApi.Controllers
         }
 
         // POST api/<controller>/register
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="authorization">Basic Auth format</param>
+        /// <returns>Token</returns>
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromHeader] string authorization)
         {

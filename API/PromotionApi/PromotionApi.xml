@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PromotionApi</name>
+    </assembly>
+    <members>
+        <member name="M:PromotionApi.Controllers.AuthController.RegisterAsync(System.String)">
+            <summary>
+            Register a new user
+            </summary>
+            <param name="authorization">Basic Auth format</param>
+            <returns>Token</returns>
+        </member>
+    </members>
+</doc>
