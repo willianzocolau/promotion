@@ -6,9 +6,7 @@ using PromotionApi.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PromotionApi.Controllers
@@ -27,10 +25,34 @@ namespace PromotionApi.Controllers
         }
 
         // GET api/<controller>
+        /// <summary>
+        /// Search promotions
+        /// </summary>
+        /// <remarks>
+        /// Order by requires specific values, check them at the parameter.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="limit">Max amount of promotions that should be returned (must be a value between [1,100])</param>
+        /// <param name="afterId">Id of the promotion that will be before the first object returned (used to paginate)</param>
+        /// <param name="userId">User id that posted the promotion</param>
+        /// <param name="storeId">Store id that the promotion is related to</param>
+        /// <param name="stateId">State id that the promotion is located</param>
+        /// <param name="priceLessThan">Promotion price will be less than this value</param>
+        /// <param name="priceGreaterThan">Promotion price will be greater than this value</param>
+        /// <param name="name">Promotion name or part of it</param>
+        /// <param name="orderBy">Order results by (valids values: ...)</param> //TODO: Add values
+        /// <returns>List of promotions</returns>
+        /// <response code="200">Returns list of promotions that match the parameters</response>
+        /// <response code="400">If invalid authorization, or invalid limit</response>
+        /// <response code="401">If token is invalid</response>
+        /// <response code="404">If no promotion is found</response>
         [HttpGet]
-        public async Task<IActionResult> GetPromotionsAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null, [FromQuery] int? priceLessThan = null, [FromQuery] int? priceGreaterThan = null, [FromQuery] string name = null)
+        [ProducesResponseType(200, Type = typeof(HashSet<PromotionResponse>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<IEnumerable<PromotionResponse>>> GetPromotionsAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "state_id")] long? stateId = null, [FromQuery] int? priceLessThan = null, [FromQuery] int? priceGreaterThan = null, [FromQuery] string name = null, [FromQuery] string orderBy = null)
         {
-            //TODO: Add price (<x, >x, x-y), add name?
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
                 return BadRequest(validation.Result);
@@ -43,6 +65,11 @@ namespace PromotionApi.Controllers
                 return BadRequest(new ErrorResponse { Error = "Invalid limit" });
 
             IQueryable<Promotion> promotionQuery = _context.Promotions.Where(x => x.Active);
+
+            if (orderBy != null)
+            {
+                //TODO: order by
+            }
 
             if (afterId != null)
                 promotionQuery = promotionQuery.Where(x => x.Id > afterId.Value);
@@ -70,12 +97,24 @@ namespace PromotionApi.Controllers
             if (!promotions.Any())
                 return NotFound(new ErrorResponse { Error = "No promotion found" });
             else
-                return Ok(promotions.Select(x => new { id = x.Id, name = x.Name, image_url = x.ImageUrl, price = x.Price, user_id = x.UserFK, store_id = x.StoreFK, state_id = x.StateFK }));
+                return Ok(promotions.Select(x => new PromotionResponse { Id = x.Id, Name = x.Name, RegisterDate = x.RegisterDate, ImageUrl = x.ImageUrl, Price = x.Price, UserFK = x.UserFK, StoreFK = x.StoreFK, StateFK = x.StateFK, ExpireDate = x.ExpireDate, Active = x.Active }));
         }
 
         // POST api/<controller>/register
+        /// <summary>
+        /// Register a promotion
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="promotionData">Data related to the promotion to create</param>
+        /// <returns>Promotion</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, invalid name, invalid price, invalid image url, or invalid state id</response>
+        /// <response code="401">If token is invalid</response>
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync([FromHeader(Name = "Authorization"), Required] string authorization)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> RegisterAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromBody] RegisterPromotionBody promotionData)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -85,26 +124,18 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            string body;
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
-                body = await reader.ReadToEndAsync();
-
-            RegisterPromotionBody promotionData = JsonConvert.DeserializeObject<RegisterPromotionBody>(body);
-            if (promotionData == null)
-                return BadRequest(new ErrorResponse { Error = "Invalid json" });
-
             if (string.IsNullOrWhiteSpace(promotionData.Name))
                 return BadRequest(new ErrorResponse { Error = "Invalid name" });
             if (promotionData.Price <= 0)
                 return BadRequest(new ErrorResponse { Error = "Invalid price" });
             if (string.IsNullOrWhiteSpace(promotionData.ImageUrl))
                 return BadRequest(new ErrorResponse { Error = "Invalid image url" });
-            //TODO: Add expire_date
-            //TODO: Uncomment following section
-            /*if (!await _context.States.AnyAsync(x => x.Id == promotionData.StateFK))
+            if (!await _context.States.AnyAsync(x => x.Id == promotionData.StateFK))
                 return BadRequest(new ErrorResponse { Error = "Invalid state id" });
-            if (!await _context.Stores.AnyAsync(x => x.Id == promotionData.StoreFK))
+            //TODO: Uncomment following section
+            /*if (!await _context.Stores.AnyAsync(x => x.Id == promotionData.StoreFK))
                 return BadRequest(new ErrorResponse { Error = "Invalid state id" });*/
+            //TODO: Add expire_date
 
             _context.Promotions.Add(new Promotion
             {
@@ -124,8 +155,22 @@ namespace PromotionApi.Controllers
         }
 
         // GET api/<controller>/{id}
+        /// <summary>
+        /// Get promotion information by id
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Promotion id</param>
+        /// <returns>Promotion</returns>
+        /// <response code="200">Returns promotion</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid</response>
+        /// <response code="404">If no promotion is found</response>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        [ProducesResponseType(200, Type = typeof(PromotionResponse))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<PromotionResponse>> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -138,12 +183,28 @@ namespace PromotionApi.Controllers
             if (promotion == null)
                 return NotFound("Promotion not found");
 
-            return Ok(new { id = promotion.Id, price = promotion.Price, image_url = promotion.ImageUrl, register_date = promotion.RegisterDate, expire_date = promotion.ExpireDate, active = promotion.Active });
+            return Ok(new PromotionResponse { Id = promotion.Id, Name = promotion.Name, Price = promotion.Price, ImageUrl = promotion.ImageUrl, RegisterDate = promotion.RegisterDate, UserFK = promotion.UserFK, StateFK = promotion.StateFK, StoreFK = promotion.StoreFK, ExpireDate = promotion.ExpireDate, Active = promotion.Active });
         }
 
         // DELETE api/<controller>/{id}
+        /// <summary>
+        /// Delete promotion
+        /// </summary>
+        /// <remarks>
+        /// Requires the owner or permission to delete promotions from other users.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Promotion id</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid, or no permission to delete</response>
+        /// <response code="404">If no promotion is found</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)

@@ -6,9 +6,7 @@ using PromotionApi.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PromotionApi.Controllers
@@ -138,8 +136,7 @@ namespace PromotionApi.Controllers
         /// </remarks>
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="editUserData">Information to edit from this user</param>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Returns nothing</response>
+        /// <response code="200">Success</response>
         /// <response code="400">If invalid authorization, invalid name, invalid cpf, invalid telephone, invalid cellphone, invalid image url, invalid nickname, or already used nickname</response>
         /// <response code="401">If token is invalid</response>
         [HttpPatch]
@@ -240,8 +237,7 @@ namespace PromotionApi.Controllers
         /// </summary>
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="wishlistItemData">Item information to add to wishlist</param>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Returns nothing</response>
+        /// <response code="200">Success</response>
         /// <response code="400">If invalid authorization, invalid item name, or item already exists</response>
         /// <response code="401">If token is invalid</response>
         [HttpPost("wishlist")]
@@ -297,7 +293,7 @@ namespace PromotionApi.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<WishlistItemResponse>> GetOwnWishListAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        public async Task<ActionResult<WishlistItemResponse>> GetOwnWishListAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -327,8 +323,7 @@ namespace PromotionApi.Controllers
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="id">Wishlist item id</param>
         /// <param name="wishlistItemData">Item information to delete from wishlist</param>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Returns nothing</response>
+        /// <response code="200">Success</response>
         /// <response code="400">If invalid authorization</response>
         /// <response code="401">If token is invalid, or item isn't from this user</response>
         /// <response code="404">If no item with this id is found</response>

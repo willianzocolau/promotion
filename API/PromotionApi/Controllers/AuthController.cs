@@ -203,8 +203,7 @@ namespace PromotionApi.Controllers
         /// Logout (invalidate a token)
         /// </summary>
         /// <param name="authorization">Bearer Auth format</param>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Invalidated the token (doesn't check if it was valid)</response>
+        /// <response code="200">Sucess, token invalidated (doesn't check if it was valid)</response>
         /// <response code="400">If invalid authorization</response>
         [HttpPost("logout")]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
@@ -229,8 +228,7 @@ namespace PromotionApi.Controllers
         /// Initiate the password reset process for a specific user
         /// </summary>
         /// <param name="resetPasswordData">Required information to reset the password from a specific user</param>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Email sent to the specified user with the code to change their password</response>
+        /// <response code="200">Success, email sent to the specified user with the code to change their password</response>
         /// <response code="400">If invalid email</response>
         /// <response code="404">If email not found</response>
         [HttpPost("reset")]
@@ -277,8 +275,7 @@ namespace PromotionApi.Controllers
         /// - (With Authorization header) New password, and old password
         /// - (Without Authorization header) New password, email, and reset code
         /// </remarks>
-        /// <returns>Nothing</returns>
-        /// <response code="200">Password changed</response>
+        /// <response code="200">Success, password changed</response>
         /// <response code="400">If invalid new password, invalid old password, invalid reset code, invalid email, or old password and reset code provided</response>
         /// <response code="404">If token not found</response>
         [HttpPost("change")]

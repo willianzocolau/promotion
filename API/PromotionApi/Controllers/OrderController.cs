@@ -28,7 +28,7 @@ namespace PromotionApi.Controllers
 
         // GET api/<controller>
         /// <summary>
-        /// Search all orders
+        /// Search orders
         /// </summary>
         /// <remarks>
         /// The user needs permission to administrate the orders, otherwise the user id parameter will be auto filled.
@@ -41,7 +41,7 @@ namespace PromotionApi.Controllers
         /// <param name="promotionId">Promotion id related to the order</param>
         /// <param name="approved">If the orders should be approved or not</param>
         /// <returns>List of orders</returns>
-        /// <response code="200">Returns the list of orders that match the parameters</response>
+        /// <response code="200">Returns list of orders that match the parameters</response>
         /// <response code="400">If invalid authorization, or invalid limit</response>
         /// <response code="401">If token is invalid</response>
         /// <response code="404">If no order matchs the parameters</response>
@@ -50,7 +50,7 @@ namespace PromotionApi.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> GetOrdersAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "promotion_id")] long? promotionId = null, [FromQuery] bool? approved = null)
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromQuery] int limit = 25, [FromQuery(Name = "after")] long? afterId = null, [FromQuery(Name = "user_id")] long? userId = null, [FromQuery(Name = "store_id")] long? storeId = null, [FromQuery(Name = "promotion_id")] long? promotionId = null, [FromQuery] bool? approved = null)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -97,8 +97,24 @@ namespace PromotionApi.Controllers
         }
 
         // POST api/<controller>
+        /// <summary>
+        /// Register order
+        /// </summary>
+        /// <remarks>
+        /// The authorization token needs to be one from a store.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format (store)</param>
+        /// <param name="orderData">Data related to the order to create</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, or promotion not from your store</response>
+        /// <response code="401">If token is invalid</response>
+        /// <response code="404">If promotion is not found, or user is not found</response>
         [HttpPost]
-        public async Task<IActionResult> AddOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> AddOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromBody, Required] AddOrderBody orderData)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -108,22 +124,14 @@ namespace PromotionApi.Controllers
             if (store == null)
                 return Unauthorized();
 
-            string body;
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
-                body = await reader.ReadToEndAsync();
-
-            AddOrderBody data = JsonConvert.DeserializeObject<AddOrderBody>(body);
-            if (data == null)
-                return BadRequest(new ErrorResponse { Error = "Invalid json" });
-
-            Promotion promotion = await _context.Promotions.FindAsync(data.PromotionId);
+            Promotion promotion = await _context.Promotions.FindAsync(orderData.PromotionId);
             if (promotion == null)
                 return NotFound(new ErrorResponse { Error = "Promotion not found" });
 
             if (promotion.StoreFK != store.Id)
                 return BadRequest(new ErrorResponse { Error = "Promotion not from your store" });
 
-            User user = await _context.Users.FindAsync(data.UserId);
+            User user = await _context.Users.FindAsync(orderData.UserId);
             if (user == null)
                 return NotFound(new ErrorResponse { Error = "User not found" });
 
@@ -131,8 +139,8 @@ namespace PromotionApi.Controllers
             {
                 RegisterDate = DateTimeOffset.UtcNow,
                 ApprovedByUserFK = null,
-                PromotionFK = data.PromotionId,
-                UserFK = data.UserId
+                PromotionFK = orderData.PromotionId,
+                UserFK = orderData.UserId
             });
 
             await _context.SaveChangesAsync();
@@ -141,8 +149,24 @@ namespace PromotionApi.Controllers
         }
 
         // PATCH api/<controller>/{id}/approve
+        /// <summary>
+        /// Approve order and distribute credits (cashback)
+        /// </summary>
+        /// <remarks>
+        /// Requires permission to approve orders.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Order id</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, already approved, or linked promotion without cashback percentage</response>
+        /// <response code="401">If token is invalid, or no permission to approve</response>
+        /// <response code="404">If order is not found</response>
         [HttpPatch("{id}/approve")]
-        public async Task<IActionResult> ApproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> ApproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -154,13 +178,13 @@ namespace PromotionApi.Controllers
 
             Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
-                return BadRequest("Invalid order");
+                return NotFound(new ErrorResponse { Error = "Order not found" });
 
             if (order.ApprovedByUserFK != null)
-                return BadRequest("Order already approved");
+                return BadRequest(new ErrorResponse { Error = "Order already approved" });
 
             if (!order.Promotion.CashbackPercentage.HasValue)
-                return BadRequest("Promotion linked to this order has no cashback percentage");
+                return BadRequest(new ErrorResponse { Error = "Promotion linked to this order has no cashback percentage" });
 
             double totalCashback = order.Promotion.Price * order.Promotion.CashbackPercentage.Value;
             order.User.Credit += Utils.GetBuyerCashback(totalCashback);
@@ -173,8 +197,24 @@ namespace PromotionApi.Controllers
         }
 
         // PATCH api/<controller>/{id}/disapprove
+        /// <summary>
+        /// Disappove order and remove the distributed credits (cashback)
+        /// </summary>
+        /// <remarks>
+        /// Requires permission to disapprove orders.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Order id</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, or not approved</response>
+        /// <response code="401">If token is invalid, or no permission to approve</response>
+        /// <response code="404">If order is not found</response>
         [HttpPatch("{id}/disapprove")]
-        public async Task<IActionResult> DisapproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> DisapproveOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -186,10 +226,10 @@ namespace PromotionApi.Controllers
 
             Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
-                return BadRequest("Invalid order");
+                return NotFound(new ErrorResponse { Error = "Order not found" });
 
             if (order.ApprovedByUserFK == null)
-                return BadRequest("Order isn't approved");
+                return BadRequest(new ErrorResponse { Error = "Order isn't approved" });
 
             double totalCashback = order.Promotion.Price * order.Promotion.CashbackPercentage.Value;
             order.User.Credit -= Utils.GetBuyerCashback(totalCashback);
@@ -202,8 +242,24 @@ namespace PromotionApi.Controllers
         }
 
         // DELETE api/<controller>/{id}
+        /// <summary>
+        /// Delete order
+        /// </summary>
+        /// <remarks>
+        /// Requires permission to delete orders.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Order id</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid, or no permission to delete</response>
+        /// <response code="404">If no order is found</response>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> DeleteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)

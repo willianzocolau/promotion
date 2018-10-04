@@ -64,7 +64,7 @@ namespace PromotionApi.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<StateResponse>> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        public async Task<ActionResult<StateResponse>> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
