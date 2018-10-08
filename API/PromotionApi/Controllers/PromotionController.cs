@@ -40,7 +40,7 @@ namespace PromotionApi.Controllers
         /// <param name="priceLessThan">Promotion price will be less than this value</param>
         /// <param name="priceGreaterThan">Promotion price will be greater than this value</param>
         /// <param name="name">Promotion name or part of it</param>
-        /// <param name="orderBy">Order results by (valids values: ...)</param> //TODO: Add values
+        /// <param name="orderBy">Order results by (valid values: ...)</param> //TODO: Add values
         /// <returns>List of promotions</returns>
         /// <response code="200">Returns list of promotions that match the parameters</response>
         /// <response code="400">If invalid authorization, or invalid limit</response>
