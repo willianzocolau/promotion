@@ -24,12 +24,21 @@
               Editar Perfil
             </button>
           </ion-col>
+
+          <ion-col no-padding class="column"> 
+            <button ion-button icon-left small full color="light" menuClose (click)="logout()">
+              <ion-icon name="home"></ion-icon>
+              Meus Anúncios
+            </button>
+          </ion-col>
+
           <ion-col no-padding class="column">
             <button ion-button icon-left small full color="light" menuClose (click)="logout()">
               <ion-icon name="log-out"></ion-icon>
               Log Out
             </button>
           </ion-col>
+
         </ion-row>
 
       </ion-grid>
