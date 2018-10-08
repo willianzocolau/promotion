@@ -1,10 +1,8 @@
 <!-- # -->
 <ion-header>
 
-  <ion-navbar color="primary">
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
+  <custom-navbar></custom-navbar>
+  <ion-navbar color="#fff">
     <form class="list-form" [formGroup]="form">
       <ion-row>
         <ion-input class="inp" placeholder="Digite..." autofocus formControlName="input"></ion-input>
