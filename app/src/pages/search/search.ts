@@ -1,7 +1,7 @@
-import {Component} from "@angular/core";
-import {NavController, NavParams, AlertController} from "ionic-angular";
-import {Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component } from "@angular/core";
+import { NavController, NavParams, AlertController } from "ionic-angular";
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { HTTP } from '@ionic-native/http';
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
 
@@ -16,7 +16,7 @@ export class SearchPage {
   public promotions = [];
 
   constructor(public formBuilder: FormBuilder,
-    private httpClient: HttpClient,
+    private http: HTTP,
     public alertCtrl: AlertController,
     public nav: NavController,
     public navParams: NavParams,
@@ -32,7 +32,6 @@ export class SearchPage {
   }
 
   pesquisa() {
-    let headers = new HttpHeaders();
     let input: string = this.form.get('input').value;
 
     if (!input) {
@@ -43,26 +42,26 @@ export class SearchPage {
       msg.present();
     }
     else {
-      headers = headers.set('Content-Type', 'application/json');
-      headers = headers.set("Authorization", "Bearer " + this.user.getToken());
-      let url = this.server.promotionSearch(input);
+      let endpoint: string = this.server.promotionSearch(input);
+      let headers = {
+        'Authorization': 'Bearer ' + this.user.getToken()
+      };
       this.promotions = [];
-      const req = this.httpClient.get(url, { headers: headers }).subscribe(
-        res => {
-          /*let data: any[];
-          data = res as any[];
-          data.forEach(element => {
+
+      this.http.get(endpoint, {}, headers)
+        .then(response => {
+          var dados = JSON.parse(response.data);
+          dados.forEach(element => {
             this.promotions.push({ id: element.id, name: element.name, image_url: element.image_url, price: element.price });
-          });*/
-          console.log(res);
-        },
-        err => {
+          });
+          console.log(response.data);
+        })
+        .catch(error => {
           let msg = this.alertCtrl.create({
-            message: "erro:" + err.error
+            message: "erro:" + error
           });
           msg.present();
-        }
-      );
+        });
     }
   }
 }

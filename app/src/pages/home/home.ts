@@ -24,7 +24,7 @@ export class HomePage {
               private server: ServerStrings,
               private http: HTTP) {
     
-    let url: string = this.server.user();
+    /*let url: string = this.server.user();
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
@@ -45,7 +45,7 @@ export class HomePage {
     })
     .catch(error => {
       console.log(error);
-    });
+    });*/
   }
 
   // to go account page
