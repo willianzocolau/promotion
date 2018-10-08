@@ -17,33 +17,40 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-card>
+
+<ion-content>
+<div class="corpo">
+<ion-card  *ngFor="let item of promotions">
   
   <ion-item>
     <ion-avatar item-start>
       <img src="../assets/img/avatar.jpeg">
     </ion-avatar>
-    <h2>Nome do Usuário</h2>
-    <p>data da publicação</p>
+    <h2>{{ item.username }}</h2>
+    <p>{{ item.date }}</p>
   </ion-item>
-  <img width="80" height="120" src="../assets/img/interrogação.jpg">
+  <div class="frame">
+        <img class="inner" [src]=item.image_url/>
+  </div>
   <ion-card-content>
-    <p>Breve descrição sobre o produto Anunciado</p>
+    <p>{{ item.description }}</p>
   </ion-card-content>
   <ion-row>
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="thumbs-up"></ion-icon>
-        <div>12 Likes</div>
+        <div>{{ item.likes }} Likes</div>
       </button>
     </ion-col>
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="text"></ion-icon>
-        <div>4 Comments</div>
+        <div>{{ item.comments }} Comments</div>
       </button>
     </ion-col>
     <ion-col center text-center>
     </ion-col>
   </ion-row>
   </ion-card>
+</div>
+</ion-content>
