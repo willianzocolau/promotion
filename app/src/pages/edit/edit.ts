@@ -73,7 +73,7 @@ export class EditPage {
             "telephone": telephone,
             "image_url": image_url
         };
-        let url = this.server.userEdit();
+        let url = this.server.user();
         this.httpClient.patch(url, body, {headers: headers, responseType: "text"})
         .subscribe(
             res => {
