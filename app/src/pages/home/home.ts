@@ -1,9 +1,7 @@
 import {Component} from "@angular/core";
-import {NavController, PopoverController} from "ionic-angular";
+import {NavController} from "ionic-angular";
 import {Storage} from '@ionic/storage';
 
-import {NotificationsPage} from "../notifications/notifications";
-import {SettingsPage} from "../settings/settings";
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
 
@@ -18,7 +16,6 @@ export class HomePage {
   public promotions = [];
   constructor(private storage: Storage,
               public nav: NavController,
-              public popoverCtrl: PopoverController,
               private user: UserData,
               private server: ServerStrings,
               private http: HTTP) {
@@ -43,13 +40,4 @@ export class HomePage {
 
     ];
   }
-
-  presentNotifications(myEvent) {
-    console.log(myEvent);
-    let popover = this.popoverCtrl.create(NotificationsPage);
-    popover.present({
-      ev: myEvent
-    });
-  }
-
 }

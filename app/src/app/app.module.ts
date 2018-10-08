@@ -13,6 +13,8 @@ import { ServerStrings } from '../providers/serverStrings';
 
 import { MyApp } from "./app.component";
 
+import { CustomNavComponent } from "../components/navbar/custom-navbar";
+
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
@@ -33,6 +35,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
 @NgModule({
   declarations: [
     MyApp,
+    CustomNavComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -59,6 +62,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    CustomNavComponent,
     SettingsPage,
     HomePage,
     LoginPage,
