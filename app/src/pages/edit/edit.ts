@@ -56,8 +56,8 @@ export class EditPage {
         }
 
         let headers = new HttpHeaders();
-        headers = headers.set('Content-Type', 'application/json');    
-        headers = headers.set("Authorization", "Bearer " + this.user.token);
+        headers = headers.set('Content-Type', 'application/json');
+        headers = headers.set("Authorization", "Bearer " + this.user.getToken());
         if(name == "") name = null;
         if(nickname == "") nickname = null;
         if(cpf == "") cpf = null;

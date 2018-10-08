@@ -33,7 +33,7 @@ export class ServerStrings{
         return this.url + "api/promotion/";
     }
     promotionSearch(name: string){
-        return this.promotion() + "search/" + name;
+        return this.promotion() + "?name=" + name;
     }
     promotionRegister(){
         return this.promotion() + "register/";

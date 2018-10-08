@@ -30,6 +30,10 @@ export class LoginPage {
       password: ['', Validators.required],
     });
     this.menu.swipeEnable(false);
+    this.user.getEmailAsync().then((email) => {
+      if (email != null)
+        this.form.controls['email'].setValue(email.toLowerCase());
+    });
   }
 
   // go to register page
@@ -51,8 +55,7 @@ export class LoginPage {
       res => {
         console.log("Sucesso");
         this.data = res;
-        this.user.setToken(this.data.token);
-        this.user.setEmail(email);
+        this.user.update(res);
         this.nav.setRoot(HomePage);
       },
       err => {
@@ -100,6 +103,10 @@ export class LoginPage {
       ]
     });
     forgot.present();
+  }
+
+  moveFocus(nextElement) {
+    nextElement.setFocus();
   }
 
 }

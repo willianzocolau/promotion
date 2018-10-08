@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { Platform, Nav } from "ionic-angular";
+import { Platform, Nav, Events } from "ionic-angular";
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -26,16 +26,18 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = LoginPage;
-  dnickname: string = null;
 
   appMenuItems: Array<MenuItem>;
+  nickname: string;
+  credit: string;
 
   constructor(
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public keyboard: Keyboard,
-    private user: UserData
+    private user: UserData,
+    private events: Events
   ) {
     this.initializeApp();
 
@@ -43,9 +45,10 @@ export class MyApp {
       {title: 'Home', component: HomePage, icon: 'home'},
       {title: 'Search', component: SearchPage, icon: 'search'},
     ];
-    
-    this.user.getNickname().then( val => {
-        this.dnickname = val
+
+    this.events.subscribe('user:updated', (userData) => {
+      this.nickname = user.getNickname();
+      this.credit = user.getCredit().toFixed(2);
     });
   }
 
@@ -72,17 +75,11 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
-
   logout() {
     this.nav.setRoot(LoginPage);
   }
 
   edit() {
     this.nav.setRoot(EditAuthPage);
-  }
-
-  get nickname(): any {
-    
-    return this.dnickname;
   }
 }

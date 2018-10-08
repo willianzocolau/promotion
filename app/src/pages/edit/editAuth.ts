@@ -33,28 +33,30 @@ export class EditAuthPage {
         });
     }
     confirm() {
-        let headers = new HttpHeaders();
-        let email: string = this.user.email;
+      let headers = new HttpHeaders();
+      this.user.getEmailAsync().then((email) => {
         let password: string = this.form.get('password').value;
-        headers = headers.set('Content-Type', 'application/json');    
+        headers = headers.set('Content-Type', 'application/json');
         headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
         let body: string = "";
         let url: string = this.server.auth("login");
-        const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
-            res => {
-                console.log("Sucesso");
-                this.data = res;
-                this.user.setToken(this.data.token);
-                this.nav.push(EditPage);
-            },
-            err => {
-                console.log("Erro");
-                let erro = this.alertCtrl.create({
-                    message:  err.error });
-                erro.present();
-                this.nav.setRoot(HomePage);
-            }
+        const req = this.httpClient.post(url, body, { headers: headers }).subscribe(
+          res => {
+            console.log("Sucesso");
+            this.data = res;
+            this.user.setToken(this.data.token);
+            this.nav.push(EditPage);
+          },
+          err => {
+            console.log("Erro");
+            let erro = this.alertCtrl.create({
+              message: err.error
+            });
+            erro.present();
+            this.nav.setRoot(HomePage);
+          }
         );
+      });
     }
 
      // to go account page
