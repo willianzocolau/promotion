@@ -88,11 +88,6 @@ export class EditPage {
         );
     }
 
-     // to go account page
-    goToAccount() {
-        this.nav.push(SettingsPage);
-    }
-
     presentNotifications(myEvent) {
         console.log(myEvent);
         let popover = this.popoverCtrl.create(NotificationsPage);

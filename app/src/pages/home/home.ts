@@ -23,28 +23,6 @@ export class HomePage {
               private server: ServerStrings,
               private http: HTTP) {
             
-    /*let url: string = this.server.user();
-    let headers = {
-      'Authorization': 'Bearer ' + this.user.getToken()
-    };
-    console.log(this.user.getToken());
-
-    this.http.get(url , {}, headers)
-    .then(data => {
-      var dados = JSON.parse(data.data);
-      this.user.setId(dados.id);
-      this.user.setNickname(dados.nickname);
-      this.user.setImage_Url(dados.image_url);
-      //this.user.setId(dados.register_date);
-      this.user.setType(dados.type);
-      this.user.setCredit(dados.credit);
-      this.user.setEmail(dados.email);   
-      this.user.setName(dados.name);   
-      this.user.setState(dados.state);    
-    })
-    .catch(error => {
-      console.log(error);
-    });*/
     this.promotions = [
         {
             "username": "andre",
@@ -64,11 +42,6 @@ export class HomePage {
         },
 
     ];
-  }
-
-  // to go account page
-  goToAccount() {
-    this.nav.push(SettingsPage);
   }
 
   presentNotifications(myEvent) {
