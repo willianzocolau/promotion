@@ -1,22 +1,44 @@
 <!-- # -->
 <ion-header>
-
   <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <form class="list-form" [formGroup]="form">
-      <ion-input class="inp" placeholder="Digite..." padding-left autofocus formControlName="input"></ion-input>  
-      <button class="btt" ion-button icon-start block color="dark" tappable (click)="pesquisa()">
-        <ion-icon name="search"></ion-icon>
-        Pesquisar
-      </button>
-    </form>
-  </ion-navbar>
+    <ion-title>
+      pro<strong>Motion</strong>
+    </ion-title>
 
+    <ion-buttons end>
+      <button ion-button tappable (click)="presentNotifications($event)">
+        <ion-icon name="notifications"></ion-icon>
+      </button>
+      <button ion-button tappable (click)="goToAccount()">
+        <ion-icon name="settings"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
 </ion-header>
 
 <ion-content>
+
+  <form class="list-form" [formGroup]="form">
+
+    <ion-item>
+
+      <ion-label color="primary">Pesquisar: </ion-label>
+
+      <ion-input class="inp" placeholder="Digite..." formControlName="input" class="text-primary">
+      </ion-input>
+
+    </ion-item>
+
+    <button ion-button icon-start full color="dark" tappable (click)="pesquisa()">
+      <ion-icon name="search"></ion-icon>
+    </button>
+
+  </form>
+
   <div class="list-no-border">
     <!--nearby places-->
     <ion-item *ngFor="let item of promotions" tappable (click)="searchBy(item)">
@@ -30,9 +52,9 @@
             <th class="price">price: {{item.price}}</th>
           </tr>
         </table>
-        
-        
+
       </div>
     </ion-item>
   </div>
+
 </ion-content>
