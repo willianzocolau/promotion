@@ -1,4 +1,4 @@
-<!-- -->
+﻿<!-- -->
 <ion-header>
   <ion-navbar color="primary">
     <button ion-button menuToggle>
@@ -10,9 +10,6 @@
     <ion-buttons end>
       <button ion-button tappable (click)="presentNotifications($event)">
         <ion-icon name="notifications"></ion-icon>
-      </button>
-      <button ion-button tappable (click)="goToAccount()">
-        <ion-icon name="settings"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -39,13 +36,13 @@
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="thumbs-up"></ion-icon>
-        <div>{{ item.likes }} Likes</div>
+        <div>{{ item.likes }}</div>
       </button>
     </ion-col>
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="text"></ion-icon>
-        <div>{{ item.comments }} Comments</div>
+        <div>{{ item.comments }} Comentários</div>
       </button>
     </ion-col>
     <ion-col center text-center>

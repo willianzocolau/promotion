@@ -9,12 +9,13 @@ import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
 import { SearchPage } from "../pages/search/search";
 import { EditAuthPage } from "../pages/edit/editAuth";
+import { SettingsPage } from "../pages/settings/settings";
 import { UserData } from "../providers/userData";
 
 
 export interface MenuItem {
     title: string;
-    component: any;
+    function: any;
     icon: string;
 }
 
@@ -36,14 +37,18 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public keyboard: Keyboard,
-    private user: UserData,
-    private events: Events
+    public user: UserData,
+    public events: Events,
   ) {
     this.initializeApp();
 
     this.appMenuItems = [
-      {title: 'Home', component: HomePage, icon: 'home'},
-      {title: 'Search', component: SearchPage, icon: 'search'},
+      { title: 'Home', function: () => { this.openPage(HomePage) }, icon: 'home' },
+      { title: 'Pesquisar', function: () => { this.openPage(SearchPage) }, icon: 'search' },
+      { title: 'Meus anúncios', function: () => { this.openPage(SearchPage) }, icon: 'pricetags' },
+      { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
+      { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
+      { title: 'Sair', function: () => { this.openPage(LoginPage) }, icon: 'exit' },
     ];
 
     this.events.subscribe('user:updated', (userData) => {
@@ -70,16 +75,14 @@ export class MyApp {
   }
 
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
+    this.nav.setRoot(page);
   }
 
-  logout() {
-    this.nav.setRoot(LoginPage);
+  pushPage(page) {
+    this.nav.push(page);
   }
 
-  edit() {
-    this.nav.setRoot(EditAuthPage);
+  executeFunction(func) {
+    func();
   }
 }

@@ -17,18 +17,11 @@
           </ion-col>
         </ion-row>
 
-        <ion-row no-padding class="other-data">
+        <!--><ion-row no-padding class="other-data">
           <ion-col no-padding class="column">
             <button ion-button icon-left small full color="light" menuClose (click)="edit()">
               <ion-icon name="contact"></ion-icon>
               Editar Perfil
-            </button>
-          </ion-col>
-
-          <ion-col no-padding class="column"> 
-            <button ion-button icon-left small full color="light" menuClose (click)="logout()">
-              <ion-icon name="home"></ion-icon>
-              Meus Anúncios
             </button>
           </ion-col>
 
@@ -39,7 +32,7 @@
             </button>
           </ion-col>
 
-        </ion-row>
+        </ion-row>-->
 
       </ion-grid>
 
@@ -49,7 +42,7 @@
   <ion-content color="primary">
 
     <ion-list class="user-list">
-      <button ion-item menuClose class="text-1x" *ngFor="let menuItem of appMenuItems" (click)="openPage(menuItem)">
+      <button ion-item menuClose class="text-1x" *ngFor="let menuItem of appMenuItems" (click)="executeFunction(menuItem.function)">
         <ion-icon item-left [name]="menuItem.icon" color="primary"></ion-icon>
         <span ion-text color="primary">{{menuItem.title}}</span>
       </button>
