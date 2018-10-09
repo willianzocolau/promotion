@@ -68,6 +68,7 @@ namespace PromotionApi.Controllers
 
             if (orderBy != null)
             {
+                promotionQuery = promotionQuery.OrderByDescending(x => x.RegisterDate);
                 //TODO: order by
             }
 
@@ -90,7 +91,7 @@ namespace PromotionApi.Controllers
                 promotionQuery = promotionQuery.Where(x => x.Price > priceGreaterThan.Value);
 
             if (name != null)
-                promotionQuery = promotionQuery.Where(x => EF.Functions.ILike(x.Name, $"%{x.Name}%")); //TODO: Testar
+                promotionQuery = promotionQuery.Where(x => EF.Functions.ILike(x.Name, $"%{name}%"));
 
             List<Promotion> promotions = await promotionQuery.Take(limit).ToListAsync();
 

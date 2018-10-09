@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\pnman\Documents\GitHub\promotion\API\PromotionApi\PromotionApi.xml</DocumentationFile>
+    <DocumentationFile>PromotionApi.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>E:\Github\promotion\API\PromotionApi\PromotionApi.xml</DocumentationFile>
+    <DocumentationFile>PromotionApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
