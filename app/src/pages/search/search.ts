@@ -50,15 +50,15 @@ export class SearchPage {
 
       this.http.get(endpoint, {}, headers)
         .then(response => {
-          console.log(response.data);
           var dados = JSON.parse(response.data);
           dados.forEach(element => {
             this.promotions.push({ id: element.id, name: element.name, image_url: element.image_url, price: element.price });
           });
         })
         .catch(exception => {
+          var dados = JSON.parse(exception.error);
           let msg = this.alertCtrl.create({
-            message: "erro:" + exception.error
+            message: "Erro: " + dados.error
           });
           msg.present();
         });
