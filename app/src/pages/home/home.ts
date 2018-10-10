@@ -1,11 +1,4 @@
-import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
-import {Storage} from '@ionic/storage';
-
-import { UserData } from "../../providers/userData";
-import { ServerStrings } from "../../providers/serverStrings";
-
-import { HTTP } from '@ionic-native/http';
+import { Component } from "@angular/core";
 
 @Component({
   selector: 'page-home',
@@ -14,11 +7,7 @@ import { HTTP } from '@ionic-native/http';
 
 export class HomePage {
   public promotions = [];
-  constructor(private storage: Storage,
-              public nav: NavController,
-              private user: UserData,
-              private server: ServerStrings,
-              private http: HTTP) {
+  constructor() {
             
     this.promotions = [
         {

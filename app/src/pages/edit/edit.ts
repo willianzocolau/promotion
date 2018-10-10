@@ -1,10 +1,9 @@
-import {Component} from "@angular/core";
-import {NavController, AlertController, MenuController, PopoverController} from "ionic-angular";
-import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController, AlertController, MenuController, PopoverController } from "ionic-angular";
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import {NotificationsPage} from "../notifications/notifications";
-import {SettingsPage} from "../settings/settings";
+import { NotificationsPage } from "../notifications/notifications";
 import { HomePage } from "../home/home";
 import { ServerStrings } from "../../providers/serverStrings";
 import { UserData } from "../../providers/userData";

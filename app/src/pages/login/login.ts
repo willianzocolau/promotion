@@ -1,8 +1,8 @@
-import {Component} from "@angular/core";
-import {NavController, AlertController, ToastController, MenuController} from "ionic-angular";
-import {HomePage} from "../home/home";
-import {RegisterPage} from "../register/register";
-import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController, AlertController, ToastController, MenuController } from "ionic-angular";
+import { HomePage } from "../home/home";
+import { RegisterPage } from "../register/register";
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
@@ -49,8 +49,8 @@ export class LoginPage {
     headers = headers.set('Content-Type', 'application/json');    
     headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
     let body: string = "";
-    let url: string = this.server.auth("login");
-    const req = this.httpClient.post(url, body, {headers: headers}).subscribe(
+    let url: string = this.server.auth.login();
+    this.httpClient.post(url, body, {headers: headers}).subscribe(
       res => {
         console.log("Sucesso");
         this.data = res;

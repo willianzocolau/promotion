@@ -1,12 +1,11 @@
-import {Component} from "@angular/core";
-import {NavController, AlertController, MenuController, PopoverController} from "ionic-angular";
-import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController, AlertController, MenuController, PopoverController } from "ionic-angular";
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import {NotificationsPage} from "../notifications/notifications";
-import {SettingsPage} from "../settings/settings";
-import {EditPage} from "../edit/edit";
-import {HomePage} from "../home/home";
+import { NotificationsPage } from "../notifications/notifications";
+import { EditPage } from "../edit/edit";
+import { HomePage } from "../home/home";
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
 
@@ -39,8 +38,8 @@ export class EditAuthPage {
         headers = headers.set('Content-Type', 'application/json');
         headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
         let body: string = "";
-        let url: string = this.server.auth("login");
-        const req = this.httpClient.post(url, body, { headers: headers }).subscribe(
+        let url: string = this.server.auth.login();
+        this.httpClient.post(url, body, { headers: headers }).subscribe(
           res => {
             console.log("Sucesso");
             this.data = res;

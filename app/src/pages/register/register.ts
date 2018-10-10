@@ -1,10 +1,10 @@
-import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
-import {LoginPage} from "../login/login";
-import {HomePage} from "../home/home";
-import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController } from "ionic-angular";
+import { LoginPage } from "../login/login";
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ServerStrings } from "../../providers/serverStrings";
 
 @Component({
   selector: 'page-register',
@@ -14,10 +14,11 @@ export class RegisterPage {
 
   public form : FormGroup;
 
-  constructor(public nav: NavController
-    , public formBuilder: FormBuilder
-    , private alertCtrl: AlertController
-    , private httpClient: HttpClient ) {
+  constructor(public nav: NavController,
+              public formBuilder: FormBuilder,
+              private alertCtrl: AlertController,
+              private httpClient: HttpClient,
+              private server: ServerStrings) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       nickname: ['', Validators.required],
@@ -38,8 +39,6 @@ export class RegisterPage {
     let password: string = this.form.get('password').value;
     let c_password: string = this.form.get('confirm_password').value;
 
-    console.log(cpf);
-
     if(password != c_password){
       this.alertCtrl.create({title: 'Senhas não conferem!',buttons: ['Ok']}).present();
       return;
@@ -58,7 +57,8 @@ export class RegisterPage {
         "password": password
     };
 
-    this.httpClient.post('http://178.128.186.9/api/auth/register/', body, {headers: headers}).subscribe(
+    let url: string = this.server.auth.register();
+    this.httpClient.post(url, body, {headers: headers}).subscribe(
         res => {
           this.nav.setRoot(LoginPage);
           this.alertCtrl.create({title: 'Cadastro criado com sucesso!',buttons: ['Ok']}).present();
