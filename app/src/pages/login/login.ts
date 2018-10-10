@@ -1,11 +1,12 @@
 import { Component } from "@angular/core";
-import { NavController, AlertController, ToastController, MenuController } from "ionic-angular";
+import { NavController, AlertController, ToastController, MenuController, LoadingController } from "ionic-angular";
 import { HomePage } from "../home/home";
 import { RegisterPage } from "../register/register";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
+import { HTTP } from '@ionic-native/http';
 
 @Component({
   selector: 'page-login',
@@ -18,18 +19,58 @@ export class LoginPage {
 
   constructor(public nav: NavController, 
               public formBuilder: FormBuilder, 
-              public forgotCtrl: AlertController, 
+              public alertCtrl: AlertController, 
               public menu: MenuController, 
-              public toastCtrl: ToastController, 
+              public toastCtrl: ToastController,
               private httpClient: HttpClient,
               private user: UserData,
-              private server: ServerStrings
-              ) {
+              private server: ServerStrings,
+              private http: HTTP,
+              private loadingCtrl: LoadingController) {
     this.form = this.formBuilder.group({
       email: ['', Validators.email],
       password: ['', Validators.required],
     });
     this.menu.swipeEnable(false);
+    let loading = this.loadingCtrl.create({ content: 'Loading' });
+    loading.present();
+    this.user.getTokenAsync().then((token) => {
+      if (token != null) {
+        let endpoint: string = this.server.auth.extend();
+        let headers = {
+          'Authorization': 'Bearer ' + token,
+          'Content-type': 'application/json'
+        };
+
+        http.post(endpoint, {}, headers)
+          .then(response => {
+            var dados = JSON.parse(response.data);
+            this.user.setToken(dados.token);
+
+            let endpoint: string = this.server.user();
+            let headers = {
+              'Authorization': 'Bearer ' + dados.token
+            };
+
+            http.get(endpoint, {}, headers)
+              .then(res => {
+                this.user.update(JSON.parse(res.data));
+                loading.dismiss();
+                this.nav.setRoot(HomePage);
+              })
+              .catch(err => {
+                loading.dismiss();
+                this.user.setToken(null);
+              });
+          })
+          .catch(error => {
+            loading.dismiss();
+          });
+      }
+      else {
+        loading.dismiss();
+      }
+    });
     this.user.getEmailAsync().then((email) => {
       if (email != null)
         this.form.controls['email'].setValue(email.toLowerCase());
@@ -59,7 +100,7 @@ export class LoginPage {
       },
       err => {
         console.log("Erro");
-        let erro = this.forgotCtrl.create({
+        let erro = this.alertCtrl.create({
           message:  err.error });
         erro.present();
       }
@@ -67,7 +108,7 @@ export class LoginPage {
   }
 
   forgotPass() {
-    let forgot = this.forgotCtrl.create({
+    let forgot = this.alertCtrl.create({
       title: 'Forgot Password?',
       message: "Enter you email address to send a reset link password.",
       inputs: [
