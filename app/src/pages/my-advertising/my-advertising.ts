@@ -14,11 +14,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'my-advertising.html',
 })
 export class MyAdvertisingPage {
-  private promotion = [];
+  private promotions = [];
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.promotions = [
       {
-        "username": "andre",
+        "username": "user1",
         "date": "10-09-2018",
         "description": "Mouse muito legal",
         "likes": 12,
@@ -26,11 +26,11 @@ export class MyAdvertisingPage {
         "image_url": "https://purepng.com/public/uploads/large/purepng.com-pc-mousepc-mousepcmouselaptop-mouse-1701528347542ws1aa.png"
       },
       {
-        "username": "andre",
+        "username": "user2",
         "date": "11-08-2018",
         "description": "outro Mouse muito legal",
-        "likes": 16,
-        "comments": 10,
+        "likes": 14,
+        "comments": 9,
         "image_url": "https://purepng.com/public/uploads/large/purepng.com-pc-mousepc-mousepcmouselaptop-mouse-1701528347542ws1aa.png"
       },
     ];
