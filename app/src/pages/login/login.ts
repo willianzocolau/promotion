@@ -34,7 +34,7 @@ export class LoginPage {
     
     this.user.getTokenAsync().then((token) => {
       if (token != null) {
-        let loading = this.loadingCtrl.create({ content: 'Loading' });
+        let loading = this.loadingCtrl.create({ content: 'Carregando...' });
         loading.present();
 
         let endpoint: string = this.server.auth.extend();

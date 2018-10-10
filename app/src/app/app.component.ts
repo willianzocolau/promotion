@@ -76,6 +76,8 @@ export class MyApp {
 
       //*** Control Keyboard
       this.keyboard.disableScroll(true);
+
+      this.http.setDataSerializer('json');
     });
   }
 

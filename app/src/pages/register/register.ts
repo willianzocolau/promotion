@@ -1,10 +1,12 @@
 import { Component } from "@angular/core";
-import { NavController } from "ionic-angular";
-import { LoginPage } from "../login/login";
+import { NavController, AlertController, LoadingController } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { AlertController } from 'ionic-angular';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http';
+
+import { LoginPage } from "../login/login";
+
 import { ServerStrings } from "../../providers/serverStrings";
+import { UserData } from "../../providers/userData";
 
 @Component({
   selector: 'page-register',
@@ -16,9 +18,11 @@ export class RegisterPage {
 
   constructor(public nav: NavController,
               public formBuilder: FormBuilder,
-              private alertCtrl: AlertController,
-              private httpClient: HttpClient,
-              private server: ServerStrings) {
+              public alertCtrl: AlertController,
+              public http: HTTP,
+              public loadingCtrl: LoadingController,
+              public server: ServerStrings,
+              public user: UserData) {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       nickname: ['', Validators.required],
@@ -44,30 +48,37 @@ export class RegisterPage {
       return;
     }
 
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json');    
-    headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
+    let loading = this.loadingCtrl.create({ content: 'Registrando...' });
+    loading.present();
 
-    var body = 
+    let endpoint: string = this.server.auth.register();
+    let headers = {
+      'Authorization': 'Basic ' + btoa(email + ":" + password),
+      'Content-type': 'application/json'
+    };
+    let body =
     {
-        "name": name,
-        "nickname": nickname,
-        "cpf": cpf,
-        "email": email,
-        "password": password
+      "name": name,
+      "nickname": nickname,
+      "cpf": cpf,
+      "email": email,
+      "password": password
     };
 
-    let url: string = this.server.auth.register();
-    this.httpClient.post(url, body, {headers: headers}).subscribe(
-        res => {
-          this.nav.setRoot(LoginPage);
-          this.alertCtrl.create({title: 'Cadastro criado com sucesso!',buttons: ['Ok']}).present();
-          console.log("Sucesso");
-        },
-        err => {
-          console.log("Erro");
-        }
-      );
+    //this.http.setDataSerializer('json');
+    this.http.post(endpoint, body, headers)
+      .then(response => {
+        this.user.setToken(JSON.parse(response.data).token);
+        this.alertCtrl.create({ title: 'Cadastrado com sucesso!', buttons: ['Ok'] }).present();
+        console.log("Sucesso");
+        loading.dismiss();
+        this.nav.setRoot(LoginPage);
+      })
+      .catch(exception => {
+        this.alertCtrl.create({ title: 'Erro: ' + JSON.parse(exception.error).error, buttons: ['Ok'] }).present();
+        console.log("Erro");
+        loading.dismiss();
+      });
   }
 
   login() {
