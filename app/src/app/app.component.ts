@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { Platform, Nav, Events } from "ionic-angular";
+import { Platform, Nav, Events, LoadingController } from "ionic-angular";
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -44,6 +44,7 @@ export class MyApp {
     public events: Events,
     public http: HTTP,
     public server: ServerStrings,
+    public loadingCtrl: LoadingController,
   ) {
     this.initializeApp();
 
@@ -91,6 +92,9 @@ export class MyApp {
   }
 
   logout() {
+    let loading = this.loadingCtrl.create({ content: 'Saindo...' });
+    loading.present();
+
     let endpoint: string = this.server.auth.logout();
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken(),
@@ -100,10 +104,12 @@ export class MyApp {
     this.http.post(endpoint, {}, headers)
       .then(response => {
         this.user.setToken(null);
+        loading.dismiss();
         this.openPage(LoginPage);
       })
       .catch(error => {
         this.user.setToken(null);
+        loading.dismiss();
         this.openPage(LoginPage);
       });
   }

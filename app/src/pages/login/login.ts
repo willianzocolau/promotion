@@ -3,10 +3,10 @@ import { NavController, AlertController, ToastController, MenuController, Loadin
 import { HomePage } from "../home/home";
 import { RegisterPage } from "../register/register";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http';
+
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
-import { HTTP } from '@ionic-native/http';
 
 @Component({
   selector: 'page-login',
@@ -22,20 +22,21 @@ export class LoginPage {
               public alertCtrl: AlertController, 
               public menu: MenuController, 
               public toastCtrl: ToastController,
-              private httpClient: HttpClient,
-              private user: UserData,
-              private server: ServerStrings,
-              private http: HTTP,
-              private loadingCtrl: LoadingController) {
+              public user: UserData,
+              public server: ServerStrings,
+              public http: HTTP,
+              public loadingCtrl: LoadingController) {
     this.form = this.formBuilder.group({
       email: ['', Validators.email],
       password: ['', Validators.required],
     });
     this.menu.swipeEnable(false);
-    let loading = this.loadingCtrl.create({ content: 'Loading' });
-    loading.present();
+    
     this.user.getTokenAsync().then((token) => {
       if (token != null) {
+        let loading = this.loadingCtrl.create({ content: 'Loading' });
+        loading.present();
+
         let endpoint: string = this.server.auth.extend();
         let headers = {
           'Authorization': 'Bearer ' + token,
@@ -44,7 +45,7 @@ export class LoginPage {
 
         http.post(endpoint, {}, headers)
           .then(response => {
-            var dados = JSON.parse(response.data);
+            let dados = JSON.parse(response.data);
             this.user.setToken(dados.token);
 
             let endpoint: string = this.server.user();
@@ -67,9 +68,6 @@ export class LoginPage {
             loading.dismiss();
           });
       }
-      else {
-        loading.dismiss();
-      }
     });
     this.user.getEmailAsync().then((email) => {
       if (email != null)
@@ -84,27 +82,36 @@ export class LoginPage {
 
   // login and go to home page
   login() {
-    let headers = new HttpHeaders();
+    let loading = this.loadingCtrl.create({ content: 'Entrando...' });
+    loading.present();
+
     let email: string = this.form.get('email').value;
     let password: string = this.form.get('password').value;
-    headers = headers.set('Content-Type', 'application/json');    
-    headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
-    let body: string = "";
-    let url: string = this.server.auth.login();
-    this.httpClient.post(url, body, {headers: headers}).subscribe(
-      res => {
+
+    let endpoint: string = this.server.auth.login();
+    let headers = {
+      'Authorization': 'Basic ' + btoa(email + ":" + password),
+      'Content-type': 'application/json'
+    };
+
+    this.http.post(endpoint, {}, headers)
+      .then(response => {
         console.log("Sucesso");
-        this.data = res;
-        this.user.update(res);
+        let dados = JSON.parse(response.data);
+        this.data = dados;
+        this.user.update(dados);
+        loading.dismiss();
         this.nav.setRoot(HomePage);
-      },
-      err => {
+      })
+      .catch(exception => {
         console.log("Erro");
+        let dados = JSON.parse(exception.error);
         let erro = this.alertCtrl.create({
-          message:  err.error });
+          message: "Erro: " + dados.error
+        });
+        loading.dismiss();
         erro.present();
-      }
-    );
+      });
   }
 
   forgotPass() {
@@ -130,7 +137,7 @@ export class LoginPage {
           handler: data => {
             console.log('Send clicked');
             let toast = this.toastCtrl.create({
-              message: 'Email was sended successfully',
+              message: 'Email was sent successfully',
               duration: 3000,
               position: 'top',
               cssClass: 'dark-trans',
