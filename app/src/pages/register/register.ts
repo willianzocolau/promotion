@@ -65,7 +65,6 @@ export class RegisterPage {
       "password": password
     };
 
-    //this.http.setDataSerializer('json');
     this.http.post(endpoint, body, headers)
       .then(response => {
         this.user.setToken(JSON.parse(response.data).token);
