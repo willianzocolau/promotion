@@ -24,6 +24,7 @@ import { RegisterPage } from "../pages/register/register";
 import { SearchPage } from "../pages/search/search";
 import { EditPage } from "../pages/edit/edit";
 import { EditAuthPage } from "../pages/edit/editAuth";
+import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -46,6 +47,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     SearchPage,
     EditPage,
     EditAuthPage,
+    MyAdvertisingPage,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +76,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     SearchPage,
     EditPage,
     EditAuthPage,
+    MyAdvertisingPage,
   ],
   providers: [
     StatusBar,

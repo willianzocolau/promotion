@@ -1,0 +1,19 @@
+<!--
+  Generated template for the MyAdvertisingPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <custom-navbar></custom-navbar>
+</ion-header>
+
+<ion-content class="content" padding>
+  <h1>Meus Anúncios</h1>
+  <h1></h1>
+  <h5>Cash: 0,00</h5>
+  <button class="btt" ion-button icon-start block color="dark" tappable (click)="criar()">
+    Criar
+  </button>
+  <adcard [list]="promotions"></adcard>
+</ion-content>

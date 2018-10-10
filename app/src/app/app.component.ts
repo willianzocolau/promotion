@@ -10,6 +10,7 @@ import { LoginPage } from "../pages/login/login";
 import { SearchPage } from "../pages/search/search";
 import { EditAuthPage } from "../pages/edit/editAuth";
 import { SettingsPage } from "../pages/settings/settings";
+import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { UserData } from "../providers/userData";
 
 
@@ -45,7 +46,7 @@ export class MyApp {
     this.appMenuItems = [
       { title: 'Home', function: () => { this.openPage(HomePage) }, icon: 'home' },
       { title: 'Pesquisar', function: () => { this.openPage(SearchPage) }, icon: 'search' },
-      { title: 'Meus anúncios', function: () => { this.openPage(SearchPage) }, icon: 'pricetags' },
+      { title: 'Meus anúncios', function: () => { this.openPage(MyAdvertisingPage) }, icon: 'pricetags' },
       { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
       { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
       { title: 'Sair', function: () => { this.openPage(LoginPage) }, icon: 'exit' },
