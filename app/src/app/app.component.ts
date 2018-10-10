@@ -4,6 +4,7 @@ import { Platform, Nav, Events } from "ionic-angular";
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Keyboard } from '@ionic-native/keyboard';
+import { HTTP } from '@ionic-native/http';
 
 import { HomePage } from "../pages/home/home";
 import { LoginPage } from "../pages/login/login";
@@ -12,6 +13,7 @@ import { EditAuthPage } from "../pages/edit/editAuth";
 import { SettingsPage } from "../pages/settings/settings";
 import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { UserData } from "../providers/userData";
+import { ServerStrings } from "../providers/serverStrings";
 
 
 export interface MenuItem {
@@ -40,6 +42,8 @@ export class MyApp {
     public keyboard: Keyboard,
     public user: UserData,
     public events: Events,
+    public http: HTTP,
+    public server: ServerStrings,
   ) {
     this.initializeApp();
 
@@ -49,7 +53,7 @@ export class MyApp {
       { title: 'Meus anúncios', function: () => { this.openPage(MyAdvertisingPage) }, icon: 'pricetags' },
       { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
       { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
-      { title: 'Sair', function: () => { this.openPage(LoginPage) }, icon: 'exit' },
+      { title: 'Sair', function: () => { this.logout() }, icon: 'exit' },
     ];
 
     this.events.subscribe('user:updated', (userData) => {
@@ -84,5 +88,23 @@ export class MyApp {
 
   executeFunction(func) {
     func();
+  }
+
+  logout() {
+    let endpoint: string = this.server.auth.logout();
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+
+    this.http.post(endpoint, {}, headers)
+      .then(response => {
+        this.user.setToken(null);
+        this.openPage(LoginPage);
+      })
+      .catch(error => {
+        this.user.setToken(null);
+        this.openPage(LoginPage);
+      });
   }
 }
