@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController, IonicPage } from "ionic-angular";
+import { NavController, NavParams, LoadingController, IonicPage } from "ionic-angular";
 import { HTTP } from '@ionic-native/http';
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
@@ -19,7 +19,6 @@ import { ServerStrings } from '../../providers/serverStrings';
 export class MyAdvertisingPage {
   private promotions = [];
   constructor(private http: HTTP,
-              public alertCtrl: AlertController,
               public nav: NavController,
               public navParams: NavParams,
               public user: UserData,
@@ -46,14 +45,8 @@ export class MyAdvertisingPage {
       })
       .catch(exception => {
         let dados = JSON.parse(exception.error);
-        let msg = this.alertCtrl.create({
-          message: "Erro: " + dados.error
-        });
+        console.log("Erro: " + dados.error);
         loading.dismiss();
-        msg.present();
       });
-      console.log(this.promotions);
   }
-
-
 }
