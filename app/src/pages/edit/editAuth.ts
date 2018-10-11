@@ -38,14 +38,14 @@ export class EditAuthPage {
           'Authorization': 'Basic ' + btoa(email + ":" + password)
         }
         let endpoint = this.server.auth.login();
-        this.http.post(endpoint, "", headers)
-          .then( response => {
+        this.http.post(endpoint, {}, headers)
+          .then(response => {
             let dados = JSON.parse(response.data);
             this.data = dados;
             this.user.update(dados);
             this.nav.push(EditPage);
           })
-          .catch( exception => {
+          .catch(exception => {
             console.log("Erro");
             let dados = JSON.parse(exception.error);
             let erro = this.alertCtrl.create({

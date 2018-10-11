@@ -59,7 +59,7 @@ export class EditPage {
         if(cellphone == "") cellphone = null;
         if(telephone == "") telephone = null;
         if(image_url == "") image_url = null;
-        var body = {
+        let body = {
             "name": name,
             "nickname": nickname,
             "cpf": cpf,
@@ -73,13 +73,13 @@ export class EditPage {
         };
         let endpoint = this.server.user();
         this.http.patch(endpoint, body, headers)
-            .then( response => {
-                this.alertCtrl.create({title: 'Perfil editado com sucesso!',buttons: ['Ok']}).present();
+            .then(response => {
+                this.alertCtrl.create({title: 'Perfil editado com sucesso!', buttons: ['Ok']}).present();
                 this.nav.setRoot(HomePage);
             })
-            .catch( exception => {
-                this.alertCtrl.create({title: "ERRO:" + exception.error,buttons: ['Ok']}).present();
-            console.log(exception);
+            .catch(exception => {
+              this.alertCtrl.create({ title: "Erro:" + JSON.parse(exception.error).error, buttons: ['Ok']}).present();
+              console.log(exception);
             });
     }
 
