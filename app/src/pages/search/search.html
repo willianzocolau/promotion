@@ -14,22 +14,5 @@
 </ion-header>
 
 <ion-content>
-  <div class="list-no-border">
-    <!--nearby places-->
-    <ion-item *ngFor="let item of promotions" tappable (click)="searchBy(item)">
-      <div class="name">
-        <span ion-text color="primary">{{ item.name }}</span>
-      </div>
-      <div>
-        <table>
-          <tr>
-            <th class="image"><img width="80" height="80" [src]=item.image_url></th>
-            <th class="price">price: {{item.price}}</th>
-          </tr>
-        </table>
-        
-        
-      </div>
-    </ion-item>
-  </div>
+  <adcard [list]="promotions"></adcard>
 </ion-content>

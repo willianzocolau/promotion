@@ -16,24 +16,19 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class MyAdvertisingPage {
   private promotions = [];
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.promotions = [
-      {
-        "username": "user1",
-        "date": "10-09-2018",
+    this.promotions = [{      
+      promotion: {
+        "registerdate": "10-09-2018",
         "description": "Mouse muito legal",
         "likes": 12,
         "comments": 7,
         "image_url": "https://purepng.com/public/uploads/large/purepng.com-pc-mousepc-mousepcmouselaptop-mouse-1701528347542ws1aa.png"
       },
-      {
-        "username": "user2",
-        "date": "11-08-2018",
-        "description": "outro Mouse muito legal",
-        "likes": 14,
-        "comments": 9,
-        "image_url": "https://purepng.com/public/uploads/large/purepng.com-pc-mousepc-mousepcmouselaptop-mouse-1701528347542ws1aa.png"
-      },
-    ];
+      user:{
+        "nickname": "andre",
+        "image_url": "http://ok.com/ok.jpg"
+      }
+    }];
   }
 
   criar() {

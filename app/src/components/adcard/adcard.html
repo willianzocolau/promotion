@@ -2,28 +2,28 @@
 <ion-card  *ngFor="let item of list">
   <ion-item>
     <ion-avatar item-start>
-      <img src="../assets/img/avatar.jpeg">
+      <img [src]="item.user.image_url">
     </ion-avatar>
-    <h2>{{ item.username }}</h2>
-    <p>{{ item.date }}</p>
+    <h2>{{ item.user.nickname }}</h2>
+    <p>{{ item.promotion.registerdate }}</p>
   </ion-item>
   <div class="frame">
-    <img class="inner" [src]=item.image_url/>
+    <img class="inner" [src]=item.promotion.image_url/>
   </div>
   <ion-card-content>
-    <p>{{ item.description }}</p>
+    <p>{{ item.promotion.description }}</p>
   </ion-card-content>
   <ion-row>
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="thumbs-up"></ion-icon>
-        <div>{{ item.likes }}</div>
+        <div>{{ item.promotion.likes }} Likes</div>
       </button>
     </ion-col>
     <ion-col>
       <button ion-button icon-start clear small>
         <ion-icon name="text"></ion-icon>
-        <div>{{ item.comments }} Comentários</div>
+        <div>{{ item.promotion.comments }} Comentários</div>
       </button>
     </ion-col>
     <ion-col center text-center>

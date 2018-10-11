@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { NavController, NavParams, AlertController } from "ionic-angular";
+import { NavController, NavParams, AlertController, LoadingController } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { HTTP } from '@ionic-native/http';
 import { UserData } from '../../providers/userData';
@@ -16,12 +16,13 @@ export class SearchPage {
   public promotions = [];
 
   constructor(public formBuilder: FormBuilder,
-    private http: HTTP,
-    public alertCtrl: AlertController,
-    public nav: NavController,
-    public navParams: NavParams,
-    public user: UserData,
-    public server: ServerStrings) {
+              private http: HTTP,
+              public alertCtrl: AlertController,
+              public nav: NavController,
+              public navParams: NavParams,
+              public user: UserData,
+              public server: ServerStrings,
+              public loadingCtrl: LoadingController) {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
     });
@@ -32,6 +33,9 @@ export class SearchPage {
   }
 
   pesquisa() {
+    let loading = this.loadingCtrl.create({ content: 'Pesquisando...' });
+    loading.present();
+
     let input: string = this.form.get('input').value;
 
     if (!input) {
@@ -51,15 +55,29 @@ export class SearchPage {
       this.http.get(endpoint, {}, headers)
         .then(response => {
           let dados = JSON.parse(response.data);
-          dados.forEach(element => {
-            this.promotions.push({ id: element.id, name: element.name, image_url: element.image_url, price: element.price });
+          dados.forEach(promotion => {
+            let endpoint = this.server.userId(promotion.user_id);
+            this.http.get(endpoint, {}, headers)
+              .then(response => {
+                let user = JSON.parse(response.data);
+                this.promotions.push({promotion, user});  
+              })
+              .catch(exception => {
+                let dados = JSON.parse(exception.error);
+                let msg = this.alertCtrl.create({
+                  message: "Erro: " + dados.error
+                });
+                msg.present();
+              });
           });
+          loading.dismiss();
         })
         .catch(exception => {
           let dados = JSON.parse(exception.error);
           let msg = this.alertCtrl.create({
             message: "Erro: " + dados.error
           });
+          loading.dismiss();
           msg.present();
         });
     }
