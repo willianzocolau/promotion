@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController, MenuController, PopoverController } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http';
 
 import { NotificationsPage } from "../notifications/notifications";
 import { HomePage } from "../home/home";
@@ -22,7 +22,7 @@ export class EditPage {
               public alertCtrl: AlertController, 
               public menu: MenuController,
               public popoverCtrl: PopoverController,  
-              private httpClient: HttpClient,
+              private http: HTTP,
               private user: UserData,
               private server: ServerStrings
               ) {
@@ -53,18 +53,13 @@ export class EditPage {
             this.alertCtrl.create({title: 'Senhas não conferem!',buttons: ['Ok']}).present();
             return;
         }
-
-        let headers = new HttpHeaders();
-        headers = headers.set('Content-Type', 'application/json');
-        headers = headers.set("Authorization", "Bearer " + this.user.getToken());
         if(name == "") name = null;
         if(nickname == "") nickname = null;
         if(cpf == "") cpf = null;
         if(cellphone == "") cellphone = null;
         if(telephone == "") telephone = null;
         if(image_url == "") image_url = null;
-        var body = 
-        {
+        var body = {
             "name": name,
             "nickname": nickname,
             "cpf": cpf,
@@ -72,19 +67,20 @@ export class EditPage {
             "telephone": telephone,
             "image_url": image_url
         };
-        let url = this.server.user();
-        this.httpClient.patch(url, body, {headers: headers, responseType: "text"})
-        .subscribe(
-            res => {
-                this.nav.setRoot(HomePage);
+        let headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.user.getToken()
+        };
+        let endpoint = this.server.user();
+        this.http.patch(endpoint, body, headers)
+            .then( response => {
                 this.alertCtrl.create({title: 'Perfil editado com sucesso!',buttons: ['Ok']}).present();
-                console.log("Sucesso");
-            },
-            err => {
-                this.alertCtrl.create({title: err.error,buttons: ['Ok']}).present();
-                console.log(err);
-            }
-        );
+                this.nav.setRoot(HomePage);
+            })
+            .catch( exception => {
+                this.alertCtrl.create({title: "ERRO:" + exception.error,buttons: ['Ok']}).present();
+            console.log(exception);
+            });
     }
 
     presentNotifications(myEvent) {

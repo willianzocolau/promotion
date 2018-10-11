@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { IonicApp, IonicModule } from "ionic-angular";
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http';
 
@@ -51,7 +50,6 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     IonicModule.forRoot(MyApp, {
       scrollPadding: false,
       scrollAssist: true,

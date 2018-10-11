@@ -1,11 +1,10 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController, MenuController, PopoverController } from "ionic-angular";
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http';
 
 import { NotificationsPage } from "../notifications/notifications";
 import { EditPage } from "../edit/edit";
-import { HomePage } from "../home/home";
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
 
@@ -22,7 +21,7 @@ export class EditAuthPage {
                 public alertCtrl: AlertController, 
                 public menu: MenuController,
                 public popoverCtrl: PopoverController,  
-                private httpClient: HttpClient,
+                private http: HTTP,
                 private user: UserData,
                 private server: ServerStrings
                 ) {
@@ -32,29 +31,28 @@ export class EditAuthPage {
         });
     }
     confirm() {
-      let headers = new HttpHeaders();
       this.user.getEmailAsync().then((email) => {
-        let password: string = this.form.get('password').value;
-        headers = headers.set('Content-Type', 'application/json');
-        headers = headers.set("Authorization", "Basic " + btoa(email + ":" + password));
-        let body: string = "";
-        let url: string = this.server.auth.login();
-        this.httpClient.post(url, body, { headers: headers }).subscribe(
-          res => {
-            console.log("Sucesso");
-            this.data = res;
-            this.user.setToken(this.data.token);
+        let password = this.form.get('password').value;
+        let headers = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(email + ":" + password)
+        }
+        let endpoint = this.server.auth.login();
+        this.http.post(endpoint, "", headers)
+          .then( response => {
+            let dados = JSON.parse(response.data);
+            this.data = dados;
+            this.user.update(dados);
             this.nav.push(EditPage);
-          },
-          err => {
+          })
+          .catch( exception => {
             console.log("Erro");
+            let dados = JSON.parse(exception.error);
             let erro = this.alertCtrl.create({
-              message: err.error
+              message: "Erro: " + dados.error
             });
             erro.present();
-            this.nav.setRoot(HomePage);
-          }
-        );
+          });
       });
     }
 
