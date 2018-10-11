@@ -25,6 +25,9 @@ export class ServerStrings {
   promotionSearch(name: string) {
     return this.promotion() + "?name=" + name;
   }
+  promotionUserId(id: number) {
+    return this.promotion() + "?user_id=" + id;
+  }
   promotionRegister() {
     return this.promotion() + "register/";
   }

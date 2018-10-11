@@ -173,7 +173,22 @@ export class UserData {
     if (data.state !== undefined) {
       this.setState(data.state);
     }
-
+    
     this.events.publish('user:updated', this);
+  }
+  get(){
+    let user = {
+      "id": this.id,
+      "nickname": this.nickname,
+      "image_url": this.image_url,
+      "register_date": this.register_date,
+      "type": this.type,
+      "credit": this.credit,
+      "email": this.email,
+      "name": this.name,
+      "state": this.state,
+      "token": this.token
+    }
+    return user;
   }
 }
