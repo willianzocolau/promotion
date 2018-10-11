@@ -50,9 +50,23 @@ namespace PromotionApi
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
-            services.AddCors();
+            services.Configure<ApiBehaviorOptions>(o =>
+            {
+                o.SuppressModelStateInvalidFilter = true;
+            });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services
+                .AddMvcCore(x => {
+                    x.Filters.Add<ApiValidateModelAttribute>();
+                })
+                .AddApiExplorer()
+                .AddAuthorization()
+                .AddFormatterMappings()
+                .AddCacheTagHelper()
+                .AddDataAnnotations()
+                .AddJsonFormatters()
+                .AddCors()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
             {

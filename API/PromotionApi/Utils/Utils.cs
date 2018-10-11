@@ -11,8 +11,6 @@ namespace PromotionApi
     {
         internal static DateTimeOffset PromotionEpoch { get; } = new DateTimeOffset(2018, 9, 1, 0, 0, 0, 0, TimeSpan.Zero);
 
-
-
         //Formato (1 à 150): Example Name F. of Someone
         internal static readonly Regex _regexName       = new Regex("(^[A-Z][a-z]+( ([A-Z]{1}\\.|[a-zA-Z]{2,}))*$){1,150}", RegexOptions.Compiled | RegexOptions.ECMAScript);
         internal static readonly Regex _regexNickname   = new Regex("[a-z0-9_]{1,45}", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.ECMAScript);
@@ -22,23 +20,16 @@ namespace PromotionApi
         internal static readonly Regex _regexImageUrl   = new Regex("^(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)$", RegexOptions.Compiled | RegexOptions.ECMAScript);
         internal static readonly Regex _regexTelephone  = new Regex("^[1-9]{2}[2-9][0-9]{7,8}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
 
-
-
         private static readonly string _emailDomain     = "smtp.gmail.com";
         private static readonly int    _emailPort       = 587;
         private static readonly string _emailUsername   = "promotion.suporte@gmail.com";
         private static readonly string _emailPassword   = "<Uiop}+hjkl)";
 
-
-
         private static readonly Random _random         = new Random();
         private static readonly object _randomLock     = new object();
 
-
-
         private static readonly double _sellerCashback = 0.1;
         private static readonly double _buyerCashback  = 0.2;
-
 
 
         internal static bool IsValidNickname(string nickname)
@@ -63,7 +54,6 @@ namespace PromotionApi
             => url == null ? false : _regexImageUrl.IsMatch(url);
 
 
-
         internal static string EncodeBase64(string str)
             => Convert.ToBase64String(Encoding.UTF8.GetBytes(str)).TrimEnd('=');
 
@@ -76,7 +66,6 @@ namespace PromotionApi
         }
 
 
-
         internal static bool CanAdministrateOrders(UserType user)
             => user != UserType.Normal;
 
@@ -84,13 +73,11 @@ namespace PromotionApi
             => user != UserType.Normal;
 
 
-
         internal static double GetSellerCashback(double totalCashback)
             => totalCashback * _sellerCashback;
 
         internal static double GetBuyerCashback(double totalCashback)
             => totalCashback * _buyerCashback;
-
 
 
         internal static async Task SendEmailAsync(string email, string subject, string message)
@@ -113,7 +100,6 @@ namespace PromotionApi
         }
 
 
-
         internal static int Random(int minValue, int maxValue)
         {
             lock (_randomLock)
@@ -121,7 +107,12 @@ namespace PromotionApi
                 return _random.Next(minValue, maxValue);
             }
         }
+
         internal static int Random(int maxValue)
             => Random(0, maxValue);
+
+
+        internal static object Error(string error)
+            => new { error };
     }
 }
