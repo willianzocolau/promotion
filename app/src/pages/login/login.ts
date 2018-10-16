@@ -7,6 +7,7 @@ import { HTTP } from '@ionic-native/http';
 
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
+import { ForgetPasswordPage } from "../password/forgetpassword";
 
 @Component({
   selector: 'page-login',
@@ -116,8 +117,8 @@ export class LoginPage {
 
   forgotPass() {
     let forgot = this.alertCtrl.create({
-      title: 'Forgot Password?',
-      message: "Enter you email address to send a reset link password.",
+      title: 'Esqueceu sua senha?',
+      message: "Informe o seu e-mail para resetar sua senha.",
       inputs: [
         {
           name: 'email',
@@ -127,24 +128,43 @@ export class LoginPage {
       ],
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Cancelar',
           handler: data => {
             console.log('Cancel clicked');
           }
         },
         {
-          text: 'Send',
+          text: 'Enviar',
           handler: data => {
-            console.log('Send clicked');
-            let toast = this.toastCtrl.create({
-              message: 'Email was sent successfully',
-              duration: 3000,
-              position: 'top',
-              cssClass: 'dark-trans',
-              closeButtonText: 'OK',
-              showCloseButton: true
-            });
-            toast.present();
+            let loading = this.loadingCtrl.create({ content: 'Enviando...' });
+            loading.present();
+
+            let email: string = data.email;
+            console.log(data.email);
+
+            let endpoint: string = this.server.auth.reset();
+
+            let headers = {
+              'Content-type': 'application/json'
+            };
+
+            let body = {"email": email};
+
+            this.http.post(endpoint, body, headers)
+              .then(response => {
+                console.log("Sucesso");
+                loading.dismiss();
+                this.nav.setRoot(ForgetPasswordPage);
+              })
+              .catch(exception => {
+                console.log("Erro");
+                let dados = JSON.parse(exception.error);
+                let erro = this.alertCtrl.create({
+                  message: "Erro: " + dados.error
+                });
+                loading.dismiss();
+                erro.present();
+              });
           }
         }
       ]
