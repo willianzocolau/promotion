@@ -18,6 +18,13 @@ export class ServerStrings {
   userId(id: number) {
     return this.user() + id;
   }
+  userWishlist(){
+    return this.user() + "wishlist/"
+  }
+
+  userWishlistId(id: number){
+    return this.userWishlist() + id;
+  }
   // promotionControler
   promotion() {
     return ServerStrings.url + "promotion/";

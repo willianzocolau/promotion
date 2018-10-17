@@ -43,6 +43,7 @@ export class SearchPage {
         title: "Inválido",
         message: "Por favor, digite algo na caixa de texto"
       });
+      loading.dismiss();
       msg.present();
     }
     else {

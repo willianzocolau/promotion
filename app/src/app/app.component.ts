@@ -14,6 +14,7 @@ import { SettingsPage } from "../pages/settings/settings";
 import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { UserData } from "../providers/userData";
 import { ServerStrings } from "../providers/serverStrings";
+import { WishListPage } from "../pages/wishlist/wishlist";
 
 
 export interface MenuItem {
@@ -54,6 +55,7 @@ export class MyApp {
       { title: 'Meus anúncios', function: () => { this.openPage(MyAdvertisingPage) }, icon: 'pricetags' },
       { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
       { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
+      { title: 'Lista de desejos', function: () => { this.openPage(WishListPage) }, icon: 'list' },
       { title: 'Sair', function: () => { this.logout() }, icon: 'exit' },
     ];
 
