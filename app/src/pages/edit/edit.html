@@ -1,89 +1,90 @@
 <!-- # -->
 <!-- -->
 <ion-header>
-  <custom-navbar></custom-navbar>
-</ion-header>
+    <custom-navbar></custom-navbar>
+  </ion-header>
+    
+  <!-- -->
+  <ion-content class="auth-page">  
+  <div class="edit-content">
   
-<!-- -->
-<ion-content class="auth-page">  
-<div class="edit-content">
-
-    <!-- Login form -->
-    <form class="list-form" [formGroup]="form">
-     
-        <!-- Logo -->
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="person" item-start class="text-primary"></ion-icon>
-          Nome Completo
-        </ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="person" item-start class="text-primary"></ion-icon>
-          CPF
-        </ion-label>
-        <ion-input type="text" formControlName="cpf" [brmasker]="{mask:'000.000.000-00', len:14, type:'num'}"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="person" item-start class="text-primary"></ion-icon>
-          Nome de Usuário
-        </ion-label>
-        <ion-input type="text" formControlName="nickname"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="phone-portrait" item-start class="text-primary"></ion-icon>
-          Celular
-        </ion-label>
-        <ion-input type="cellphone" formControlName="cellphone"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="call" item-start class="text-primary"></ion-icon>
-          Telefone
-        </ion-label>
-        <ion-input type="telephone" formControlName="telephone"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="image" item-start class="text-primary"></ion-icon>
-          Imagem de perfil
-        </ion-label>
-        <ion-input type="image_url" formControlName="image_url"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
-          Senha
-        </ion-label>
-        <ion-input type="password" formControlName="password"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>
-          <ion-icon name="lock" item-start class="text-primary"></ion-icon>
-          Confirmar Senha
-        </ion-label>
-        <ion-input type="password" formControlName="confirm_password"></ion-input>
-      </ion-item>
-    </form>
-
-    <div margin-top>
-      <button ion-button block color="dark" (click)="confirm()" >
-        Confirmar
-      </button>
+      <!-- Login form -->
+      <form class="list-form" [formGroup]="form">
+       
+          <!-- Logo -->
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="person" item-start class="text-primary"></ion-icon>
+            Nome Completo
+          </ion-label>
+          <ion-input type="text" formControlName="name"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="person" item-start class="text-primary"></ion-icon>
+            CPF
+          </ion-label>
+          <ion-input type="text" formControlName="cpf" [brmasker]="{mask:'000.000.000-00', len:14, type:'num'}"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="person" item-start class="text-primary"></ion-icon>
+            Nome de Usuário
+          </ion-label>
+          <ion-input type="text" formControlName="nickname"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="phone-portrait" item-start class="text-primary"></ion-icon>
+            Celular
+          </ion-label>
+          <ion-input type="cellphone" formControlName="cellphone"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="call" item-start class="text-primary"></ion-icon>
+            Telefone
+          </ion-label>
+          <ion-input type="telephone" formControlName="telephone"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="image" item-start class="text-primary"></ion-icon>
+            Imagem perfil
+          </ion-label>
+          <ion-input type="image_url" formControlName="image_url"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+            Senha
+          </ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>
+            <ion-icon name="lock" item-start class="text-primary"></ion-icon>
+            Confirmar Senha
+          </ion-label>
+          <ion-input type="password" formControlName="confirm_password"></ion-input>
+        </ion-item>
+      </form>
+  
+      <div margin-top>
+        <button ion-button block color="dark" (click)="confirm()" >
+          Confirmar
+        </button>
+      </div>
+  
+      <!-- Other links -->
+      <div text-center margin-top>
+      </div>
+  
     </div>
-
-    <!-- Other links -->
-    <div text-center margin-top>
-    </div>
-
-  </div>
-</ion-content>
+  </ion-content>
+  
