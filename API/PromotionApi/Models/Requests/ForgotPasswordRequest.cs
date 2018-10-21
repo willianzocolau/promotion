@@ -14,7 +14,7 @@ namespace PromotionApi.Models
         public string Code { get; set; }
         public DateTimeOffset RequestDate { get; set; }
         [ForeignKey("UserFK")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public long UserFK { get; set; }
     }
 }

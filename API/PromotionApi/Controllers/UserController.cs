@@ -226,9 +226,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            ICollection<WishItem> wishList = await user.GetWishListAsync();
-
-            return Ok(wishList.Select(x => new WishlistItemResponse { Id = x.Id, Name = x.Name, RegisterDate = x.RegisterDate }));
+            return Ok(user.WishList.Select(x => new WishlistItemResponse { Id = x.Id, Name = x.Name, RegisterDate = x.RegisterDate }));
         }
 
         // POST api/<controller>/wishlist
@@ -257,7 +255,7 @@ namespace PromotionApi.Controllers
             if (string.IsNullOrWhiteSpace(wishlistItemData.Name))
                 return BadRequest(new ErrorResponse { Error = "Invalid item name" });
 
-            ICollection<WishItem> wishList = await user.GetWishListAsync();
+            ICollection<WishItem> wishList = user.WishList;
 
             if (wishList.Any(x => x.Name.Equals(wishlistItemData.Name, StringComparison.InvariantCultureIgnoreCase)))
                 return BadRequest(new ErrorResponse { Error = "Item already exists" });

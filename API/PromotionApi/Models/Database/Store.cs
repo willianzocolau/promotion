@@ -8,9 +8,12 @@ namespace PromotionApi.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
         [MaxLength(45)]
         public string Name { get; set; }
+
         public DateTimeOffset RegisterDate { get; set; }
+
         [MaxLength(64)]
         public string Token { get; set; }
     }

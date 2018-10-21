@@ -8,15 +8,19 @@ namespace PromotionApi.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
+
         public DateTimeOffset RegisterDate { get; set; }
+
         [ForeignKey("ApprovedByUserFK")]
-        public User ApprovedByUser { get; set; }
+        public virtual User ApprovedByUser { get; set; }
         public long? ApprovedByUserFK { get; set; }
+
         [ForeignKey("UserFK")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public long UserFK { get; set; }
+
         [ForeignKey("PromotionFK")]
-        public Promotion Promotion { get; set; }
+        public virtual Promotion Promotion { get; set; }
         public long PromotionFK { get; set; }
     }
 }

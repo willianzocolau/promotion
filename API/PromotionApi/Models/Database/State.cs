@@ -7,6 +7,7 @@ namespace PromotionApi.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long Id { get; set; }
+
         [MaxLength(45)]
         public string Name { get; set; }
     }
