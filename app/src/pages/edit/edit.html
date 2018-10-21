@@ -1,4 +1,4 @@
-<!-- # -->
+﻿<!-- # -->
 <!-- -->
 <ion-header>
     <custom-navbar></custom-navbar>
@@ -12,6 +12,11 @@
       <form class="list-form" [formGroup]="form">
        
           <!-- Logo -->
+        <ion-item>
+            <p class="p_img">Imagem de Perfil</p>
+          <ion-img width="150" src="../assets/img/img_upload.png"></ion-img>
+        </ion-item>
+    
         <ion-item>
           <ion-label floating>
             <ion-icon name="person" item-start class="text-primary"></ion-icon>
@@ -43,6 +48,7 @@
           </ion-label>
           <ion-input type="cellphone" formControlName="cellphone"></ion-input>
         </ion-item>
+
         <ion-item>
           <ion-label floating>
             <ion-icon name="call" item-start class="text-primary"></ion-icon>
@@ -50,15 +56,7 @@
           </ion-label>
           <ion-input type="telephone" formControlName="telephone"></ion-input>
         </ion-item>
-  
-        <ion-item>
-          <ion-label floating>
-            <ion-icon name="image" item-start class="text-primary"></ion-icon>
-             Imagem de Perfil
-          </ion-label>
-          <ion-input type="image_url" formControlName="image_url"></ion-input>
-        </ion-item>
-  
+
         <ion-item>
           <ion-label floating>
             <ion-icon name="lock" item-start class="text-primary"></ion-icon>
@@ -66,6 +64,7 @@
           </ion-label>
           <ion-input type="password" formControlName="password"></ion-input>
         </ion-item>
+
         <ion-item>
           <ion-label floating>
             <ion-icon name="lock" item-start class="text-primary"></ion-icon>
