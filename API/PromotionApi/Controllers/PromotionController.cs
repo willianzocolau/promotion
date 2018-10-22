@@ -138,7 +138,8 @@ namespace PromotionApi.Controllers
                 return BadRequest(new ErrorResponse { Error = "Invalid state id" });*/
             //TODO: Add expire_date
 
-            _context.Promotions.Add(new Promotion
+            Promotion created;
+            _context.Promotions.Add(created = new Promotion
             {
                 Name = promotionData.Name,
                 Price = promotionData.Price,
@@ -151,6 +152,24 @@ namespace PromotionApi.Controllers
                 StateFK = promotionData.StateFK,
             });
             await _context.SaveChangesAsync();
+
+            _ = Task.Run(async () =>
+            {
+                //TODO: Check better approach?
+                var allWishItems = _context.Wishlist.Where(x => promotionData.Name.ToLower().Contains(x.Name.ToLower()));
+                foreach (var wish in allWishItems)
+                {
+                    _context.Matchs.Add(new MatchItem
+                    {
+                        IsActive = true,
+                        RegisterDate = DateTimeOffset.UtcNow,
+                        PromotionFK = created.Id,
+                        UserFK = wish.UserFK
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            });
 
             return Ok();
         }
