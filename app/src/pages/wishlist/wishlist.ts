@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController } from "ionic-angular";
+import { NavController, NavParams, LoadingController, AlertController } from "ionic-angular";
 import { HTTP } from '@ionic-native/http';
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
@@ -29,6 +29,7 @@ export class WishListPage {
               public navParams: NavParams,
               public user: UserData,
               public server: ServerStrings,
+              public alertCtrl: AlertController,
               public loadingCtrl: LoadingController) {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
@@ -54,13 +55,48 @@ export class WishListPage {
         console.log("Sucesso");
       })
       .catch(exception => {
-        /*let dados = JSON.parse(exception.error);
-        console.log("Erro: " + dados.error);*/
+        let dados = JSON.parse(exception.error);
+        console.log("Erro: " + dados.error);
         console.log(exception);
         loading.dismiss();
       });
   }
   add(){
+    let loading = this.loadingCtrl.create({ content: 'Adicionando...' });
+    loading.present();
 
-  }
+    let input: string = this.form.get('input').value;
+
+    if (!input) {
+      let msg = this.alertCtrl.create({
+        title: "Inválido",
+        message: "Por favor, digite algo na caixa de texto"
+      });
+      loading.dismiss();
+      msg.present();
+    }
+    else {
+      let endpoint: string = this.server.userWishlist();
+        let headers = {
+          'Authorization': 'Bearer ' + this.user.getToken(),
+          'Content-type': 'application/json'
+        };
+        let body = {
+          "name": input,
+        }
+        this.http.post(endpoint, body, headers)
+          .then(response => {
+            let dados = JSON.parse(response.data);
+            loading.dismiss();
+            console.log(dados);
+            console.log("Sucesso");
+          })
+          .catch(exception => {
+            let dados = JSON.parse(exception.error);
+            console.log("Erro: " + dados.error);
+            console.log(exception);
+            loading.dismiss();
+          });
+      }
+    }
 }
