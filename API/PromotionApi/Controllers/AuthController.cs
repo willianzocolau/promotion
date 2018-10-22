@@ -321,7 +321,7 @@ namespace PromotionApi.Controllers
                 if (!Utils.IsValidEmail(changePasswordData.Email))
                     return BadRequest(new ErrorResponse { Error = "Invalid email" });
 
-                var resetRequest = await _context.ForgotPasswordRequests.Include(x => x.User).FirstOrDefaultAsync(x => x.Code == changePasswordData.ResetCode);
+                var resetRequest = await _context.ForgotPasswordRequests.FirstOrDefaultAsync(x => x.Code == changePasswordData.ResetCode);
                 if (resetRequest == null)
                     return BadRequest(new ErrorResponse { Error = "Invalid reset code" });
 

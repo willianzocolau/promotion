@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
 
 namespace PromotionApi.Models
 {
@@ -54,9 +52,12 @@ namespace PromotionApi.Models
 
         public virtual ICollection<WishItem> WishList { get; set; }
 
+        public virtual ICollection<MatchItem> MatchList { get; set; }
+
         public User()
         {
             WishList = new List<WishItem>();
+            MatchList = new List<MatchItem>();
         }
     }
 }

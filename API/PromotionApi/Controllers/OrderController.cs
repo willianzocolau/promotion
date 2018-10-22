@@ -176,7 +176,7 @@ namespace PromotionApi.Controllers
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+            Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return NotFound(new ErrorResponse { Error = "Order not found" });
 
@@ -224,7 +224,7 @@ namespace PromotionApi.Controllers
             if (user == null || !Utils.CanAdministrateOrders(user.Type))
                 return Unauthorized();
 
-            Order order = await _context.Orders.Include(x => x.User).Include(x => x.Promotion).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+            Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id);
             if (order == null)
                 return NotFound(new ErrorResponse { Error = "Order not found" });
 

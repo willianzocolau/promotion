@@ -43,7 +43,7 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Result);
 
-            var user = await _context.Users.Include(x => x.State).FirstOrDefaultAsync(x => x.Token == validation.Token);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
             if (user == null)
                 return Unauthorized();
 
@@ -301,7 +301,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
+            var wishItem = await _context.Wishlist.FirstOrDefaultAsync(x => x.Id == id);
             if (wishItem == null)
                 return NotFound(new ErrorResponse { Error = "Id not found" });
 
@@ -340,14 +340,14 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var wishItem = await _context.WishList.FirstOrDefaultAsync(x => x.Id == id);
+            var wishItem = await _context.Wishlist.FirstOrDefaultAsync(x => x.Id == id);
             if (wishItem == null)
                 return NotFound(new ErrorResponse { Error = "Id not found" });
 
             if (user.Id != wishItem.UserFK)
                 return Unauthorized();
 
-            _context.WishList.Remove(wishItem);
+            _context.Wishlist.Remove(wishItem);
 
             await _context.SaveChangesAsync();
 
@@ -390,5 +390,72 @@ namespace PromotionApi.Controllers
 
             return Ok();
         }*/
+
+        // GET api/<controller>/matchs
+        /// <summary>
+        /// Get your own user matchs
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <returns>User's own matchs</returns>
+        /// <response code="200">Returns user's own matchs</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid</response>
+        [HttpGet("matchs")]
+        [ProducesResponseType(200, Type = typeof(MatchsResponse))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<MatchsResponse>> GetOwnMatchsAsync([FromHeader(Name = "Authorization"), Required] string authorization)
+        {
+            //TODO: Add pagination?
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var totalActiveMatchs = user.MatchList.Count(x => x.IsActive);
+            var matchs = user.MatchList.Select(x => new MatchItemResponse { Id = x.Id, RegisterDate = x.RegisterDate, IsActive = x.IsActive, UserId = x.UserFK, PromotionId = x.PromotionFK });
+
+            return Ok(new MatchsResponse { TotalActiveMatchs = totalActiveMatchs, Matchs = matchs.ToHashSet() });
+        }
+
+        // PATCH api/<controller>/matchs/{id}
+        /// <summary>
+        /// Mark a match as unactive (as read)
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Match id</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization or invalid match id</response>
+        /// <response code="401">If token is invalid</response>
+        /// <response code="404">If match id is not found or doesn't belong to this user</response>
+        [HttpPatch("matchs/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> PatchMatchItemAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            MatchItem matchItem = await _context.Matchs.FirstOrDefaultAsync(x => x.Id == id && x.UserFK == user.Id);
+
+            if (matchItem == null)
+                return NotFound(new ErrorResponse { Error = "Match id not found or doesn't belong to this user" });
+
+            matchItem.IsActive = false;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }

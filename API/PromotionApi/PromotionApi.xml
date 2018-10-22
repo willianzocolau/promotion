@@ -336,5 +336,26 @@
             <response code="401">If token is invalid, or item isn't from this user</response>
             <response code="404">If no item with this id is found</response>
         </member>
+        <member name="M:PromotionApi.Controllers.UserController.GetOwnMatchsAsync(System.String)">
+            <summary>
+            Get your own user matchs
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <returns>User's own matchs</returns>
+            <response code="200">Returns user's own matchs</response>
+            <response code="400">If invalid authorization</response>
+            <response code="401">If token is invalid</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.UserController.PatchMatchItemAsync(System.String,System.Int64)">
+            <summary>
+            Mark a match as unactive (as read)
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Match id</param>
+            <response code="200">Success</response>
+            <response code="400">If invalid authorization or invalid match id</response>
+            <response code="401">If token is invalid</response>
+            <response code="404">If match id is not found or doesn't belong to this user</response>
+        </member>
     </members>
 </doc>
