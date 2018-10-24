@@ -53,9 +53,9 @@ export class MyApp {
       { title: 'Home', function: () => { this.openPage(HomePage) }, icon: 'home' },
       { title: 'Pesquisar', function: () => { this.openPage(SearchPage) }, icon: 'search' },
       { title: 'Meus anúncios', function: () => { this.openPage(MyAdvertisingPage) }, icon: 'pricetags' },
+      { title: 'Lista de desejos', function: () => { this.openPage(WishListPage) }, icon: 'list' },
       { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
       { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
-      { title: 'Lista de desejos', function: () => { this.openPage(WishListPage) }, icon: 'list' },
       { title: 'Sair', function: () => { this.logout() }, icon: 'exit' },
     ];
 

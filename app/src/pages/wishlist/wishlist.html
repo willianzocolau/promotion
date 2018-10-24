@@ -1,33 +1,27 @@
-<!--
-  Generated template for the WishlistPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
   <custom-navbar></custom-navbar>
+  <ion-navbar color="#fff">
+    <form class="list-form" [formGroup]="form">
+      <ion-row>
+        <ion-input class="inp" placeholder="Digite..." autofocus formControlName="input"></ion-input>
+        <button class="btt" ion-button icon-only block color="dark" tappable (click)="add()"><ion-icon name="add"></ion-icon></button>
+      </ion-row>
+    </form>
+  </ion-navbar>
 </ion-header>
 
 
 <ion-content class="content" padding>
-  <ion-navbar class="navbar">
-      <form [formGroup]="form">
-        <ion-row>
-          <ion-input class="inp" placeholder="Digite..." autofocus formControlName="input"></ion-input>
-          <button class="btt" ion-button icon-start block tappable (click)="add()"><ion-icon name="add"></ion-icon></button>
-        </ion-row>
-      </form>
-  </ion-navbar>
   <ion-card *ngFor="let item of wishlist">
     <ion-item>
       <ion-col>
-          {{ item.id }}
+        <button class="bttdel" ion-button icon-only tappable (click)="delete(item.id)"><ion-icon name="trash"></ion-icon></button>
       </ion-col>
       <ion-col>
-          {{ item.name }}
+        {{ item.register_date }}
       </ion-col>
       <ion-col>
-          {{ item.register_date }}
+        {{ item.name }}
       </ion-col>
     </ion-item>
   </ion-card>
