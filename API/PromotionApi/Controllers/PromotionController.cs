@@ -66,7 +66,11 @@ namespace PromotionApi.Controllers
 
             IQueryable<Promotion> promotionQuery = _context.Promotions.Where(x => x.Active);
 
-            if (orderBy != null)
+            if (orderBy == null)
+            {
+                promotionQuery = promotionQuery.OrderByDescending(x => x.RegisterDate);
+            }
+            else
             {
                 promotionQuery = promotionQuery.OrderByDescending(x => x.RegisterDate);
                 //TODO: order by
