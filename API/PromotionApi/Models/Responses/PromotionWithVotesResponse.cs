@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace PromotionApi.Models
 {
-    public class PromotionResponse
+    public class PromotionWithVotesResponse
     {
         [JsonProperty("id"), Required]
         public long Id { get; set; }
@@ -44,5 +45,8 @@ namespace PromotionApi.Models
 
         [JsonProperty("order_downvotes"), Required]
         public int OrderDownvotes { get; set; }
+
+        [JsonProperty("votes"), Required]
+        public HashSet<VoteResponse> Votes { get; set; }
     }
 }

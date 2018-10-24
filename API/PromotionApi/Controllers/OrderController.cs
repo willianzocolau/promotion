@@ -281,5 +281,58 @@ namespace PromotionApi.Controllers
 
             return Ok();
         }
+
+        // POST api/<controller>/{id}/vote
+        /// <summary>
+        /// Vote for order (upvote/downvote)
+        /// </summary>
+        /// <remarks>
+        /// Requires permission to delete orders.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Order id</param>
+        /// <param name="voteData">Data needed to add the vote</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, already voted, or comment is too long</response>
+        /// <response code="401">If token is invalid, or order user id and token user id don't match</response>
+        /// <response code="404">If no order is found</response>
+        [HttpDelete("{id}/vote")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> VoteAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id, [FromBody, Required] VoteBody voteData)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+                return NotFound("Order not found");
+
+            if (order.UserFK != user.Id)
+                return Unauthorized();
+
+            if (order.IsVotePositive != null)
+                return BadRequest("Already voted");
+
+            if (voteData.Comment.Length > 400)
+                return BadRequest("Comment is too long");
+
+            order.IsVotePositive = voteData.IsPositive;
+            order.Comment = voteData.Comment;
+            order.CommentRegisterDate = DateTimeOffset.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        //TODO: Add answer endpoint
     }
 }

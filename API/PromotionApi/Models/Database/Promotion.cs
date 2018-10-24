@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,5 +37,12 @@ namespace PromotionApi.Models
         [ForeignKey("StoreFK")]
         public virtual Store Store { get; set; }
         public long StoreFK { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
+
+        public Promotion()
+        {
+            Orders = new List<Order>();
+        }
     }
 }

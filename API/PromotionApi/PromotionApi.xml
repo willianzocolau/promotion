@@ -153,6 +153,21 @@
             <response code="401">If token is invalid, or no permission to delete</response>
             <response code="404">If no order is found</response>
         </member>
+        <member name="M:PromotionApi.Controllers.OrderController.VoteAsync(System.String,System.Int64,PromotionApi.Models.VoteBody)">
+            <summary>
+            Vote for order (upvote/downvote)
+            </summary>
+            <remarks>
+            Requires permission to delete orders.
+            </remarks>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Order id</param>
+            <param name="voteData">Data needed to add the vote</param>
+            <response code="200">Success</response>
+            <response code="400">If invalid authorization, already voted, or comment is too long</response>
+            <response code="401">If token is invalid, or order user id and token user id don't match</response>
+            <response code="404">If no order is found</response>
+        </member>
         <member name="M:PromotionApi.Controllers.PromotionController.GetPromotionsAsync(System.String,System.Int32,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Search promotions
@@ -194,7 +209,7 @@
             <param name="authorization">Bearer Auth format</param>
             <param name="id">Promotion id</param>
             <returns>Promotion</returns>
-            <response code="200">Returns promotion</response>
+            <response code="200">Returns promotion with votes</response>
             <response code="400">If invalid authorization</response>
             <response code="401">If token is invalid</response>
             <response code="404">If no promotion is found</response>

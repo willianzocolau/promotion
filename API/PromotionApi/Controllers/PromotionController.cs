@@ -93,12 +93,36 @@ namespace PromotionApi.Controllers
             if (name != null)
                 promotionQuery = promotionQuery.Where(x => EF.Functions.ILike(x.Name, $"%{name}%"));
 
-            List<Promotion> promotions = await promotionQuery.Take(limit).ToListAsync();
+            List<Promotion> promotions = await promotionQuery.Include(x => x.Orders).Take(limit).ToListAsync();
 
             if (!promotions.Any())
                 return NotFound(new ErrorResponse { Error = "No promotion found" });
             else
-                return Ok(promotions.Select(x => new PromotionResponse { Id = x.Id, Name = x.Name, RegisterDate = x.RegisterDate, ImageUrl = x.ImageUrl, Price = x.Price, UserFK = x.UserFK, StoreFK = x.StoreFK, StateFK = x.StateFK, ExpireDate = x.ExpireDate, Active = x.Active }));
+            {
+                var result = new List<PromotionResponse>();
+                foreach (var promotion in promotions)
+                {
+                    var totalVotes = promotion.Orders.Count(x => x.IsVotePositive != null);
+                    var positiveVotes = promotion.Orders.Count(x => x.IsVotePositive == true);
+                    result.Add(new PromotionResponse
+                    {
+                        Id = promotion.Id,
+                        Name = promotion.Name,
+                        RegisterDate = promotion.RegisterDate,
+                        ImageUrl = promotion.ImageUrl,
+                        Price = promotion.Price,
+                        UserFK = promotion.UserFK,
+                        StoreFK = promotion.StoreFK,
+                        StateFK = promotion.StateFK,
+                        ExpireDate = promotion.ExpireDate,
+                        Active = promotion.Active,
+                        TotalOrders = promotion.Orders.Count,
+                        OrderUpvotes = positiveVotes,
+                        OrderDownvotes = totalVotes - positiveVotes
+                    });
+                }
+                return Ok(result);
+            }
         }
 
         // POST api/<controller>/register
@@ -181,16 +205,16 @@ namespace PromotionApi.Controllers
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="id">Promotion id</param>
         /// <returns>Promotion</returns>
-        /// <response code="200">Returns promotion</response>
+        /// <response code="200">Returns promotion with votes</response>
         /// <response code="400">If invalid authorization</response>
         /// <response code="401">If token is invalid</response>
         /// <response code="404">If no promotion is found</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(PromotionResponse))]
+        [ProducesResponseType(200, Type = typeof(PromotionWithVotesResponse))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<PromotionResponse>> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        public async Task<ActionResult<PromotionWithVotesResponse>> GetAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -199,11 +223,46 @@ namespace PromotionApi.Controllers
             if (!await _context.Users.AnyAsync(x => x.Token == validation.Token))
                 return Unauthorized();
 
-            var promotion = await _context.Promotions.FindAsync(id);
+            var promotion = await _context.Promotions.Include(x => x.Orders).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
             if (promotion == null)
                 return NotFound("Promotion not found");
 
-            return Ok(new PromotionResponse { Id = promotion.Id, Name = promotion.Name, Price = promotion.Price, ImageUrl = promotion.ImageUrl, RegisterDate = promotion.RegisterDate, UserFK = promotion.UserFK, StateFK = promotion.StateFK, StoreFK = promotion.StoreFK, ExpireDate = promotion.ExpireDate, Active = promotion.Active });
+            var totalVotes = promotion.Orders.Count(x => x.IsVotePositive != null);
+            var positiveVotes = promotion.Orders.Count(x => x.IsVotePositive == true);
+
+            return Ok(new PromotionWithVotesResponse
+            {
+                Id = promotion.Id,
+                Name = promotion.Name,
+                Price = promotion.Price,
+                ImageUrl = promotion.ImageUrl,
+                RegisterDate = promotion.RegisterDate,
+                UserFK = promotion.UserFK,
+                StateFK = promotion.StateFK,
+                StoreFK = promotion.StoreFK,
+                ExpireDate = promotion.ExpireDate,
+                Active = promotion.Active,
+                TotalOrders = promotion.Orders.Count,
+                OrderUpvotes = positiveVotes,
+                OrderDownvotes = totalVotes - positiveVotes,
+                Votes = promotion.Orders.Where(x => x.IsVotePositive != null).Select(x => new VoteResponse
+                {
+                    IsPositive = x.IsVotePositive.Value,
+                    Comment = x.Comment,
+                    CommentRegisterDate = x.CommentRegisterDate.Value,
+                    Answer = x.Answer,
+                    AnswerRegisterDate = x.AnswerRegisterDate,
+                    OrderId = x.Id,
+                    User = new UserResponse
+                    {
+                        Id = x.User.Id,
+                        Nickname = x.User.Nickname,
+                        ImageUrl = x.User.ImageUrl,
+                        RegisterDate = x.User.RegisterDate,
+                        Type = x.User.Type
+                    }
+                }).ToHashSet()
+            });
         }
 
         // DELETE api/<controller>/{id}

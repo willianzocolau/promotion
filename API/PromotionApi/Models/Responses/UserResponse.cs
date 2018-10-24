@@ -20,5 +20,8 @@ namespace PromotionApi.Models
 
         [JsonProperty("type"), Required]
         public UserType Type { get; set; }
+
+        [JsonProperty("seller_profile")]
+        public SellerProfile SellerProfile { get; set; }
     }
 }

@@ -47,7 +47,20 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            return Ok(new OwnUserResponse { Id = user.Id, Nickname = user.Nickname, ImageUrl = user.ImageUrl, RegisterDate = user.RegisterDate, Type = user.Type, Credit = user.Credit, Email = user.Email, Name = user.Name, StateFK = user.StateFK });
+            var promotionsCount = _context.Promotions.Count(x => x.UserFK == user.Id);
+            var orders = _context.Orders.Include(x => x.Promotion).Where(x => x.Promotion.UserFK == user.Id);
+            var votesCount = orders.Count(x => x.IsVotePositive != null);
+            var positiveVotes = orders.Count(x => x.IsVotePositive == true);
+
+            var sellerProfile = new SellerProfile
+            {
+                TotalPromotions = promotionsCount,
+                TotalOrders = orders.Count(),
+                OrdersUpvotes = positiveVotes,
+                OrdersDownvotes = votesCount - positiveVotes
+            };
+
+            return Ok(new OwnUserResponse { Id = user.Id, Nickname = user.Nickname, ImageUrl = user.ImageUrl, RegisterDate = user.RegisterDate, Type = user.Type, Credit = user.Credit, Email = user.Email, Name = user.Name, StateFK = user.StateFK, SellerProfile = sellerProfile });
         }
 
         // GET api/<controller>/search/{nickname}
@@ -124,7 +137,28 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return NotFound(new ErrorResponse { Error = "User not found" });
 
-            return Ok(new UserResponse { Id = user.Id, Nickname = user.Nickname, ImageUrl = user.ImageUrl, RegisterDate = user.RegisterDate, Type = user.Type });
+            var promotionsCount = _context.Promotions.Count(x => x.UserFK == user.Id);
+            var orders = _context.Orders.Include(x => x.Promotion).Where(x => x.Promotion.UserFK == user.Id);
+            var votesCount = orders.Count(x => x.IsVotePositive != null);
+            var positiveVotes = orders.Count(x => x.IsVotePositive == true);
+
+            var sellerProfile = new SellerProfile
+            {
+                TotalPromotions = promotionsCount,
+                TotalOrders = orders.Count(),
+                OrdersUpvotes = positiveVotes,
+                OrdersDownvotes = votesCount - positiveVotes
+            };
+
+            return Ok(new UserResponse
+            {
+                Id = user.Id,
+                Nickname = user.Nickname,
+                ImageUrl = user.ImageUrl,
+                RegisterDate = user.RegisterDate,
+                Type = user.Type,
+                SellerProfile = sellerProfile
+            });
         }
 
         // PATCH api/<controller>
