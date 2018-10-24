@@ -296,7 +296,7 @@ namespace PromotionApi.Controllers
         /// <response code="400">If invalid authorization, already voted, or comment is too long</response>
         /// <response code="401">If token is invalid, or order user id and token user id don't match</response>
         /// <response code="404">If no order is found</response>
-        [HttpDelete("{id}/vote")]
+        [HttpPost("{id}/vote")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
