@@ -287,7 +287,7 @@ namespace PromotionApi.Controllers
         /// Vote for order (upvote/downvote)
         /// </summary>
         /// <remarks>
-        /// Requires permission to delete orders.
+        /// Requires to be the one that did the order.
         /// </remarks>
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="id">Order id</param>
@@ -333,6 +333,54 @@ namespace PromotionApi.Controllers
             return Ok();
         }
 
-        //TODO: Add answer endpoint
+        // POST api/<controller>/{id}/answer
+        /// <summary>
+        /// Answer a vote (upvote/downvote)
+        /// </summary>
+        /// <remarks>
+        /// Requires to be the one that posted the promotion.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Order id</param>
+        /// <param name="answerData">Data needed to add the reply</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization, already answered, or comment is too long</response>
+        /// <response code="401">If token is invalid, or promotion user id and token user id don't match</response>
+        /// <response code="404">If no order is found</response>
+        [HttpPost("{id}/answer")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> AnswerAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id, [FromBody, Required] AnswerBody answerData)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+                return NotFound("Order not found");
+
+            if (order.Promotion.UserFK != user.Id)
+                return Unauthorized();
+
+            if (order.Answer != null)
+                return BadRequest("Already voted");
+
+            if (answerData.Answer.Length > 400)
+                return BadRequest("Answer is too long");
+
+            order.Answer = answerData.Answer;
+            order.AnswerRegisterDate = DateTimeOffset.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
