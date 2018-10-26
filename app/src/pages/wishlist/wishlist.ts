@@ -50,9 +50,10 @@ export class WishListPage {
       })
       .catch(exception => {
         let dados = JSON.parse(exception.error);
-        console.log("Erro: " + dados.error);
-        console.log(exception);
-        loading.dismiss();
+          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
+          loading.dismiss();
+          msg.present();
+          console.log(exception);
       });
   }
 
@@ -77,21 +78,22 @@ export class WishListPage {
         'Content-type': 'application/json'
       };
       let body = {
-        "name": input,
+        "name": input
       }
       this.http.post(endpoint, body, headers)
         .then(response => {
-          let dados = JSON.parse(response.data);
-          loading.dismiss();
-          console.log(dados);
           console.log("Sucesso");
+          this.nav.setRoot(WishListPage);
+          loading.dismiss();
         })
         .catch(exception => {
           let dados = JSON.parse(exception.error);
-          console.log("Erro: " + dados.error);
-          console.log(exception);
+          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
           loading.dismiss();
+          msg.present();
+          console.log(exception);
         });
+        loading.dismiss();
     }
   }
 
