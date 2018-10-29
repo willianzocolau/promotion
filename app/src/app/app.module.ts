@@ -26,6 +26,7 @@ import { EditAuthPage } from "../pages/edit/editAuth";
 import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { ForgetPasswordPage } from "../pages/password/forgetpassword";
 import { WishListPage } from "../pages/wishlist/wishlist";
+import { AdvertisingPage } from "../pages/advertising/advertising";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -51,6 +52,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     MyAdvertisingPage,
     ForgetPasswordPage,
     WishListPage,
+    AdvertisingPage,
   ],
   imports: [
     BrowserModule,
@@ -81,6 +83,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     MyAdvertisingPage,
     ForgetPasswordPage,
     WishListPage,
+    AdvertisingPage,
   ],
   providers: [
     StatusBar,

@@ -21,9 +21,14 @@ export class ServerStrings {
   userWishlist(){
     return this.user() + "wishlist/"
   }
-
   userWishlistId(id: number){
     return this.userWishlist() + id;
+  }
+  userMatchs(){
+    return this.user() + "matchs/"
+  }
+  userMatchsId(id: number){
+    return this.userMatchs() + id;
   }
   // promotionControler
   promotion() {
@@ -31,6 +36,9 @@ export class ServerStrings {
   }
   promotionSearch(name: string) {
     return this.promotion() + "?name=" + name;
+  }
+  promotionId(id: number){
+    return this.promotion() + id;
   }
   promotionUserId(id: number) {
     return this.promotion() + "?user_id=" + id;
@@ -46,6 +54,8 @@ export class ServerStrings {
       return ServerStrings.url + "order/" + id.toString() + "/aprove";
     else if (path == "")
       return ServerStrings.url + "order/" + id.toString() + "/disaprove";
+    else if (path == "vote")
+      return ServerStrings.url + "order/" + id.toString() + "/vote"
     return "";
   }
   // stateControler
