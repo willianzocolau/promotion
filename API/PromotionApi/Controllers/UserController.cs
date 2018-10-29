@@ -226,9 +226,6 @@ namespace PromotionApi.Controllers
             {
                 if (!Utils.IsValidNickname(editUserData.Nickname))
                     return BadRequest(new ErrorResponse { Error = "Invalid nickname" });
-                bool alreadyUsedNickname = await _context.Users.AnyAsync(x => EF.Functions.ILike(x.Nickname, editUserData.Nickname));
-                if (alreadyUsedNickname)
-                    return BadRequest(new ErrorResponse { Error = "Already used nickname" });
                 user.Nickname = editUserData.Nickname;
             }
 
