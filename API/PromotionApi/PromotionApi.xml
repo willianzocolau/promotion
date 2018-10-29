@@ -158,7 +158,7 @@
             Vote for order (upvote/downvote)
             </summary>
             <remarks>
-            Requires permission to delete orders.
+            Requires to be the one that did the order.
             </remarks>
             <param name="authorization">Bearer Auth format</param>
             <param name="id">Order id</param>
@@ -166,6 +166,21 @@
             <response code="200">Success</response>
             <response code="400">If invalid authorization, already voted, or comment is too long</response>
             <response code="401">If token is invalid, or order user id and token user id don't match</response>
+            <response code="404">If no order is found</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.OrderController.AnswerAsync(System.String,System.Int64,PromotionApi.Models.AnswerBody)">
+            <summary>
+            Answer a vote (upvote/downvote)
+            </summary>
+            <remarks>
+            Requires to be the one that posted the promotion.
+            </remarks>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Order id</param>
+            <param name="answerData">Data needed to add the reply</param>
+            <response code="200">Success</response>
+            <response code="400">If invalid authorization, already answered, or comment is too long</response>
+            <response code="401">If token is invalid, or promotion user id and token user id don't match</response>
             <response code="404">If no order is found</response>
         </member>
         <member name="M:PromotionApi.Controllers.PromotionController.GetPromotionsAsync(System.String,System.Int32,System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int64},System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">

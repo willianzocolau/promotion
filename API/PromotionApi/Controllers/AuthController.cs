@@ -264,7 +264,7 @@ namespace PromotionApi.Controllers
             return Ok();
         }
 
-        // POST api/<controller>/change
+        // PATCH api/<controller>/change
         /// <summary>
         /// Change the password for a specific user
         /// </summary>
@@ -278,7 +278,7 @@ namespace PromotionApi.Controllers
         /// <response code="200">Success, password changed</response>
         /// <response code="400">If invalid new password, invalid old password, invalid reset code, invalid email, or old password and reset code provided</response>
         /// <response code="404">If token not found</response>
-        [HttpPost("change")]
+        [HttpPatch("change")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]

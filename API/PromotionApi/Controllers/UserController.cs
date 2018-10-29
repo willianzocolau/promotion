@@ -222,13 +222,6 @@ namespace PromotionApi.Controllers
                 user.ImageUrl = editUserData.ImageUrl;
             }
 
-            if (editUserData.Nickname != null)
-            {
-                if (!Utils.IsValidNickname(editUserData.Nickname))
-                    return BadRequest(new ErrorResponse { Error = "Invalid nickname" });
-                user.Nickname = editUserData.Nickname;
-            }
-
             await _context.SaveChangesAsync();
 
             return Ok();

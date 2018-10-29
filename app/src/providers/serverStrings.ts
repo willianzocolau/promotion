@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ServerStrings {
   public static url: string = 'http://178.128.186.9/api/';
-  // authControler
+  // authController
   get auth() {
     return new Auth();
   }
 
-  // userControler
+  // userController
   user() {
     return ServerStrings.url + "user/";
   }
@@ -30,7 +30,7 @@ export class ServerStrings {
   userMatchsId(id: number){
     return this.userMatchs() + id;
   }
-  // promotionControler
+  // promotionController
   promotion() {
     return ServerStrings.url + "promotion/";
   }
@@ -46,19 +46,19 @@ export class ServerStrings {
   promotionRegister() {
     return this.promotion() + "register/";
   }
-  // orderControler
+  // orderController
   order(path: string, id: number) {
     if (path == "")
       return ServerStrings.url + "order/";
     else if (path == "aprove")
-      return ServerStrings.url + "order/" + id.toString() + "/aprove";
+      return ServerStrings.url + "order/" + id.toString() + "/approve";
     else if (path == "")
-      return ServerStrings.url + "order/" + id.toString() + "/disaprove";
+      return ServerStrings.url + "order/" + id.toString() + "/disapprove";
     else if (path == "vote")
       return ServerStrings.url + "order/" + id.toString() + "/vote"
     return "";
   }
-  // stateControler
+  // stateController
   state() {
     return ServerStrings.url + "state/";
   }
