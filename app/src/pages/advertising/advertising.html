@@ -42,11 +42,11 @@
             <ion-icon name="text"></ion-icon>
             <div>{{ item.promotion.comments }} Comentários</div>
           </button>
-          <button style="float: right;" ion-button icon-start clear small>
+          <button style="float: right;" ion-button icon-start clear small (click)="Vote(false)">
             <ion-icon name="thumbs-down"></ion-icon>
             <div>{{ item.promotion.order_downvotes }} Dislikes</div>
           </button>
-          <button style="float: right;" ion-button icon-start clear small>
+          <button style="float: right;" ion-button icon-start clear small (click)="Vote(true)">
             <ion-icon name="thumbs-up"></ion-icon>
             <div>{{ item.promotion.order_upvotes }} Likes</div>
           </button>

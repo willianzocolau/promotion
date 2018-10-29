@@ -54,6 +54,8 @@ export class ServerStrings {
       return ServerStrings.url + "order/" + id.toString() + "/aprove";
     else if (path == "")
       return ServerStrings.url + "order/" + id.toString() + "/disaprove";
+    else if (path == "vote")
+      return ServerStrings.url + "order/" + id.toString() + "/vote"
     return "";
   }
   // stateControler

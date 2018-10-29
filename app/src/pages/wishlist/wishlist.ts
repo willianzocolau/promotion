@@ -33,7 +33,7 @@ export class WishListPage {
 
   getWishlist() {
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
-    //loading.present();
+    loading.present();
     let endpoint: string = this.server.userWishlist();
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken(),
