@@ -1,18 +1,21 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 
-@IonicPage()
 @Component({
   selector: 'page-advertising',
   templateUrl: 'advertising.html',
 })
 export class AdvertisingPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  public item: any = undefined;
+  public valor: any = undefined;
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public viewCtrl: ViewController) {
+      this.item = this.navParams.data;
+      console.log(this.item);
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad AdvertisingPage');
+  closeModal(){
+    this.viewCtrl.dismiss(this.item);
   }
 
 }
