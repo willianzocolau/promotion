@@ -30,47 +30,43 @@ export class EditPage {
         this.form = this.formBuilder.group({
             name: ['', Validators.required],
             nickname: ['', Validators.required],
-            cpf: ['', Validators.required],
-            password: ['', Validators.required],
-            confirm_password: ['', Validators.required],
             telephone: ['', Validators.required],
-            cellphone: ['', Validators.required],
-            image_url: ['', Validators.required]
+            cellphone: ['', Validators.required]/*,
+            image_url: ['', Validators.required]*/
         });
+
+        this.form.controls['name'].setValue(user.getName());
+        this.form.controls['nickname'].setValue(user.getNickname());
+        this.form.controls['cellphone'].setValue(user.getCellphone());
+        this.form.controls['telephone'].setValue(user.getTelephone());
     }
+
     confirm(){
         let name: string = this.form.get('name').value;
         let nickname: string = this.form.get('nickname').value;
-        let cpf: string = this.form.get('cpf').value.replace('.', '');
-        cpf = cpf.replace('.', '');
-        cpf = cpf.replace('-', '');
-        let password: string = this.form.get('password').value;
-        let c_password: string = this.form.get('confirm_password').value;
         let cellphone: string = this.form.get('cellphone').value;
         let telephone: string = this.form.get('telephone').value;
-        let image_url: string = this.form.get('image_url').value;
-        if(password != c_password){
-            this.alertCtrl.create({title: 'Senhas não conferem!',buttons: ['Ok']}).present();
-            return;
-        }
+        let image_url: string = "";//this.form.get('image_url').value;
+
         if(name == "") name = null;
         if(nickname == "") nickname = null;
-        if(cpf == "") cpf = null;
         if(cellphone == "") cellphone = null;
         if(telephone == "") telephone = null;
         if(image_url == "") image_url = null;
+        
         let body = {
             "name": name,
             "nickname": nickname,
-            "cpf": cpf,
             "cellphone": cellphone,
             "telephone": telephone,
             "image_url": image_url
         };
+
         let headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + this.user.getToken()
         };
+
         let endpoint = this.server.user();
         this.http.patch(endpoint, body, headers)
             .then(response => {

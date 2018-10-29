@@ -14,6 +14,8 @@ export class UserData {
   private name: string = null;
   private state: number = null;
   private token: string = null;
+  private telephone: number = null;
+  private cellphone: number = null;
 
   constructor(private storage: Storage,
     private events: Events,
@@ -22,83 +24,67 @@ export class UserData {
   }
 
   getId() {
-    //return this.storage.get('id');
     return this.id;
   }
 
   setId(id: number) {
     this.id = id;
-    //this.storage.set('id', this.id);
   }
 
   getNickname() {
-    //return this.storage.get('nickname');
     return this.nickname;
   }
 
   setNickname(nickname: string) {
     this.nickname = nickname;
-    //this.storage.set('nickname', nickname);
   }
 
   getImage_Url() {
-    //return this.storage.get('image_url');
     return this.image_url;
   }
 
   setImage_Url(image_url: string) {
     this.image_url = image_url
-    //this.storage.set('image_url', this.image_url);
   }
 
   getRegister_Date() {
-    //return this.storage.get('register_date');
     return this.register_date;
   }
 
   setRegister_Date(register_date: string) {
     this.register_date = register_date
-    //this.storage.set('register_date', this.register_date);
   }
 
   getType() {
-    //return this.storage.get('type');
     return this.type;
   }
 
   setType(type: number) {
     this.type = type;
-    //this.storage.set('type', this.type);
   }
 
   getCredit() {
-    //return this.storage.get('credit');
     return this.credit;
   }
 
   setCredit(credit: number) {
     this.credit = credit;
-    //this.storage.set('credit', this.credit);
   }
 
   getName() {
-    //return this.storage.get('name');
     return this.name;
   }
 
   setName(name: string) {
     this.name = name;
-    //this.storage.set('name', this.name);
   }
 
   getState() {
-    //return this.storage.get('state');
     return this.state;
   }
 
   setState(state: number) {
     this.state = state;
-    //this.storage.set('state', this.state);
   }
 
   getTokenAsync() {
@@ -132,6 +118,23 @@ export class UserData {
     this.email = email;
     this.storage.set('email', this.email);
   }
+
+  getTelephone() {
+    return this.telephone;
+  }
+
+  setTelephone(telephone: number) {
+    this.telephone = telephone;
+  }
+
+  setCellphone(cellphone: number) {
+    this.cellphone = cellphone;
+  }
+
+  getCellphone() {
+    return this.cellphone;
+  }
+
 
   update(data: any) {
     if (data.token !== undefined) {
