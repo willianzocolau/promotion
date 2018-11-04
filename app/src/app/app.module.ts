@@ -15,6 +15,7 @@ import { MyApp } from "./app.component";
 import { CustomNavComponent } from "../components/navbar/custom-navbar";
 import { AdcardComponent } from "../components/adcard/adcard";
 import { ListComponent } from "../components/list/list";
+import { WishcardComponent } from "../components/wishcard/wishcard";
 
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
@@ -42,6 +43,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     MyApp,
     CustomNavComponent,
     AdcardComponent,
+    WishcardComponent,
     ListComponent,
     SettingsPage,
     HomePage,
@@ -74,6 +76,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     MyApp,
     CustomNavComponent,
     AdcardComponent,
+    WishcardComponent,
     ListComponent,
     SettingsPage,
     HomePage,

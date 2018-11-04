@@ -1,0 +1,13 @@
+<ion-card *ngFor="let item of list">
+  <ion-item>
+    <ion-col>
+      <button class="bttdel" ion-button icon-only tappable (click)="delete(item.id)"><ion-icon name="trash"></ion-icon></button>
+    </ion-col>
+    <ion-col>
+      {{ item.register_date }}
+    </ion-col>
+    <ion-col>
+      {{ item.name }}
+    </ion-col>
+  </ion-item>
+</ion-card>

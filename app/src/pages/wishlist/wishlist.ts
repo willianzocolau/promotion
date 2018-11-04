@@ -11,11 +11,7 @@ import { ServerStrings } from '../../providers/serverStrings';
   templateUrl: 'wishlist.html',
 })
 export class WishListPage {
-  private wishlist = [{
-    "name": "nome",
-    "id": 0,
-    "register_date": "2018-10-17",
-  }];
+  
   private form: FormGroup;
   constructor(private http: HTTP,
     public formBuilder: FormBuilder,
@@ -28,33 +24,6 @@ export class WishListPage {
     this.form = this.formBuilder.group({
       input: ['', Validators.maxLength(50)],
     });
-    this.getWishlist();
-  }
-
-  getWishlist() {
-    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
-    loading.present();
-    let endpoint: string = this.server.userWishlist();
-    let headers = {
-      'Authorization': 'Bearer ' + this.user.getToken(),
-      'Content-type': 'application/json'
-    };
-    this.http.get(endpoint, {}, headers)
-      .then(response => {
-        let dados = JSON.parse(response.data);
-        dados.forEach(item => {
-          this.wishlist.push(item);
-        });
-        loading.dismiss();
-        console.log("Sucesso");
-      })
-      .catch(exception => {
-        let dados = JSON.parse(exception.error);
-          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
-          loading.dismiss();
-          msg.present();
-          console.log(exception);
-      });
   }
 
   add() {
