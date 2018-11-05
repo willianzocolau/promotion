@@ -14,7 +14,9 @@ import { ServerStrings } from '../../providers/serverStrings';
 export class AdcardComponent {
   @Input() endpoint;
   @Input() type;
+  @Input() infinite = 0;
   public list = [];
+  public lastid = 1;
 
   constructor(public http: HTTP,
     public user: UserData,
@@ -32,23 +34,24 @@ export class AdcardComponent {
   }
 
   ngAfterViewInit(){
-    console.log("ngInit");
     if(this.type == "adcard-user"){
-      this.userListing();
+      this.userListing(this.lastid);
     }
   }
 
   ngOnChanges(){
     if(this.type == "adcard" && this.endpoint != undefined){
-      this.listing(this.endpoint);
+      this.listing(this.endpoint, this.lastid);
     }
-    console.log("ngChange");
+    if(this.infinite > 0){
+      this.userListing(this.lastid);
+    }
   }
 
-  userListing(){
+  userListing(lastid: number){
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
-    let endpoint: string = this.server.promotionUserId(this.user.getId());
+    let endpoint: string = this.server.promotionUserId(this.user.getId())+"&after="+this.lastid;
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
@@ -58,6 +61,10 @@ export class AdcardComponent {
         dados.forEach(promotion => {
           this.list.push({promotion, user: this.user.get()});  
         });
+        if(this.list.length > 0){
+          this.lastid = this.list[this.list.length-1].promotion.id;
+          console.log("lastid="+this.lastid);
+        }
         loading.dismiss();
       })
       .catch(exception => {
@@ -67,10 +74,11 @@ export class AdcardComponent {
       });
   }
 
-  listing(endpoint: string) {
+  listing(endpoint: string, lastid: number) {
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
     //let endpoint: string = this.server.promotionSearch(input);
+    endpoint = endpoint + "&after=" + this.lastid;
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
@@ -94,6 +102,10 @@ export class AdcardComponent {
               msg.present();
             });
         });
+        if(this.list.length > 0){
+          this.lastid = this.list[this.list.length-1].promotion.id;
+          console.log("lastid="+this.lastid);
+        }
         loading.dismiss();
       })
       .catch(exception => {

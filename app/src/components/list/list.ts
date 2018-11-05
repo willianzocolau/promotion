@@ -16,11 +16,11 @@ export class ListComponent {
 
   public adcard = false;
   public wishlist = false;
+  public infinite = 0;
 
   constructor() {}
 
   ngAfterViewInit(){
-    console.log("ngInit");
     switch(this.type){
       case 'adcard-user':
         this.adcard = true; 
@@ -31,11 +31,16 @@ export class ListComponent {
     } 
   }
   ngOnChanges(){
-    console.log("ngChange");
     switch(this.type){
       case 'adcard':
         this.adcard = true; 
         break;
     }
+  }
+  doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      this.infinite++;
+      infiniteScroll.complete();
+    }, 500);
   }
 }

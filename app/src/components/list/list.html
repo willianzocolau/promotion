@@ -1,3 +1,7 @@
-<adcard *ngIf="adcard" [type]="type" [endpoint]="endpoint"></adcard>
+<adcard *ngIf="adcard" [type]="type" [endpoint]="endpoint" [infinite]="infinite"></adcard>
 
 <wishcard *ngIf="wishlist"></wishcard>
+
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
