@@ -15,6 +15,7 @@ import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { UserData } from "../providers/userData";
 import { ServerStrings } from "../providers/serverStrings";
 import { WishListPage } from "../pages/wishlist/wishlist";
+import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 
 
 export interface MenuItem {
@@ -54,6 +55,7 @@ export class MyApp {
       { title: 'Pesquisar', function: () => { this.openPage(SearchPage) }, icon: 'search' },
       { title: 'Meus anúncios', function: () => { this.openPage(MyAdvertisingPage) }, icon: 'pricetags' },
       { title: 'Lista de desejos', function: () => { this.openPage(WishListPage) }, icon: 'list' },
+      { title: 'Histórico de vendas', function: () => { this.openPage(SaleHistoryPage) }, icon: 'time' },
       { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
       { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
       { title: 'Sair', function: () => { this.logout() }, icon: 'exit' },

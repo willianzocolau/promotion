@@ -29,6 +29,7 @@ import { MyAdvertisingPage } from "../pages/my-advertising/my-advertising";
 import { ForgetPasswordPage } from "../pages/password/forgetpassword";
 import { WishListPage } from "../pages/wishlist/wishlist";
 import { AdvertisingPage } from "../pages/advertising/advertising";
+import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -57,6 +58,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ForgetPasswordPage,
     WishListPage,
     AdvertisingPage,
+    SaleHistoryPage
   ],
   imports: [
     BrowserModule,
@@ -90,6 +92,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ForgetPasswordPage,
     WishListPage,
     AdvertisingPage,
+    SaleHistoryPage
   ],
   providers: [
     StatusBar,
