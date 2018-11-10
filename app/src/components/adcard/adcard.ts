@@ -16,6 +16,9 @@ export class AdcardComponent {
   @Input() type;
   @Input() infinite = 0;
   public list = [];
+  public list1 = [];
+  public list2 = []; 
+  public list3 = [];
   public lastid = 1;
 
   constructor(public http: HTTP,
@@ -26,6 +29,7 @@ export class AdcardComponent {
     public modalCtrl: ModalController) {}
 
   openPage(item: any){
+    this.list.push( this.list2 );
     let modal = this.modalCtrl.create(AdvertisingPage, item);
     modal.onDidDismiss((data) => {
       console.log(data);
@@ -48,6 +52,14 @@ export class AdcardComponent {
     }
   }
 
+  copyList(list: any[]){
+    let ret = new Array;
+    list.forEach(element => {
+      ret.push(element);
+    });
+    return ret;
+  }
+
   userListing(lastid: number){
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
@@ -55,6 +67,11 @@ export class AdcardComponent {
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
+    this.list3 = this.copyList(this.list2);
+    this.list2 = this.copyList(this.list1);
+    this.list1 = [];
+    this.list = [];
+
     this.http.get(endpoint, {}, headers)
       .then(response => {
         let dados = JSON.parse(response.data);
@@ -65,6 +82,14 @@ export class AdcardComponent {
           this.lastid = this.list[this.list.length-1].promotion.id;
           console.log("lastid="+this.lastid);
         }
+        this.list1 = this.copyList(this.list);
+        this.list2.forEach(element => {
+          this.list3.push(element);
+        });
+        this.list1.forEach(element => {
+          this.list3.push(element);
+        });
+        this.list = this.copyList(this.list3);
         loading.dismiss();
       })
       .catch(exception => {
