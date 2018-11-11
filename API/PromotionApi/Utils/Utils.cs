@@ -82,7 +82,6 @@ namespace PromotionApi
 
         internal static async Task SendEmailAsync(string email, string subject, string message)
         {
-            //TODO: Test email
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(_emailUsername, "Promotion");
             mail.To.Add(new MailAddress(email));
