@@ -40,10 +40,10 @@ namespace PromotionApi.Controllers
         /// <param name="priceLessThan">Promotion price will be less than this value</param>
         /// <param name="priceGreaterThan">Promotion price will be greater than this value</param>
         /// <param name="name">Promotion name or part of it</param>
-        /// <param name="orderBy">Order results by (valid values: ...)</param> //TODO: Add values
+        /// <param name="orderBy">Order results by (valid values: REGISTERDATE_DESC (default), REGISTERDATE_ASC, PRICE_DESC, PRICE_ASC, EXPIREDATE_DESC, EXPIREDATE_ASC)</param>
         /// <returns>List of promotions</returns>
         /// <response code="200">Returns list of promotions that match the parameters</response>
-        /// <response code="400">If invalid authorization, or invalid limit</response>
+        /// <response code="400">If invalid authorization, invalid limit, or invalid order by</response>
         /// <response code="401">If token is invalid</response>
         /// <response code="404">If no promotion is found</response>
         [HttpGet]
@@ -72,8 +72,29 @@ namespace PromotionApi.Controllers
             }
             else
             {
-                promotionQuery = promotionQuery.OrderByDescending(x => x.RegisterDate);
-                //TODO: order by
+                switch(orderBy)
+                {
+                    case "REGISTERDATE_DESC":
+                        promotionQuery = promotionQuery.OrderByDescending(x => x.RegisterDate);
+                        break;
+                    case "REGISTERDATE_ASC":
+                        promotionQuery = promotionQuery.OrderBy(x => x.RegisterDate);
+                        break;
+                    case "PRICE_DESC":
+                        promotionQuery = promotionQuery.OrderByDescending(x => x.Price);
+                        break;
+                    case "PRICE_ASC":
+                        promotionQuery = promotionQuery.OrderBy(x => x.Price);
+                        break;
+                    case "EXPIREDATE_DESC":
+                        promotionQuery = promotionQuery.OrderByDescending(x => x.ExpireDate);
+                        break;
+                    case "EXPIREDATE_ASC":
+                        promotionQuery = promotionQuery.OrderBy(x => x.ExpireDate);
+                        break;
+                    default:
+                        return BadRequest(new ErrorResponse { Error = "Invalid order by" });
+                }
             }
 
             if (afterId != null)
@@ -308,6 +329,58 @@ namespace PromotionApi.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        // GET api/<controller>/{id}/orders
+        /// <summary>
+        /// Get orders from a promotion
+        /// </summary>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Promotion id</param>
+        /// <returns>Promotion Orders</returns>
+        /// <response code="200">Returns the orders of a promotion with users (without seller profile)</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid, or not your promotion</response>
+        /// <response code="404">If no promotion is found</response>
+        [HttpGet("{id}/orders")]
+        [ProducesResponseType(200, Type = typeof(HashSet<OrderWithUserResponse>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult<HashSet<OrderWithUserResponse>>> GetOrdersAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var promotion = await _context.Promotions.Include(x => x.Orders).ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id);
+            if (promotion == null)
+                return NotFound("Promotion not found");
+
+            if (promotion.UserFK != user.Id)
+                return Unauthorized();
+
+            return Ok(promotion.Orders.Select(x => new OrderWithUserResponse
+            {
+                Id = x.Id,
+                RegisterDate = x.RegisterDate,
+                PromotionFK = x.PromotionFK,
+                UserFK = x.UserFK,
+                User = new UserResponse
+                {
+                    Id = x.User.Id,
+                    Nickname = x.User.Nickname,
+                    ImageUrl = x.User.ImageUrl,
+                    RegisterDate = x.User.RegisterDate,
+                    Type = x.User.Type,
+                    SellerProfile = null
+                },
+                ApprovedByUserFK = x.ApprovedByUserFK
+            }).ToHashSet());
         }
     }
 }
