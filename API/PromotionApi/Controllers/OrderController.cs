@@ -105,16 +105,16 @@ namespace PromotionApi.Controllers
         /// </remarks>
         /// <param name="authorization">Bearer Auth format (store)</param>
         /// <param name="orderData">Data related to the order to create</param>
-        /// <response code="200">Success</response>
+        /// <response code="200">Success, returns Order</response>
         /// <response code="400">If invalid authorization, or promotion not from your store</response>
         /// <response code="401">If token is invalid</response>
         /// <response code="404">If promotion is not found, or user is not found</response>
         [HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(OrderResponse))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> AddOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromBody, Required] AddOrderBody orderData)
+        public async Task<ActionResult<OrderResponse>> AddOrderAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromBody, Required] AddOrderBody orderData)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)
@@ -135,17 +135,25 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return NotFound(new ErrorResponse { Error = "User not found" });
 
-            _context.Orders.Add(new Order
+            Order newOrder = new Order
             {
                 RegisterDate = DateTimeOffset.UtcNow,
                 ApprovedByUserFK = null,
                 PromotionFK = orderData.PromotionId,
                 UserFK = orderData.UserId
-            });
+            };
+            _context.Orders.Add(newOrder);
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new OrderResponse
+            {
+                Id = newOrder.Id,
+                RegisterDate = newOrder.RegisterDate,
+                PromotionFK = newOrder.PromotionFK,
+                UserFK = newOrder.UserFK,
+                ApprovedByUserFK = newOrder.ApprovedByUserFK
+            });
         }
 
         // PATCH api/<controller>/{id}/approve
