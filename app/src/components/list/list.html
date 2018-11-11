@@ -2,6 +2,8 @@
 
 <wishcard *ngIf="wishlist"></wishcard>
 
+<ordercard *ngIf="order"></ordercard>
+
 <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
   <ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>

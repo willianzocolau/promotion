@@ -16,6 +16,7 @@ export class ListComponent {
 
   public adcard = false;
   public wishlist = false;
+  public order = false;
   public infinite = 0;
 
   constructor() {}
@@ -27,6 +28,9 @@ export class ListComponent {
         break;
       case 'wishlist':
         this.wishlist = true;
+        break;
+      case 'order':
+        this.order = true;
         break;
     } 
   }
