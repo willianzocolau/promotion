@@ -106,7 +106,7 @@
             </remarks>
             <param name="authorization">Bearer Auth format (store)</param>
             <param name="orderData">Data related to the order to create</param>
-            <response code="200">Success</response>
+            <response code="200">Success, returns Order</response>
             <response code="400">If invalid authorization, or promotion not from your store</response>
             <response code="401">If token is invalid</response>
             <response code="404">If promotion is not found, or user is not found</response>
@@ -199,10 +199,10 @@
             <param name="priceLessThan">Promotion price will be less than this value</param>
             <param name="priceGreaterThan">Promotion price will be greater than this value</param>
             <param name="name">Promotion name or part of it</param>
-            <param name="orderBy">Order results by (valid values: ...)</param> //TODO: Add values
+            <param name="orderBy">Order results by (valid values: REGISTERDATE_DESC (default), REGISTERDATE_ASC, PRICE_DESC, PRICE_ASC, EXPIREDATE_DESC, EXPIREDATE_ASC)</param>
             <returns>List of promotions</returns>
             <response code="200">Returns list of promotions that match the parameters</response>
-            <response code="400">If invalid authorization, or invalid limit</response>
+            <response code="400">If invalid authorization, invalid limit, or invalid order by</response>
             <response code="401">If token is invalid</response>
             <response code="404">If no promotion is found</response>
         </member>
@@ -241,6 +241,18 @@
             <response code="200">Success</response>
             <response code="400">If invalid authorization</response>
             <response code="401">If token is invalid, or no permission to delete</response>
+            <response code="404">If no promotion is found</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.PromotionController.GetOrdersAsync(System.String,System.Int64)">
+            <summary>
+            Get orders from a promotion
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Promotion id</param>
+            <returns>Promotion Orders</returns>
+            <response code="200">Returns the orders of a promotion with users (without seller profile)</response>
+            <response code="400">If invalid authorization</response>
+            <response code="401">If token is invalid, or not your promotion</response>
             <response code="404">If no promotion is found</response>
         </member>
         <member name="M:PromotionApi.Controllers.StateController.GetAllAsync(System.String)">
