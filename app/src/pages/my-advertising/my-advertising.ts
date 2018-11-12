@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from "ionic-angular";
+import { CreateAdPage } from "../create-ad/create-ad";
+
 
 /**
  * Generated class for the MyAdvertisingPage page.
@@ -14,4 +16,8 @@ import { NavController, NavParams } from "ionic-angular";
 })
 export class MyAdvertisingPage {
   constructor(public nav: NavController, public navParams: NavParams) {}
+
+  criar() {
+    this.nav.setRoot(CreateAdPage);
+  }
 }
