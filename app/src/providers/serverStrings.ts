@@ -46,6 +46,9 @@ export class ServerStrings {
   promotionRegister() {
     return this.promotion() + "register/";
   }
+  promotionOrders(id: number){
+    return this.promotion() + id +"/orders";
+  }
   // orderController
   order(path: string, id: number) {
     if (path == "")
