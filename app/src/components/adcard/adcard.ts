@@ -103,7 +103,7 @@ export class AdcardComponent {
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
     //let endpoint: string = this.server.promotionSearch(input);
-    endpoint = endpoint + "&after=" + this.lastid;
+    endpoint = endpoint + "?after=" + this.lastid;
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
