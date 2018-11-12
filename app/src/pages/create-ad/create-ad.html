@@ -23,7 +23,7 @@
         <ion-icon name="logo-usd" item-start class="text-primary"></ion-icon>
         Preço
       </ion-label>
-      <ion-input type="floating" formControlName="price"></ion-input>
+      <ion-input type="text" formControlName="price"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -31,7 +31,7 @@
         <ion-icon name="image" item-start class="text-primary"></ion-icon>
         URL da Imagem
       </ion-label>
-      <ion-input type="URL" formControlName="image"></ion-input>
+      <ion-input type="text" formControlName="image"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -47,7 +47,7 @@
         Estado
       </ion-label>
       <ion-select formControlName="state_id" cancelText="Cancel" okText="OK">
-        <ion-option value="AC">Acre</ion-option>
+        <ion-option value="1">Acre</ion-option>
 	      <ion-option value="AL">Alagoas</ion-option>
 	      <ion-option value="AP">Amapá</ion-option>
 	      <ion-option value="AM">Amazonas</ion-option>
@@ -77,7 +77,7 @@
       </ion-select>
     </ion-item>
   </form>
-  <button ion-button block color="dark" (click)="create-ad()" [disabled]="!form.valid">
+  <button ion-button block color="dark" (click)="createAd()" [disabled]="!form.valid">
     Criar Anúncio
   </button>
 </ion-content>
