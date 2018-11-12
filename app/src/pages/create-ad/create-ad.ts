@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 /**
  * Generated class for the CreateAdPage page.
@@ -15,7 +16,21 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CreateAdPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  public form : FormGroup;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+    public formBuilder: FormBuilder) {
+      this.form = this.formBuilder.group({
+        name: ['', Validators.required],
+        price: ['',Validators.required],
+        image: ['',Validators.required],
+        store_id: ['',Validators.required],
+        state_id: ['',Validators.required]
+      });
+  }
+
+  logForm(){
+    console.log(this.form.value)
   }
 
   ionViewDidLoad() {
