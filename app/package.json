@@ -68,7 +68,6 @@
       "cordova-plugin-advanced-http": {}
     },
     "platforms": [
-      "android",
       "ios",
       "browser"
     ]
