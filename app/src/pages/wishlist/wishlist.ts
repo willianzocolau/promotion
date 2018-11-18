@@ -65,8 +65,4 @@ export class WishListPage {
         loading.dismiss();
     }
   }
-
-  delete(id) {
-    console.log("delete "+id);
-  }
 }
