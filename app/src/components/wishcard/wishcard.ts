@@ -17,11 +17,7 @@ import { ServerStrings } from '../../providers/serverStrings';
 })
 export class WishcardComponent {
 
-  public list = [{
-    "name": "nome",
-    "id": 0,
-    "register_date": "2018-10-17",
-  }];
+  public list = [];
 
   constructor(public http: HTTP,
     public user: UserData,

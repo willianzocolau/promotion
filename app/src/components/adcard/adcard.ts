@@ -15,6 +15,7 @@ export class AdcardComponent {
   @Input() endpoint;
   @Input() type;
   @Input() infinite = 0;
+  public isUserListing = false;
   public list = [];
   public list1 = [];
   public list2 = []; 
@@ -61,6 +62,7 @@ export class AdcardComponent {
   }
 
   userListing(lastid: number){
+    this.isUserListing = true;
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
     let endpoint: string = this.server.promotionUserId(this.user.getId())+"&after="+this.lastid;
@@ -141,5 +143,8 @@ export class AdcardComponent {
         loading.dismiss();
         msg.present();
       });
+  }
+  disable(id: number){
+    console.log("disable " + id);
   }
 }
