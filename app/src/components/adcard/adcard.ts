@@ -17,9 +17,6 @@ export class AdcardComponent {
   @Input() infinite = 0;
   public isUserListing = false;
   public list = [];
-  public list1 = [];
-  public list2 = []; 
-  public list3 = [];
   public lastid = 1;
 
   constructor(public http: HTTP,
@@ -30,7 +27,6 @@ export class AdcardComponent {
     public modalCtrl: ModalController) {}
 
   openPage(item: any){
-    this.list.push( this.list2 );
     let modal = this.modalCtrl.create(AdvertisingPage, item);
     modal.onDidDismiss((data) => {
       console.log(data);
@@ -45,10 +41,13 @@ export class AdcardComponent {
   }
 
   ngOnChanges(){
+    console.log(this.type);
+    console.log(this.endpoint);
+    console.log(this.infinite);
     if(this.type == "adcard" && this.endpoint != undefined){
       this.listing(this.endpoint, this.lastid);
     }
-    if(this.infinite > 0){
+    if(this.type == "adcard-user" && this.infinite > 0){
       this.userListing(this.lastid);
     }
   }
@@ -69,10 +68,6 @@ export class AdcardComponent {
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
-    this.list3 = this.copyList(this.list2);
-    this.list2 = this.copyList(this.list1);
-    this.list1 = [];
-    this.list = [];
 
     this.http.get(endpoint, {}, headers)
       .then(response => {
@@ -84,14 +79,6 @@ export class AdcardComponent {
           this.lastid = this.list[this.list.length-1].promotion.id;
           console.log("lastid="+this.lastid);
         }
-        this.list1 = this.copyList(this.list);
-        this.list2.forEach(element => {
-          this.list3.push(element);
-        });
-        this.list1.forEach(element => {
-          this.list3.push(element);
-        });
-        this.list = this.copyList(this.list3);
         loading.dismiss();
       })
       .catch(exception => {
@@ -105,11 +92,15 @@ export class AdcardComponent {
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
     //let endpoint: string = this.server.promotionSearch(input);
-    endpoint = endpoint + "?after=" + this.lastid;
+    if(endpoint.includes("?",0)){
+      endpoint = endpoint + "&after=" + this.lastid;
+    }
+    else{
+      endpoint = endpoint + "?after=" + this.lastid;
+    }
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };
-    this.list = [];
 
     this.http.get(endpoint, {}, headers)
       .then(response => {
@@ -146,5 +137,8 @@ export class AdcardComponent {
   }
   disable(id: number){
     console.log("disable " + id);
+  }
+  report(id: number){
+    console.log("report " + id);
   }
 }

@@ -6,6 +6,9 @@
     <button *ngIf="isUserListing" class="disable" ion-button icon-only (click)=disable(item.promotion.id)>
         <ion-icon name="remove-circle"></ion-icon>
     </button>
+    <button class="disable" ion-button icon-only (click)=report(item.promotion.id)>
+        <ion-icon name="flag"></ion-icon>
+    </button>
     <h2>{{ item.user.nickname }}</h2>
     <p>{{ item.promotion.registerdate }}</p>
   </ion-item>
