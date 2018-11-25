@@ -1,10 +1,17 @@
 <ion-card *ngFor="let item of list">
     <ion-item>
-      Promotion: {{item.promotion.name}}
-      <ion-row *ngFor="let order of item.order">
-        <ion-col>Comprador: {{order.user.nickname}}</ion-col>
-        <ion-col>Data: {{order.register_date}}</ion-col>  
+      <!--Todo: Adicionar cashback-->
+      Promotion: {{item.promotion.name}} 
+      Cashback: 5%  
+      <button *ngIf="item.hide.has_item" class="btt" (click)=hide(item)>
+        <ion-icon [name]="item.hide.icon"></ion-icon>
+      </button>
+      <ion-row *ngFor="let item2 of item.orders">
+        <div *ngIf="item.hide.value">
+          <ion-col>Aprovado por: {{item2.approved.nickname}}</ion-col>
+          <ion-col>Comprador: {{item2.order.user.nickname}}</ion-col>  
+          <ion-col>Data: {{item2.order.register_date}}</ion-col>
+        </div>  
       </ion-row>
-      
     </ion-item>
 </ion-card>

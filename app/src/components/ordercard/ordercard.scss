@@ -1,3 +1,7 @@
 ordercard {
-
+  .btt{
+    border-radius: 8px;
+    background-color: color($colors, primary);
+    color: white;    
+  }
 }

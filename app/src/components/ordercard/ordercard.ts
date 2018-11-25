@@ -42,10 +42,34 @@ export class OrdercardComponent {
         let dados = JSON.parse(response.data);
         dados.forEach(promotion => {
           let endpoint = this.server.promotionOrders(promotion.id);
+          let hide = {
+            has_item: false,
+            icon: "arrow-dropright", 
+            value: false
+          }
           this.http.get(endpoint, {}, headers)
-            .then(response => {
-              let order = JSON.parse(response.data);
-              this.list.push({promotion, order});  
+            .then(response1 => {
+              let dados = JSON.parse(response1.data);
+              let orders = [];
+              if(dados.length > 0){
+                hide.has_item = true;
+              }
+              dados.forEach(order => {
+                let endpoint = this.server.userId(order.approved_by);
+                this.http.get(endpoint, {}, headers)
+                .then(response2 => {
+                  let approved = JSON.parse(response2.data);
+                  orders.push({order, approved});
+                })
+                .catch(exception => {
+                  let dados = JSON.parse(exception.error);
+                  let msg = this.alertCtrl.create({
+                    message: "Erro: " + dados.error
+                  });
+                  msg.present();    
+                });
+              });
+              this.list.push({promotion, orders, hide});
             })
             .catch(exception => {
               let dados = JSON.parse(exception.error);
@@ -70,5 +94,14 @@ export class OrdercardComponent {
         loading.dismiss();
         msg.present();
       });
+  }
+  hide(item){
+    item.hide.value = !item.hide.value;
+    if(item.hide.value){
+      item.hide.icon = "arrow-dropdown";
+    }
+    else{
+      item.hide.icon = "arrow-dropright";
+    }
   }
 }
