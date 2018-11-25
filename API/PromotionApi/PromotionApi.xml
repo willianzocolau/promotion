@@ -234,7 +234,7 @@
             Delete promotion
             </summary>
             <remarks>
-            Requires the owner or permission to delete promotions from other users.
+            Requires permission to delete promotions.
             </remarks>
             <param name="authorization">Bearer Auth format</param>
             <param name="id">Promotion id</param>
@@ -253,6 +253,21 @@
             <response code="200">Returns the orders of a promotion with users (without seller profile)</response>
             <response code="400">If invalid authorization</response>
             <response code="401">If token is invalid, or not your promotion</response>
+            <response code="404">If no promotion is found</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.PromotionController.ModifyAsync(System.String,System.Int64,PromotionApi.Models.EditPromotionBody)">
+            <summary>
+            Change promotion
+            </summary>
+            <remarks>
+            Requires to be the owner of the promotion.
+            </remarks>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Promotion id</param>
+            <param name="editPromotionData">Information to edit from this promotion</param>
+            <response code="200">Success</response>
+            <response code="400">If invalid authorization</response>
+            <response code="401">If token is invalid, or no permission to delete</response>
             <response code="404">If no promotion is found</response>
         </member>
         <member name="M:PromotionApi.Controllers.StateController.GetAllAsync(System.String)">
