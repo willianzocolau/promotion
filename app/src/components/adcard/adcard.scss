@@ -13,4 +13,15 @@ adcard {
     height: 80%;
     /*whatever width you want*/
   }
+  .item-md .item-button {
+    padding: 0 0.6em;
+    height: 30px;
+    font-size: 1.2rem;
+    width: 30px;
+  }
+  .disable{
+    border-radius: 8px;
+    float: right;
+    vertical-align: bottom;
+  }
 }

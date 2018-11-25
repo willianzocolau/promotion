@@ -1,0 +1,10 @@
+<ion-card *ngFor="let item of list">
+    <ion-item>
+      Promotion: {{item.promotion.name}}
+      <ion-row *ngFor="let order of item.order">
+        <ion-col>Comprador: {{order.user.nickname}}</ion-col>
+        <ion-col>Data: {{order.register_date}}</ion-col>  
+      </ion-row>
+      
+    </ion-item>
+</ion-card>

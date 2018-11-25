@@ -16,6 +16,7 @@ import { CustomNavComponent } from "../components/navbar/custom-navbar";
 import { AdcardComponent } from "../components/adcard/adcard";
 import { ListComponent } from "../components/list/list";
 import { WishcardComponent } from "../components/wishcard/wishcard";
+import { OrdercardComponent } from "../components/ordercard/ordercard";
 
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
@@ -30,6 +31,7 @@ import { ForgetPasswordPage } from "../pages/password/forgetpassword";
 import { WishListPage } from "../pages/wishlist/wishlist";
 import { AdvertisingPage } from "../pages/advertising/advertising";
 import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
+import { CreateAdPage } from "../pages/create-ad/create-ad";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -46,6 +48,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     AdcardComponent,
     WishcardComponent,
     ListComponent,
+    OrdercardComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -58,7 +61,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ForgetPasswordPage,
     WishListPage,
     AdvertisingPage,
-    SaleHistoryPage
+    SaleHistoryPage,
+    CreateAdPage
   ],
   imports: [
     BrowserModule,
@@ -80,6 +84,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     AdcardComponent,
     WishcardComponent,
     ListComponent,
+    OrdercardComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -92,7 +97,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ForgetPasswordPage,
     WishListPage,
     AdvertisingPage,
-    SaleHistoryPage
+    SaleHistoryPage,
+    CreateAdPage
   ],
   providers: [
     StatusBar,

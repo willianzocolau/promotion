@@ -17,7 +17,6 @@ import { ServerStrings } from "../providers/serverStrings";
 import { WishListPage } from "../pages/wishlist/wishlist";
 import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 
-
 export interface MenuItem {
     title: string;
     function: any;

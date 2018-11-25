@@ -17,11 +17,7 @@ import { ServerStrings } from '../../providers/serverStrings';
 })
 export class WishcardComponent {
 
-  public list = [{
-    "name": "nome",
-    "id": 0,
-    "register_date": "2018-10-17",
-  }];
+  public list = [];
 
   constructor(public http: HTTP,
     public user: UserData,
@@ -47,6 +43,26 @@ export class WishcardComponent {
         dados.forEach(item => {
           this.list.push(item);
         });
+        loading.dismiss();
+      })
+      .catch(exception => {
+        let dados = JSON.parse(exception.error);
+          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
+          loading.dismiss();
+          msg.present();
+      });
+  }
+  delete(id) {
+    let loading = this.loadingCtrl.create({ content: 'Aguarde...' });
+    loading.present();
+    let endpoint: string = this.server.userWishlist() + id;
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+    this.http.delete(endpoint, {}, headers)
+      .then(response => {
+        console.log("Sucesso");
         loading.dismiss();
       })
       .catch(exception => {
