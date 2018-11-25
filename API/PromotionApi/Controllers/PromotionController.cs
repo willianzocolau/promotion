@@ -295,7 +295,7 @@ namespace PromotionApi.Controllers
         /// Delete promotion
         /// </summary>
         /// <remarks>
-        /// Requires the owner or permission to delete promotions from other users.
+        /// Requires permission to delete promotions.
         /// </remarks>
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="id">Promotion id</param>
@@ -322,7 +322,7 @@ namespace PromotionApi.Controllers
             if (promotion == null)
                 return NotFound("Promotion not found");
 
-            if (promotion.UserFK != user.Id && !Utils.CanDeletePromotion(user.Type))
+            if (!Utils.CanDeletePromotion(user.Type))
                 return Unauthorized();
 
             _context.Promotions.Remove(promotion);
@@ -381,6 +381,52 @@ namespace PromotionApi.Controllers
                 },
                 ApprovedByUserFK = x.ApprovedByUserFK
             }).ToHashSet());
+        }
+
+        // PATCH api/<controller>/{id}
+        /// <summary>
+        /// Change promotion
+        /// </summary>
+        /// <remarks>
+        /// Requires to be the owner of the promotion.
+        /// </remarks>
+        /// <param name="authorization">Bearer Auth format</param>
+        /// <param name="id">Promotion id</param>
+        /// <param name="editPromotionData">Information to edit from this promotion</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">If invalid authorization</response>
+        /// <response code="401">If token is invalid, or no permission to delete</response>
+        /// <response code="404">If no promotion is found</response>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(401, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404, Type = typeof(ErrorResponse))]
+        public async Task<ActionResult> ModifyAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute] long id, [FromBody] EditPromotionBody editPromotionData)
+        {
+            var validation = Token.ValidateAuthorization(authorization);
+            if (!validation.IsValid)
+                return BadRequest(validation.Result);
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
+                return Unauthorized();
+
+            var promotion = await _context.Promotions.FindAsync(id);
+            if (promotion == null)
+                return NotFound("Promotion not found");
+
+            if (promotion.UserFK != user.Id)
+                return Unauthorized();
+
+            if (editPromotionData.Active != null)
+            {
+                promotion.Active = editPromotionData.Active.Value;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
