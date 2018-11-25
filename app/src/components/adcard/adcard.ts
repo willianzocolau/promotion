@@ -136,7 +136,27 @@ export class AdcardComponent {
       });
   }
   disable(id: number){
-    console.log("disable " + id);
+    let loading = this.loadingCtrl.create({ content: 'Aguarde...' });
+    loading.present();
+    let endpoint: string = this.server.promotionId(id);
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+    let body = {
+      "active": false
+    };
+    this.http.patch(endpoint, body, headers)
+      .then(response => {
+        console.log("Sucesso");
+        loading.dismiss();
+      })
+      .catch(exception => {
+        let dados = JSON.parse(exception.error);
+          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
+          loading.dismiss();
+          msg.present();
+      });
   }
   report(id: number){
     console.log("report " + id);
