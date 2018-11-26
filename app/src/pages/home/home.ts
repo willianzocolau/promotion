@@ -14,13 +14,5 @@ export class HomePage {
   constructor(public nav: NavController, public navParams: NavParams, public server: ServerStrings) {
     this.endpoint = this.server.promotion();
   }
-
-  doInfinite(infiniteScroll) {
-    console.log('Begin async operation');
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      infiniteScroll.complete();
-    }, 500);
-  }
   
 }
