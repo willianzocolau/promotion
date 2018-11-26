@@ -92,5 +92,5 @@
     <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <plugin name="cordova-plugin-whitelist" spec="git+https://github.com/apache/cordova-plugin-whitelist.git" />
     <engine name="ios" spec="^4.4.0" />
-    <engine name="browser" spec="5.0.4" />
+    <engine name="browser" spec="^5.0.4" />
 </widget>

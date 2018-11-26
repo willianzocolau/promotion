@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { LoadingController, AlertController } from 'ionic-angular';
+import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
+
+import { WishListPage } from '../../pages/wishlist/wishlist';
 
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
@@ -23,7 +25,8 @@ export class WishcardComponent {
     public user: UserData,
     public server: ServerStrings,
     public loadingCtrl: LoadingController,
-    public alertCtrl: AlertController) {}
+    public alertCtrl: AlertController,
+    public nav: NavController) {}
   
   ngAfterViewInit(){
     this.listing();
@@ -60,16 +63,17 @@ export class WishcardComponent {
       'Authorization': 'Bearer ' + this.user.getToken(),
       'Content-type': 'application/json'
     };
-    this.http.delete(endpoint, {}, headers)
+    this.http.delete(endpoint, {name: 'string'}, headers)
       .then(response => {
         console.log("Sucesso");
+        this.nav.setRoot(WishListPage);
         loading.dismiss();
       })
       .catch(exception => {
         let dados = JSON.parse(exception.error);
-          let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
-          loading.dismiss();
-          msg.present();
+        let msg = this.alertCtrl.create({message: "Erro: " + dados.error});
+        loading.dismiss();
+        msg.present();
       });
   }
 }

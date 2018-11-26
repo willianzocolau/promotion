@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 
 import { AdvertisingPage } from '../../pages/advertising/advertising';
+import { MyAdvertisingPage } from '../../pages/my-advertising/my-advertising';
 
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
@@ -24,7 +25,8 @@ export class AdcardComponent {
     public server: ServerStrings,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
-    public modalCtrl: ModalController) {}
+    public modalCtrl: ModalController,
+    public nav: NavController) {}
 
   openPage(item: any){
     let modal = this.modalCtrl.create(AdvertisingPage, item);
@@ -149,6 +151,7 @@ export class AdcardComponent {
     this.http.patch(endpoint, body, headers)
       .then(response => {
         console.log("Sucesso");
+        this.nav.setRoot(MyAdvertisingPage);
         loading.dismiss();
       })
       .catch(exception => {
