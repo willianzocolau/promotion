@@ -271,6 +271,7 @@ namespace PromotionApi.Controllers
                 TotalOrders = promotion.Orders.Count,
                 OrderUpvotes = positiveVotes,
                 OrderDownvotes = totalVotes - positiveVotes,
+                CashbackPercentage = promotion.CashbackPercentage,
                 Votes = promotion.Orders.Where(x => x.IsVotePositive != null).Select(x => new VoteResponse
                 {
                     IsPositive = x.IsVotePositive.Value,
