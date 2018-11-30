@@ -17,6 +17,7 @@ import { AdcardComponent } from "../components/adcard/adcard";
 import { ListComponent } from "../components/list/list";
 import { WishcardComponent } from "../components/wishcard/wishcard";
 import { OrdercardComponent } from "../components/ordercard/ordercard";
+import { HistorycardComponent } from "../components/historycard/historycard";
 
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
@@ -32,6 +33,7 @@ import { WishListPage } from "../pages/wishlist/wishlist";
 import { AdvertisingPage } from "../pages/advertising/advertising";
 import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 import { CreateAdPage } from "../pages/create-ad/create-ad";
+import { PurchaseHistoryPage } from "../pages/purchase-history/purchase-history";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -49,6 +51,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishcardComponent,
     ListComponent,
     OrdercardComponent,
+    HistorycardComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -62,7 +65,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishListPage,
     AdvertisingPage,
     SaleHistoryPage,
-    CreateAdPage
+    CreateAdPage,
+    PurchaseHistoryPage,
   ],
   imports: [
     BrowserModule,
@@ -85,6 +89,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishcardComponent,
     ListComponent,
     OrdercardComponent,
+    HistorycardComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -98,7 +103,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishListPage,
     AdvertisingPage,
     SaleHistoryPage,
-    CreateAdPage
+    CreateAdPage,
+    PurchaseHistoryPage,
   ],
   providers: [
     StatusBar,

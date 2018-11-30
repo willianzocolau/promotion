@@ -1,0 +1,8 @@
+<ion-card *ngFor="let item of list">
+  <ion-item>
+    Promotion: {{item.promotion.name}} 
+    Cashback: {{item.promotion.cashback_percentage}}
+    Aprovado por: {{item.approved.nickname}}  
+    Data: {{item.order.register_date}}
+  </ion-item>
+</ion-card>
