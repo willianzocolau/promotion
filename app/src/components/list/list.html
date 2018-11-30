@@ -4,6 +4,8 @@
 
 <ordercard *ngIf="order"></ordercard>
 
+<historycard *ngIf="history"></historycard>
+
 <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
   <ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>

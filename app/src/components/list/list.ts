@@ -1,11 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-/**
- * Generated class for the ListingComponent component.
- *
- * See https://angular.io/api/core/Component for more info on Angular
- * Components.
- */
 @Component({
   selector: 'list',
   templateUrl: 'list.html'
@@ -17,6 +11,7 @@ export class ListComponent {
   public adcard = false;
   public wishlist = false;
   public order = false;
+  public history = false;
   public infinite = 0;
 
   constructor() {}
@@ -31,6 +26,9 @@ export class ListComponent {
         break;
       case 'order':
         this.order = true;
+        break;
+      case 'history':
+        this.history = true;
         break;
     } 
   }

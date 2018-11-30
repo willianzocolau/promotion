@@ -1,8 +1,18 @@
 <ion-card *ngFor="let item of list">
   <ion-item>
-    Promotion: {{item.promotion.name}} 
-    Cashback: {{item.promotion.cashback_percentage}}
-    Aprovado por: {{item.approved.nickname}}  
-    Data: {{item.order.register_date}}
+    <ion-row> Promotion: {{item.promotion.name}} </ion-row> 
+    <ion-row> Cashback: {{item.promotion.cashback_percentage}} </ion-row>
+    <ion-row> Aprovado por: {{item.approved.nickname}} </ion-row>  
+    <ion-row> Data: {{item.order.register_date}} </ion-row>
+    <ion-row> 
+      <button ion-button icon-start clear small (click)="vote(item.order, true)">
+        <ion-icon name="thumbs-up"></ion-icon>
+        {{item.promotion.order_upvotes}} Likes
+      </button>
+      <button ion-button icon-start clear small (click)="vote(item.order, false)">
+        <ion-icon name="thumbs-down"></ion-icon>
+        {{item.promotion.order_downvotes}} Dislikes
+      </button>
+    </ion-row>
   </ion-item>
 </ion-card>

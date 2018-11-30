@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { LoadingController, AlertController } from 'ionic-angular';
+import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
+
+import { SaleHistoryPage } from '../../pages/saleHistory/saleHistory';
 
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
@@ -21,7 +23,8 @@ export class HistorycardComponent {
     public user: UserData,
     public server: ServerStrings,
     public loadingCtrl: LoadingController,
-    public alertCtrl: AlertController) {}
+    public alertCtrl: AlertController,
+    public nav: NavController) {}
 
   ngAfterViewInit(){
     this.listing(this.lastid);
@@ -32,7 +35,8 @@ export class HistorycardComponent {
     loading.present();
     let endpoint = this.server.order("", 0) + "?user_id=" +this.user.getId();
     let headers = {
-      'Authorization': 'Bearer ' + this.user.getToken()
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
     };
     this.list = [];
 
@@ -68,6 +72,7 @@ export class HistorycardComponent {
             msg.present();
           });
         });
+        loading.dismiss();
       })      
       .catch(exception1 => {
         let dados = JSON.parse(exception1.error);
@@ -77,5 +82,60 @@ export class HistorycardComponent {
         loading.dismiss();
         msg.present();
       });
+  }
+  vote(item, is_positive: boolean){
+    let msg = this.alertCtrl.create({
+      title: 'Comentário',
+      message: "Deixe seu comentário",
+      inputs: [
+        {
+          name: 'comment',
+          placeholder: '...',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Save',
+          handler: data => {
+            this.voteRequest(item, is_positive, data.comment);
+          }
+        }
+      ]
+    });
+    msg.present();
+  }
+
+  voteRequest(item, is_positive: boolean, comment: string){
+    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
+    loading.present();
+
+    let endpoint: string = this.server.order("vote", item.id);
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+    let body = {
+      "is_positive": is_positive,
+      "comment": comment
+    }
+    this.http.post(endpoint, body, headers)
+      .then(response => {
+        loading.dismiss();
+        this.nav.setRoot(SaleHistoryPage);
+      })
+      .catch(exception => {
+        let dados = JSON.parse(exception.error);
+        let msg = this.alertCtrl.create({message: "Erro: " + dados});
+        loading.dismiss();
+        msg.present();
+        console.log(exception);
+      });
+      loading.dismiss();
   }
 }
