@@ -143,7 +143,8 @@ namespace PromotionApi.Controllers
                         Active = promotion.Active,
                         TotalOrders = promotion.Orders.Count,
                         OrderUpvotes = positiveVotes,
-                        OrderDownvotes = totalVotes - positiveVotes
+                        OrderDownvotes = totalVotes - positiveVotes,
+                        CashbackPercentage = promotion.CashbackPercentage
                     });
                 }
                 return Ok(result);
