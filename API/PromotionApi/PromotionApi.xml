@@ -292,6 +292,28 @@
             <response code="401">If token is invalid</response>
             <response code="404">If no state with this id is found</response>
         </member>
+        <member name="M:PromotionApi.Controllers.StoreController.GetAllAsync(System.String)">
+            <summary>
+            Get all stores
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <returns>List of stores</returns>
+            <response code="200">Returns list of stores</response>
+            <response code="400">If invalid authorization</response>
+            <response code="401">If token is invalid</response>
+        </member>
+        <member name="M:PromotionApi.Controllers.StoreController.GetAsync(System.String,System.Int64)">
+            <summary>
+            Get store with the specific id
+            </summary>
+            <param name="authorization">Bearer Auth format</param>
+            <param name="id">Store id</param>
+            <returns>Store information</returns>
+            <response code="200">Returns store information</response>
+            <response code="400">If invalid authorization</response>
+            <response code="401">If token is invalid</response>
+            <response code="404">If no store with this id is found</response>
+        </member>
         <member name="M:PromotionApi.Controllers.UserController.GetOwnAsync(System.String)">
             <summary>
             Get your own user information
