@@ -1,0 +1,36 @@
+page-purchase-history {
+  .content {
+    background-color: #fff;
+
+    &::after {
+      content: "";
+      background: url("../assets/img/fundo.jpg") no-repeat;
+      background-size: cover;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      z-index: 0;
+    }
+
+    .scroll-content {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      //background: rgba(50, 10, 92, .4);
+      .login-content {
+        width: 86%;
+
+        .logo {
+          width: 60px;
+          height: 60px;
+          margin: 20px auto 0;
+          border-radius: 10%;
+          background: url("../assets/img/logo_proMotion.png") no-repeat;
+          background-size: 100%;
+        }
+      }
+    }
+  }
+}

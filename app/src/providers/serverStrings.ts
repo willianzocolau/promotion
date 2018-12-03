@@ -61,6 +61,10 @@ export class ServerStrings {
       return ServerStrings.url + "order/" + id.toString() + "/vote"
     return "";
   }
+  // store
+  store() {
+    return ServerStrings.url + "store/";
+  }
   // stateController
   state() {
     return ServerStrings.url + "state/";

@@ -20,6 +20,9 @@ import { MyAdvertisingPage } from '../my-advertising/my-advertising';
 export class CreateAdPage {
 
   public form : FormGroup;
+  public states = [];
+  public stores = [];
+  public image_url = "Carregue a imagem";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
     public formBuilder: FormBuilder, public http:HTTP, public server: ServerStrings,
@@ -31,6 +34,62 @@ export class CreateAdPage {
         store_id: ['',Validators.required],
         state_id: ['',Validators.required]
       });
+      this.getStates();
+      this.getStores();
+  }
+
+  getStores(){
+    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
+    loading.present();
+    let endpoint = this.server.store();
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+    this.stores = [];
+
+    this.http.get(endpoint, {}, headers)
+      .then(response => {
+        this.stores = JSON.parse(response.data);
+        loading.dismiss();
+      })     
+      .catch(exception => {
+        let dados = JSON.parse(exception.error);
+        let msg = this.alertCtrl.create({
+          message: "Erro: " + dados.error
+        });
+        loading.dismiss();
+        msg.present();
+      });
+  }
+
+  getStates(){
+    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
+    loading.present();
+    let endpoint = this.server.state();
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken(),
+      'Content-type': 'application/json'
+    };
+    this.states = [];
+
+    this.http.get(endpoint, {}, headers)
+      .then(response => {
+        this.states = JSON.parse(response.data);
+        loading.dismiss();
+      })     
+      .catch(exception => {
+        let dados = JSON.parse(exception.error);
+        let msg = this.alertCtrl.create({
+          message: "Erro: " + dados.error
+        });
+        loading.dismiss();
+        msg.present();
+      });
+  }
+
+  onImageChange(link: string){
+    this.image_url = link; 
   }
 
   createAd(){

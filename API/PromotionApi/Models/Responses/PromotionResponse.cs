@@ -44,5 +44,8 @@ namespace PromotionApi.Models
 
         [JsonProperty("order_downvotes"), Required]
         public int OrderDownvotes { get; set; }
+
+        [JsonProperty("cashback_percentage")]
+        public double? CashbackPercentage { get; set; }
     }
 }

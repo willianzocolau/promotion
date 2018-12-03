@@ -58,13 +58,14 @@
     </ion-list>
   </ion-card>
   <!--Todo criar componente para os comentários-->
-  <ion-card>
+  <ion-card *ngFor="let item of votes">
     <ion-item>
       <ion-avatar item-start>
         <img [src]="item.user.image_url">
       </ion-avatar>
       <h2 style="color: #4c6df9;">{{ item.user.nickname }}</h2>
-      <p>aqui fica os comentários</p>
+      <h2 style="color: #4c6df9;">{{ item.comment_register_date }}</h2>
+      <p>{{ item.comment }}</p>
     </ion-item>
   </ion-card>
 </ion-content>

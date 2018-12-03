@@ -3,6 +3,7 @@ import { IonicApp, IonicModule } from "ionic-angular";
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http';
+import { Camera } from '@ionic-native/camera';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -17,6 +18,8 @@ import { AdcardComponent } from "../components/adcard/adcard";
 import { ListComponent } from "../components/list/list";
 import { WishcardComponent } from "../components/wishcard/wishcard";
 import { OrdercardComponent } from "../components/ordercard/ordercard";
+import { HistorycardComponent } from "../components/historycard/historycard";
+import { ImguploadComponent } from "../components/imgupload/imgupload";
 
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
@@ -32,6 +35,7 @@ import { WishListPage } from "../pages/wishlist/wishlist";
 import { AdvertisingPage } from "../pages/advertising/advertising";
 import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 import { CreateAdPage } from "../pages/create-ad/create-ad";
+import { PurchaseHistoryPage } from "../pages/purchase-history/purchase-history";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
 // import services
@@ -49,6 +53,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishcardComponent,
     ListComponent,
     OrdercardComponent,
+    HistorycardComponent,
+    ImguploadComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -62,7 +68,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishListPage,
     AdvertisingPage,
     SaleHistoryPage,
-    CreateAdPage
+    CreateAdPage,
+    PurchaseHistoryPage,
   ],
   imports: [
     BrowserModule,
@@ -85,6 +92,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishcardComponent,
     ListComponent,
     OrdercardComponent,
+    HistorycardComponent,
+    ImguploadComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -98,7 +107,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     WishListPage,
     AdvertisingPage,
     SaleHistoryPage,
-    CreateAdPage
+    CreateAdPage,
+    PurchaseHistoryPage,
   ],
   providers: [
     StatusBar,
@@ -106,7 +116,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     Keyboard,
     UserData,
     ServerStrings,
-    HTTP
+    HTTP,
+    Camera,
   ]
 })
 
