@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PromotionApi.Data;
@@ -101,7 +101,6 @@ namespace PromotionApi.Controllers
         /// Register order
         /// </summary>
         /// <remarks>
-        /// The authorization token needs to be one from a store.
         /// </remarks>
         /// <param name="authorization">Bearer Auth format (store)</param>
         /// <param name="orderData">Data related to the order to create</param>
@@ -120,16 +119,16 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Result);
 
-            var store = await _context.Stores.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (store == null)
-                return Unauthorized();
+            //var store = await _context.Stores.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            //if (store == null)
+                //return Unauthorized();
 
             Promotion promotion = await _context.Promotions.FindAsync(orderData.PromotionId);
             if (promotion == null)
                 return NotFound(new ErrorResponse { Error = "Promotion not found" });
 
-            if (promotion.StoreFK != store.Id)
-                return BadRequest(new ErrorResponse { Error = "Promotion not from your store" });
+            //if (promotion.StoreFK != store.Id)
+                //return BadRequest(new ErrorResponse { Error = "Promotion not from your store" });
 
             User user = await _context.Users.FindAsync(orderData.UserId);
             if (user == null)
