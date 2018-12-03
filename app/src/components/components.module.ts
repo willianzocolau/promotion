@@ -6,6 +6,7 @@ import { ListComponent } from './list/list';
 import { WishcardComponent } from './wishcard/wishcard';
 import { OrdercardComponent } from './ordercard/ordercard';
 import { HistorycardComponent } from './historycard/historycard';
+import { ImguploadComponent } from './imgupload/imgupload';
 @NgModule({
 	declarations: [
 		AdcardComponent,
@@ -14,6 +15,7 @@ import { HistorycardComponent } from './historycard/historycard';
     WishcardComponent,
     OrdercardComponent,
     HistorycardComponent,
+    ImguploadComponent,
 	],
 	imports: [
 		IonicModule,
@@ -25,6 +27,7 @@ import { HistorycardComponent } from './historycard/historycard';
     WishcardComponent,
     OrdercardComponent,
     HistorycardComponent,
+    ImguploadComponent,
 	]
 })
 export class ComponentsModule {}

@@ -91,6 +91,7 @@
     <plugin name="cordova-sqlite-storage" spec="~2.1.4" />
     <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <plugin name="cordova-plugin-whitelist" spec="git+https://github.com/apache/cordova-plugin-whitelist.git" />
+    <plugin name="cordova-plugin-camera" spec="4.0.3" />
     <engine name="ios" spec="^4.4.0" />
     <engine name="browser" spec="^5.0.4" />
 </widget>

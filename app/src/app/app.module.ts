@@ -3,6 +3,7 @@ import { IonicApp, IonicModule } from "ionic-angular";
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicStorageModule } from '@ionic/storage';
 import { HTTP } from '@ionic-native/http';
+import { Camera } from '@ionic-native/camera';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -18,6 +19,7 @@ import { ListComponent } from "../components/list/list";
 import { WishcardComponent } from "../components/wishcard/wishcard";
 import { OrdercardComponent } from "../components/ordercard/ordercard";
 import { HistorycardComponent } from "../components/historycard/historycard";
+import { ImguploadComponent } from "../components/imgupload/imgupload";
 
 import { SettingsPage } from "../pages/settings/settings";
 import { HomePage } from "../pages/home/home";
@@ -52,6 +54,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ListComponent,
     OrdercardComponent,
     HistorycardComponent,
+    ImguploadComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -90,6 +93,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     ListComponent,
     OrdercardComponent,
     HistorycardComponent,
+    ImguploadComponent,
     SettingsPage,
     HomePage,
     LoginPage,
@@ -112,7 +116,8 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     Keyboard,
     UserData,
     ServerStrings,
-    HTTP
+    HTTP,
+    Camera,
   ]
 })
 
