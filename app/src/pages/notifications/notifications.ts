@@ -2,7 +2,9 @@ import {Component} from "@angular/core";
 import {ViewController} from "ionic-angular";
 import { LoadingController, AlertController } from "ionic-angular";
 import { HTTP } from '@ionic-native/http';
+import {ModalController} from "ionic-angular";
 
+import { AdvertisingPage } from '../../pages/advertising/advertising';
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
 
@@ -14,6 +16,7 @@ import { ServerStrings } from '../../providers/serverStrings';
 export class NotificationsPage {
   private notifications = [];
   constructor(
+    public modalCtrl: ModalController,
     public viewCtrl: ViewController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
@@ -21,6 +24,7 @@ export class NotificationsPage {
     public server: ServerStrings,
     public http: HTTP ) {
     this.getNotifications();
+    
   }
 
   async promotionName(id: number) {
@@ -98,7 +102,8 @@ export class NotificationsPage {
       });
   }
 
-  close(id: number) {
+  close(id: number,item) {
+    this.openPage(item);
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
     let endpoint: string = this.server.userMatchsId(id);
@@ -119,5 +124,13 @@ export class NotificationsPage {
           console.log(exception);
       });
     this.viewCtrl.dismiss();
+  }
+
+  openPage(item: any){
+    let modal = this.modalCtrl.create(AdvertisingPage, item);
+    modal.onDidDismiss((data) => {
+      console.log(data);
+    });
+    modal.present();
   }
 }

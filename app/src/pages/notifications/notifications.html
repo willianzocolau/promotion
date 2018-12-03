@@ -5,7 +5,7 @@
   </ion-list-header>
   
   <div *ngFor="let item of notifications">
-    <button ion-item [color]="item.back_color" class="text-1x" tappable (click)="close(item.id)">
+    <button ion-item [color]="item.back_color" class="text-1x" tappable (click)="close(item.id,item)">
       <ion-icon [name]="item.icon"></ion-icon>
       <span ion-text [color]="item.text_color">{{ item.name | async }}</span>
     </button>  
