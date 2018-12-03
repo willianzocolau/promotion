@@ -33,9 +33,11 @@
       </ion-label>
       <ion-input type="text" formControlName="image" readonly [value]='image_url'></ion-input>
     </ion-item>
+
     <ion-item>
       <imgupload (imageUrl)="onImageChange($event)"></imgupload>
     </ion-item>
+
     <ion-item>
       <ion-label floating>
         <ion-icon name="cart" item-start class="text-primary"></ion-icon>
