@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PromotionApi.Data;
@@ -79,6 +79,10 @@ namespace PromotionApi.Controllers
                     return BadRequest(new ErrorResponse { Error = "Invalid name" });
                 if (!Utils.IsValidCpf(registerUserData.Cpf))
                     return BadRequest(new ErrorResponse { Error = "Invalid cpf" });
+                if (String.IsNullOrEmpty(registerUserData.ImageUrl))
+                    registerUserData.ImageUrl = "https://i.imgur.com/GpXZeEs.jpg";
+                if (!Utils.IsValidImageUrl(registerUserData.ImageUrl))
+                    return BadRequest(new ErrorResponse { Error = "Invalid image" });
 
                 bool alreadyUsedEmail = await _context.Users.AnyAsync(x => x.Email == email);
                 if (alreadyUsedEmail)
@@ -103,7 +107,7 @@ namespace PromotionApi.Controllers
                     RegisterDate = DateTimeOffset.UtcNow,
                     Token = token,
                     Cpf = registerUserData.Cpf,
-                    ImageUrl = null,
+                    ImageUrl = registerUserData.ImageUrl,
                     Cellphone = null,
                     Telephone = null,
                 });
