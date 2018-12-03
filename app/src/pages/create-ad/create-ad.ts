@@ -22,6 +22,7 @@ export class CreateAdPage {
   public form : FormGroup;
   public states = [];
   public stores = [];
+  public image_url = "Carregue a imagem";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
     public formBuilder: FormBuilder, public http:HTTP, public server: ServerStrings,
@@ -85,6 +86,10 @@ export class CreateAdPage {
         loading.dismiss();
         msg.present();
       });
+  }
+
+  onImageChange(link: string){
+    this.image_url = link; 
   }
 
   createAd(){
