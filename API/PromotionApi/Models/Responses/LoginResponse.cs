@@ -35,5 +35,11 @@ namespace PromotionApi.Models
 
         [JsonProperty("state")]
         public long? StateFK { get; set; }
+
+        [JsonProperty("telephone")]
+        public string Telephone { get; set; }
+
+        [JsonProperty("cellphone")]
+        public string Cellphone { get; set; }
     }
 }
