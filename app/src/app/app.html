@@ -41,8 +41,14 @@
 
   <ion-content color="primary">
 
-    <ion-list class="user-list">
+    <ion-list *ngIf="type==0" class="user-list">
       <button ion-item menuClose class="text-1x" *ngFor="let menuItem of appMenuItems" (click)="executeFunction(menuItem.function)">
+        <ion-icon item-left [name]="menuItem.icon" color="primary"></ion-icon>
+        <span ion-text color="primary">{{menuItem.title}}</span>
+      </button>
+    </ion-list>
+    <ion-list *ngIf="type==1" class="user-list">
+      <button ion-item menuClose class="text-1x" *ngFor="let menuItem of appMenuSellerItems" (click)="executeFunction(menuItem.function)">
         <ion-icon item-left [name]="menuItem.icon" color="primary"></ion-icon>
         <span ion-text color="primary">{{menuItem.title}}</span>
       </button>

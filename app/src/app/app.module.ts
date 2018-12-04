@@ -38,6 +38,7 @@ import { CreateAdPage } from "../pages/create-ad/create-ad";
 import { PurchaseHistoryPage } from "../pages/purchase-history/purchase-history";
 
 import { BrMaskerModule } from 'brmasker-ionic-3';
+import { SellerPage } from "../pages/seller/seller";
 // import services
 // end import services
 // end import services
@@ -70,6 +71,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     SaleHistoryPage,
     CreateAdPage,
     PurchaseHistoryPage,
+    SellerPage,
   ],
   imports: [
     BrowserModule,
@@ -109,6 +111,7 @@ import { BrMaskerModule } from 'brmasker-ionic-3';
     SaleHistoryPage,
     CreateAdPage,
     PurchaseHistoryPage,
+    SellerPage,
   ],
   providers: [
     StatusBar,

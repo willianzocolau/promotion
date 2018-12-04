@@ -17,6 +17,7 @@ import { ServerStrings } from "../providers/serverStrings";
 import { WishListPage } from "../pages/wishlist/wishlist";
 import { SaleHistoryPage } from "../pages/saleHistory/saleHistory";
 import { PurchaseHistoryPage } from "../pages/purchase-history/purchase-history";
+import { SellerPage } from "../pages/seller/seller";
 
 export interface MenuItem {
     title: string;
@@ -34,9 +35,11 @@ export class MyApp {
   rootPage: any = LoginPage;
 
   appMenuItems: Array<MenuItem>;
+  appMenuSellerItems: Array<MenuItem>;
   nickname: string;
   credit: string;
   public userurl;
+  type: number;
 
   constructor(
     public platform: Platform,
@@ -50,6 +53,13 @@ export class MyApp {
     public loadingCtrl: LoadingController,
   ) {
     this.initializeApp();
+    
+    this.appMenuSellerItems = [
+      { title: 'Home', function: () => { this.openPage(SellerPage) }, icon: 'home' },
+      { title: 'Editar perfil', function: () => { this.openPage(EditAuthPage) }, icon: 'contact' },
+      { title: 'Configurações', function: () => { this.pushPage(SettingsPage) }, icon: 'settings' },
+      { title: 'Sair', function: () => { this.logout() }, icon: 'exit' },
+    ];
 
     this.appMenuItems = [
       { title: 'Home', function: () => { this.openPage(HomePage) }, icon: 'home' },
@@ -67,6 +77,7 @@ export class MyApp {
       this.nickname = user.getNickname();
       this.credit = user.getCredit().toFixed(2);
       this.userurl = user.getImage_Url();
+      this.type = user.getType();
     });
   }
 

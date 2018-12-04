@@ -53,9 +53,9 @@ export class ServerStrings {
   order(path: string, id: number) {
     if (path == "")
       return ServerStrings.url + "order/";
-    else if (path == "aprove")
+    else if (path == "approve")
       return ServerStrings.url + "order/" + id.toString() + "/approve";
-    else if (path == "")
+    else if (path == "disapprove")
       return ServerStrings.url + "order/" + id.toString() + "/disapprove";
     else if (path == "vote")
       return ServerStrings.url + "order/" + id.toString() + "/vote"

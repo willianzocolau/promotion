@@ -8,6 +8,7 @@ import { HTTP } from '@ionic-native/http';
 import { UserData } from "../../providers/userData";
 import { ServerStrings } from "../../providers/serverStrings";
 import { ForgetPasswordPage } from "../password/forgetpassword";
+import { SellerPage } from "../seller/seller";
 
 @Component({
   selector: 'page-login',
@@ -58,7 +59,12 @@ export class LoginPage {
               .then(res => {
                 this.user.update(JSON.parse(res.data));
                 loading.dismiss();
-                this.nav.setRoot(HomePage);
+                if(this.user.getType() == 1){
+                  this.nav.setRoot(SellerPage);
+                }
+                else{
+                  this.nav.setRoot(HomePage);
+                }
               })
               .catch(err => {
                 loading.dismiss();
@@ -102,7 +108,13 @@ export class LoginPage {
         this.data = dados;
         this.user.update(dados);
         loading.dismiss();
-        this.nav.setRoot(HomePage);
+        console.log(this.user.getType());
+        if(this.user.getType() == 1){
+          this.nav.setRoot(SellerPage);
+        }
+        else{
+          this.nav.setRoot(HomePage);
+        }
       })
       .catch(exception => {
         console.log("Erro");

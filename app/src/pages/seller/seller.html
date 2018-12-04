@@ -1,0 +1,20 @@
+<ion-header>
+  <custom-navbar></custom-navbar>
+</ion-header>
+
+<ion-content class="content">
+  <h1>Histórico de vendas</h1>
+  <ion-card *ngFor="let item of list">
+    <ion-item>
+      <!--Todo: Adicionar cashback-->
+      Promotion: {{item.promotion_id}} 
+      Aprovado por: {{item.approved_by}}
+      Comprador: {{item.user_id}}  
+      Data: {{item.register_date}}
+      <p>
+        <button ion-button class="approve" (click)="approve(item.id)"> approve </button>
+        <button ion-button class="disapprove" (click)="disapprove(item.id)"> disapprove </button>
+      </p>
+    </ion-item>
+</ion-card>
+</ion-content>
