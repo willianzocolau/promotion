@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace PromotionApi.Models
 {
@@ -10,5 +10,7 @@ namespace PromotionApi.Models
         public string Name { get; set; }
         [JsonProperty("cpf")]
         public string Cpf { get; set; }
+        [JsonProperty("image_url")]
+        public string ImageUrl { get; set; }
     }
 }
