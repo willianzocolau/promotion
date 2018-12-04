@@ -36,6 +36,7 @@ export class MyApp {
   appMenuItems: Array<MenuItem>;
   nickname: string;
   credit: string;
+  public userurl;
 
   constructor(
     public platform: Platform,
@@ -65,6 +66,7 @@ export class MyApp {
     this.events.subscribe('user:updated', (userData) => {
       this.nickname = user.getNickname();
       this.credit = user.getCredit().toFixed(2);
+      this.userurl = user.getImage_Url();
     });
   }
 

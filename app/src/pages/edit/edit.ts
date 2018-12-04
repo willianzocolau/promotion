@@ -16,6 +16,7 @@ import { UserData } from "../../providers/userData";
 export class EditPage {
     public form : FormGroup;
     public data : any;
+    public image_url = this.user.getImage_Url();
   
     constructor(public nav: NavController, 
               public formBuilder: FormBuilder, 
@@ -31,8 +32,8 @@ export class EditPage {
             name: ['', Validators.required],
             nickname: ['', Validators.required],
             telephone: ['', Validators.required],
-            cellphone: ['', Validators.required]/*,
-            image_url: ['', Validators.required]*/
+            cellphone: ['', Validators.required],
+            image_url: ['', Validators.required]
         });
 
         this.form.controls['name'].setValue(user.getName());
@@ -46,7 +47,7 @@ export class EditPage {
         let nickname: string = this.form.get('nickname').value;
         let cellphone: string = this.form.get('cellphone').value;
         let telephone: string = this.form.get('telephone').value;
-        let image_url: string = "";//this.form.get('image_url').value;
+        let image_url: string = this.form.get('image_url').value;
 
         if(name == "") name = null;
         if(nickname == "") nickname = null;
@@ -77,6 +78,10 @@ export class EditPage {
               this.alertCtrl.create({ title: "Erro:" + JSON.parse(exception.error).error, buttons: ['Ok']}).present();
               console.log(exception);
             });
+    }
+
+    onImageChange(link: string){
+        this.image_url = link; 
     }
 
     presentNotifications(myEvent) {
