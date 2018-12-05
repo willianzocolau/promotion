@@ -60,7 +60,7 @@ export class AdvertisingPage {
     loading.present();
     let endpoint = this.server.order("",0);
     let headers = {
-      'Authorization': 'Bearer ' + "ODE4NjkyOQ.62D60490FFF3465D00010062"
+      'Authorization': 'Bearer ' + this.user.getToken()
     };
 
     let body = {

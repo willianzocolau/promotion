@@ -100,13 +100,10 @@ namespace PromotionApi.Controllers
         /// <summary>
         /// Register order
         /// </summary>
-        /// <remarks>
-        /// The authorization token needs to be one from a store.
-        /// </remarks>
-        /// <param name="authorization">Bearer Auth format (store)</param>
+        /// <param name="authorization">Bearer Auth format (user)</param>
         /// <param name="orderData">Data related to the order to create</param>
         /// <response code="200">Success, returns Order</response>
-        /// <response code="400">If invalid authorization, or promotion not from your store</response>
+        /// <response code="400">If invalid authorization</response>
         /// <response code="401">If token is invalid</response>
         /// <response code="404">If promotion is not found, or user is not found</response>
         [HttpPost]
@@ -120,20 +117,17 @@ namespace PromotionApi.Controllers
             if (!validation.IsValid)
                 return BadRequest(validation.Result);
 
-            var store = await _context.Stores.FirstOrDefaultAsync(x => x.Token == validation.Token);
-            if (store == null)
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == validation.Token);
+            if (user == null)
                 return Unauthorized();
 
             Promotion promotion = await _context.Promotions.FindAsync(orderData.PromotionId);
             if (promotion == null)
                 return NotFound(new ErrorResponse { Error = "Promotion not found" });
 
-            if (promotion.StoreFK != store.Id)
-                return BadRequest(new ErrorResponse { Error = "Promotion not from your store" });
-
-            User user = await _context.Users.FindAsync(orderData.UserId);
+            /*User user = await _context.Users.FindAsync(orderData.UserId);
             if (user == null)
-                return NotFound(new ErrorResponse { Error = "User not found" });
+                return NotFound(new ErrorResponse { Error = "User not found" });*/
 
             Order newOrder = new Order
             {
