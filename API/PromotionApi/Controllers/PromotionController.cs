@@ -190,7 +190,7 @@ namespace PromotionApi.Controllers
 
             //Test
             Random random = new Random();
-    	    double csh = random.NextDouble() * (1 - 0) + 0;//(0-1)
+    	    double tst = random.NextDouble() * (0.05 - 0) + 0;
 		    csh = Math.Round(csh,3);
 
             Promotion created;
