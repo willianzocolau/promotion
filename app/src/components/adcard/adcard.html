@@ -1,23 +1,43 @@
-<ion-card  *ngFor="let item of list">
-  <ion-item>
-    <ion-avatar item-start>
-      <img [src]="item.user.image_url">
-    </ion-avatar>
-    <button *ngIf="isUserListing" class="disable" ion-button icon-only (click)=disable(item.promotion.id)>
-        <ion-icon name="remove-circle"></ion-icon>
-    </button>
-    <button class="disable" ion-button icon-only (click)=report(item.promotion.id)>
-        <ion-icon name="flag"></ion-icon>
-    </button>
-      <h2>{{ item.user.nickname }}</h2>
-      <p>{{ item.promotion.register_date }}</p>
-      <h2>{{ item.promotion.name }}</h2>
-  </ion-item>
-  <div class="frame">
-        <img class="inner" [src]=item.promotion.image_url tappable (click)=openPage(item)/>
-  </div>
-  <p> </p>
-  <ion-card-content>
-    <p>{{ item.promotion.description }}</p>
-  </ion-card-content>
-</ion-card>
+<ion-card  *ngFor="let item of list" >
+    <ion-list>
+      <ion-item-sliding>
+          <ion-item>
+              <ion-avatar item-start>
+                <img [src]="item.user.image_url">
+              </ion-avatar>
+              <button *ngIf="isUserListing" class="disable" ion-button icon-only (click)=disable(item.promotion.id)>
+                  <ion-icon name="remove-circle"></ion-icon>
+              </button>
+              <button class="disable" ion-button icon-only (click)=report(item.promotion.id)>
+                  <ion-icon name="flag"></ion-icon>
+              </button>
+                <h2>{{ item.user.nickname }}</h2>
+                <p>{{ item.promotion.register_date }}</p>
+                <h2>{{ item.promotion.name }}</h2>
+            </ion-item>
+        <ion-item tappable (click)=openPage(item)>
+          <div class="container">
+            <div class="inner">
+              <img [src]="item.promotion.image_url"/>
+            </div>
+          </div>
+          <div class="text-container">
+              <div class="text">
+                <span style="display: block;">{{item.promotion.name}} </span>
+                <span style="font-size: 15px;">{{ item.promotion.register_date }}</span>
+              </div>
+          </div>
+          <div class="price-container">
+            <div class="price">
+              <span style="font-size: 45px;">R$ {{item.promotion.price}}</span>
+            </div>
+          </div>
+          <div class="text-cash">
+              <div class="text">
+                <span style="font-size: 30px;">CashBack de {{item.promotion.cashback_percentage*20}}%</span>
+              </div>
+          </div>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-card>
