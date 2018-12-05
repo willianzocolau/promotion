@@ -45,7 +45,7 @@ namespace PromotionApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            return Ok(_context.States.Select(x => new StateResponse { Id = x.Id, Name = x.Name }));
+            return Ok(_context.States.OrderBy(x => x.Name).Select(x => new StateResponse { Id = x.Id, Name = x.Name }));
         }
 
         // GET api/<controller>/{id}
