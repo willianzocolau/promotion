@@ -199,16 +199,15 @@ namespace PromotionApi.Controllers
                 ImageUrl = promotionData.ImageUrl,
                 StoreFK = promotionData.StoreFK,
                 UserFK = user.Id,
-                StateFK = promotionData.StateFK
+                StateFK = promotionData.StateFK,
+                CashbackPercentage = csh
             });
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
-            _ = Task.Run(async () =>
-            {
-                //TODO: Check better approach?
-                Console.WriteLine("add match");
-                var allWishItems = _context.Wishlist.Where(x => EF.Functions.ILike(x.Name, $"%{promotionData.Name}%"));
-                Console.WriteLine($"allWishItems: {allWishItems.Count()}");
+            //_ = Task.Run(async () =>
+            //{
+                var promotionName = promotionData.Name.ToLower();
+                var allWishItems = _context.Wishlist.Where(x => promotionName.Contains(x.Name.ToLower()));
                 foreach (var wish in allWishItems)
                 {
                     _context.Matchs.Add(new MatchItem
@@ -221,7 +220,7 @@ namespace PromotionApi.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-            });
+            //});
 
             return Ok();
         }
