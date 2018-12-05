@@ -400,7 +400,7 @@
             <response code="401">If token is invalid, or item isn't from this user</response>
             <response code="404">If no item with this id is found</response>
         </member>
-        <member name="M:PromotionApi.Controllers.UserController.DeleteWishItemAsync(System.String,System.Int64,PromotionApi.Models.WishlistItemBody)">
+        <member name="M:PromotionApi.Controllers.UserController.DeleteWishItemAsync(System.String,System.Int64)">
             <summary>
             Delete wishlist item
             </summary>
@@ -409,7 +409,6 @@
             </remarks>
             <param name="authorization">Bearer Auth format</param>
             <param name="id">Wishlist item id</param>
-            <param name="wishlistItemData">Item information to delete from wishlist</param>
             <response code="200">Success</response>
             <response code="400">If invalid authorization</response>
             <response code="401">If token is invalid, or item isn't from this user</response>

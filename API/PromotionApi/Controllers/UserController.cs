@@ -344,7 +344,6 @@ namespace PromotionApi.Controllers
         /// </remarks>
         /// <param name="authorization">Bearer Auth format</param>
         /// <param name="id">Wishlist item id</param>
-        /// <param name="wishlistItemData">Item information to delete from wishlist</param>
         /// <response code="200">Success</response>
         /// <response code="400">If invalid authorization</response>
         /// <response code="401">If token is invalid, or item isn't from this user</response>
@@ -354,7 +353,7 @@ namespace PromotionApi.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(401, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult> DeleteWishItemAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id, [FromBody, Required] WishlistItemBody wishlistItemData)
+        public async Task<ActionResult> DeleteWishItemAsync([FromHeader(Name = "Authorization"), Required] string authorization, [FromRoute, Required] long id)
         {
             var validation = Token.ValidateAuthorization(authorization);
             if (!validation.IsValid)

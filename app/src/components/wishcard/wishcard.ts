@@ -63,7 +63,7 @@ export class WishcardComponent {
       'Authorization': 'Bearer ' + this.user.getToken(),
       'Content-type': 'application/json'
     };
-    this.http.delete(endpoint, {name: 'string'}, headers)
+    this.http.delete(endpoint, {}, headers)
       .then(response => {
         console.log("Sucesso");
         this.nav.setRoot(WishListPage);
