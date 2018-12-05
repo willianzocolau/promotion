@@ -6,6 +6,7 @@ import { SaleHistoryPage } from '../../pages/saleHistory/saleHistory';
 
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
+import { OrdercardComponent } from '../ordercard/ordercard';
 
 @Component({
   selector: 'historycard',
@@ -30,6 +31,17 @@ export class HistorycardComponent {
     this.listing(this.lastid);
   }
 
+  commented(votes, order){
+    let result = false;
+    votes.forEach(element => {
+      console.log(element.order_id + " " + order.id);
+      if(element.order_id == order.id){
+        result = true;
+      }
+    });
+    return result;
+  }
+
   listing(lastid: number) {
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
@@ -52,7 +64,8 @@ export class HistorycardComponent {
             this.http.get(endpoint, {}, headers)
             .then(response3 => {
               let approved = JSON.parse(response3.data);
-              this.list.push({order, promotion, approved});  
+              let comment = this.commented(promotion.votes, order);
+              this.list.push({order, promotion, approved, comment});  
             })
             .catch(exception3 =>{
               let dados = JSON.parse(exception3.error);

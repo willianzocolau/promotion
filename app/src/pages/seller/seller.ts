@@ -10,7 +10,7 @@ import { ServerStrings } from '../../providers/serverStrings';
   templateUrl: 'seller.html',
 })
 export class SellerPage {
-
+  public param = "?store_id=1&approved=false";
   public list = [];
 
   constructor(
@@ -78,10 +78,49 @@ export class SellerPage {
       });
   }
 
+  delete(id: number){
+    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
+    loading.present();
+    let endpoint = this.server.order("",0) + id;
+    let headers = {
+      'Authorization': 'Bearer ' + this.user.getToken()
+    };
+
+    this.http.delete(endpoint, {}, headers)
+      .then(response => {
+        //console.log(dados);
+        this.navCtrl.setRoot(SellerPage);
+        loading.dismiss();
+      })
+      .catch(exception => {
+        console.log(exception);
+        let dados = JSON.parse(exception.error);
+        let msg = this.alertCtrl.create({
+          message: "Erro: " + dados.error
+        });
+        loading.dismiss();
+        this.navCtrl.setRoot(SellerPage);
+        msg.present();
+      });
+  }
+
+  listar(type: string){
+    if(type == "todos"){
+      this.param = "?store_id=1";
+    }
+    else if(type == "aprovados"){
+      this.param = "?store_id=1&approved=true";
+    }
+    else if(type == "nao_aprovados"){
+      this.param = "?store_id=1&approved=false";
+    }
+    this.getOrders();
+  }
+
   getOrders(){
     let loading = this.loadingCtrl.create({ content: 'Carregando...' });
     loading.present();
-    let endpoint = this.server.order("", 0) + "?store_id=1&approved=false";
+    let endpoint = this.server.order("", 0) + this.param;
     let headers = {
       'Authorization': 'Bearer ' + this.user.getToken()
     };

@@ -94,7 +94,7 @@ export class CreateAdPage {
 
   createAd(){
     let name = this.form.get('name').value;
-    let price = this.form.get('price').value;
+    let price:number = this.form.get('price').value;
     let image = this.form.get('image').value;
     let store_id = this.form.get('store_id').value;
     let state_id = this.form.get('state_id').value;
@@ -120,13 +120,17 @@ export class CreateAdPage {
       this.http.post(endpoint, body, headers)
       .then(response => {
         this.alertCtrl.create({ title: 'Cadastrado com sucesso!', buttons: ['Ok'] }).present();
-        console.log("Sucesso");
         loading.dismiss();
         this.navCtrl.setRoot(MyAdvertisingPage);
       })
       .catch(exception => {
-        this.alertCtrl.create({ title: 'Erro: ' + JSON.parse(exception.error).error, buttons: ['Ok'] }).present();
-        console.log("Erro");
+        let dados;
+        console.log(exception);
+        if(exception.error != "" && exception.error != undefined)
+          dados = JSON.parse(exception.error);
+        else
+          dados = exception;
+        this.alertCtrl.create({ title: 'Erro: ' + dados.error, buttons: ['Ok'] }).present();
         loading.dismiss();
       });
     }

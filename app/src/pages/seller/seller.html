@@ -3,7 +3,10 @@
 </ion-header>
 
 <ion-content class="content">
-  <h1>Histórico de vendas</h1>
+  <h1>Aprovar/Desaprovar ordens</h1>
+  <button ion-button (click)="listar('aprovados')"> Aprovados </button>
+  <button ion-button (click)="listar('nao_aprovados')"> Não aprovados </button>
+  <button ion-button (click)="listar('todos')"> Todos </button>
   <ion-card *ngFor="let item of list">
     <ion-item>
       <!--Todo: Adicionar cashback-->
@@ -14,6 +17,7 @@
       <p>
         <button ion-button class="approve" (click)="approve(item.id)"> approve </button>
         <button ion-button class="disapprove" (click)="disapprove(item.id)"> disapprove </button>
+        <button ion-button class="delete" (click)="delete(item.id)"> delete </button>
       </p>
     </ion-item>
 </ion-card>

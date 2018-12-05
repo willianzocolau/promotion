@@ -55,4 +55,37 @@ export class AdvertisingPage {
       msg.present();
     });
   }
+  createOrder(){
+    let loading = this.loadingCtrl.create({ content: 'Carregando...' });
+    loading.present();
+    let endpoint = this.server.order("",0);
+    let headers = {
+      'Authorization': 'Bearer ' + "ODE4NjkyOQ.62D60490FFF3465D00010062"
+    };
+
+    let body = {
+      "user_id": this.user.getId(),
+      "promotion_id": this.item.promotion.id
+    }
+
+    this.http.post(endpoint, body, headers)
+      .then(response => {
+        console.log(response);
+        let msg = this.alertCtrl.create({
+          message: "Order criada"
+        });
+        this.viewCtrl.dismiss(this.item);
+        loading.dismiss();
+        msg.present();
+      })
+      .catch(exception => {
+        console.log(exception);
+        let dados = JSON.parse(exception.error);
+        let msg = this.alertCtrl.create({
+          message: "Erro: " + dados.error
+        });
+        loading.dismiss();
+        msg.present();
+      });
+  }
 }

@@ -9,13 +9,14 @@
     <button class="disable" ion-button icon-only (click)=report(item.promotion.id)>
         <ion-icon name="flag"></ion-icon>
     </button>
-    <h2>{{ item.user.nickname }}</h2>
-    <p>{{ item.promotion.registerdate }}</p>
+      <h2>{{ item.user.nickname }}</h2>
+      <p>{{ item.promotion.register_date }}</p>
+      <h2>{{ item.promotion.name }}</h2>
   </ion-item>
   <div class="frame">
-    <h2>{{ item.promotion.name }}</h2>
-    <img class="inner" [src]=item.promotion.image_url tappable (click)=openPage(item)/>
+        <img class="inner" [src]=item.promotion.image_url tappable (click)=openPage(item)/>
   </div>
+  <p> </p>
   <ion-card-content>
     <p>{{ item.promotion.description }}</p>
   </ion-card-content>
