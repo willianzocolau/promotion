@@ -212,7 +212,9 @@ namespace PromotionApi.Controllers
             _ = Task.Run(async () =>
             {
                 //TODO: Check better approach?
-                var allWishItems = _context.Wishlist.Where(x => promotionData.Name.ToLower().Contains(x.Name.ToLower()));
+                Console.WriteLine("add match");
+                var allWishItems = _context.Wishlist.Where(x => EF.Functions.ILike(x.Name, $"%{promotionData.Name}%"));
+                Console.WriteLine($"allWishItems: {allWishItems.Count()}");
                 foreach (var wish in allWishItems)
                 {
                     _context.Matchs.Add(new MatchItem
