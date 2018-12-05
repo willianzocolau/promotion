@@ -39,24 +39,6 @@
               <button ion-button large (click)="createOrder()"> Comprar </button>
           </div>
         </ion-item>
-        <ion-item style="background-color: #EEEEEE;">
-          <ion-avatar item-start>
-            <img [src]="item.user.image_url">
-          </ion-avatar>
-          <span style="color: #4c6df9;">{{ item.user.nickname }}</span>
-          <button style="float: right;" ion-button icon-start clear small>
-            <ion-icon name="text"></ion-icon>
-            <div>{{ item.promotion.comments }} Comentários</div>
-          </button>
-          <button style="float: right;" ion-button icon-start clear small>
-            <ion-icon name="thumbs-down"></ion-icon>
-            <div>{{ item.promotion.order_downvotes }} Dislikes</div>
-          </button>
-          <button style="float: right;" ion-button icon-start clear small>
-            <ion-icon name="thumbs-up"></ion-icon>
-            <div>{{ item.promotion.order_upvotes }} Likes</div>
-          </button>
-        </ion-item>
       </ion-item-sliding>
     </ion-list>
   </ion-card>
