@@ -101,13 +101,10 @@
             <summary>
             Register order
             </summary>
-            <remarks>
-            The authorization token needs to be one from a store.
-            </remarks>
-            <param name="authorization">Bearer Auth format (store)</param>
+            <param name="authorization">Bearer Auth format (user)</param>
             <param name="orderData">Data related to the order to create</param>
             <response code="200">Success, returns Order</response>
-            <response code="400">If invalid authorization, or promotion not from your store</response>
+            <response code="400">If invalid authorization</response>
             <response code="401">If token is invalid</response>
             <response code="404">If promotion is not found, or user is not found</response>
         </member>
