@@ -188,6 +188,11 @@ namespace PromotionApi.Controllers
                 return BadRequest(new ErrorResponse { Error = "Invalid state id" });*/
             //TODO: Add expire_date
 
+            //Test
+            Random random = new Random();
+    	    double csh = random.NextDouble() * (1 - 0) + 0;//(0-1)
+		    csh = Math.Round(csh,3);
+
             Promotion created;
             _context.Promotions.Add(created = new Promotion
             {
@@ -200,6 +205,7 @@ namespace PromotionApi.Controllers
                 StoreFK = promotionData.StoreFK,
                 UserFK = user.Id,
                 StateFK = promotionData.StateFK,
+                CashbackPercentage = csh
             });
             await _context.SaveChangesAsync();
 
