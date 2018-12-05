@@ -55,26 +55,35 @@ export class OrdercardComponent {
                 hide.has_item = true;
               }
               dados.forEach(order => {
-                let endpoint = this.server.userId(order.approved_by);
-                this.http.get(endpoint, {}, headers)
-                .then(response2 => {
-                  let approved = JSON.parse(response2.data);
-                  orders.push({order, approved});
-                })
-                .catch(exception => {
-                  let dados = JSON.parse(exception.error);
-                  let msg = this.alertCtrl.create({
-                    message: "Erro: " + dados.error
+                let approved;
+                if(order.approved_by != null ){
+                  let endpoint = this.server.userId(order.approved_by);
+                  this.http.get(endpoint, {}, headers)
+                  .then(response2 => {
+                    approved = JSON.parse(response2.data);
+                    orders.push({order, approved});
+                  })
+                  .catch(exception => {
+                    let dados = JSON.parse(exception.error);
+                    let msg = this.alertCtrl.create({
+                      message: "Erro1: " + dados.error
+                    });
+                    msg.present();    
                   });
-                  msg.present();    
-                });
+                }
+                else{
+                  approved = {
+                    nickname: null
+                  }
+                  orders.push({order, approved});
+                }
               });
               this.list.push({promotion, orders, hide});
             })
             .catch(exception => {
               let dados = JSON.parse(exception.error);
               let msg = this.alertCtrl.create({
-                message: "Erro: " + dados.error
+                message: "Erro2: " + dados.error
               });
               msg.present();
             });
@@ -89,7 +98,7 @@ export class OrdercardComponent {
       .catch(exception => {
         let dados = JSON.parse(exception.error);
         let msg = this.alertCtrl.create({
-          message: "Erro: " + dados.error
+          message: "Erro3: " + dados.error
         });
         loading.dismiss();
         msg.present();

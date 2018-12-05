@@ -1,5 +1,6 @@
 <ion-card *ngFor="let item of list">
   <ion-item>
+    <ion-row> <h1 style="color: green;" *ngIf=item.approved.nickname> Aprovado </h1> </ion-row>  
     <ion-row> 
       Promotion: {{item.promotion.name}} - 
       <span style="color: green;" *ngIf=item.comment> Votado </span>

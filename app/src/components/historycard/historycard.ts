@@ -6,7 +6,6 @@ import { SaleHistoryPage } from '../../pages/saleHistory/saleHistory';
 
 import { UserData } from '../../providers/userData';
 import { ServerStrings } from '../../providers/serverStrings';
-import { OrdercardComponent } from '../ordercard/ordercard';
 
 @Component({
   selector: 'historycard',
@@ -34,7 +33,6 @@ export class HistorycardComponent {
   commented(votes, order){
     let result = false;
     votes.forEach(element => {
-      console.log(element.order_id + " " + order.id);
       if(element.order_id == order.id){
         result = true;
       }
@@ -60,26 +58,35 @@ export class HistorycardComponent {
           this.http.get(endpoint, {}, headers)
           .then(response2 => {
             let promotion = JSON.parse(response2.data);
+            let comment = this.commented(promotion.votes, order);
+            let approved;
             let endpoint = this.server.userId(order.approved_by);
-            this.http.get(endpoint, {}, headers)
-            .then(response3 => {
-              let approved = JSON.parse(response3.data);
-              let comment = this.commented(promotion.votes, order);
-              this.list.push({order, promotion, approved, comment});  
-            })
-            .catch(exception3 =>{
-              let dados = JSON.parse(exception3.error);
-              let msg = this.alertCtrl.create({
-                message: "Erro: " + dados.error
+            if(order.approved_by != null){ 
+              this.http.get(endpoint, {}, headers)
+              .then(response3 => {
+                approved = JSON.parse(response3.data);
+                this.list.push({order, promotion, approved, comment});  
+              })
+              .catch(exception3 =>{
+                let dados = JSON.parse(exception3.error);
+                let msg = this.alertCtrl.create({
+                  message: "Erro1: " + dados.error
+                });
+                loading.dismiss();
+                msg.present();
               });
-              loading.dismiss();
-              msg.present();
-            });
+            }
+            else{
+              approved = {
+                nickname: null,
+              }
+              this.list.push({order, promotion, approved, comment});
+            }
           })
           .catch(exception2 => {
             let dados = JSON.parse(exception2.error);
             let msg = this.alertCtrl.create({
-              message: "Erro: " + dados.error
+              message: "Erro2: " + dados.error
             });
             loading.dismiss();
             msg.present();
@@ -90,7 +97,7 @@ export class HistorycardComponent {
       .catch(exception1 => {
         let dados = JSON.parse(exception1.error);
         let msg = this.alertCtrl.create({
-          message: "Erro: " + dados.error
+          message: "Erro3: " + dados.error
         });
         loading.dismiss();
         msg.present();
@@ -144,7 +151,7 @@ export class HistorycardComponent {
       })
       .catch(exception => {
         let dados = JSON.parse(exception.error);
-        let msg = this.alertCtrl.create({message: "Erro: " + dados});
+        let msg = this.alertCtrl.create({message: "Erro4: " + dados});
         loading.dismiss();
         msg.present();
         console.log(exception);
