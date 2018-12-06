@@ -200,7 +200,7 @@ namespace PromotionApi.Controllers
                 StoreFK = promotionData.StoreFK,
                 UserFK = user.Id,
                 StateFK = promotionData.StateFK,
-                CashbackPercentage = csh
+                CashbackPercentage = null
             });
             //await _context.SaveChangesAsync();
 
